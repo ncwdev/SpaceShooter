@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <title>SpaceShooter</title>
+
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/range.css">
+
+    <script src="https://cdn.babylonjs.com/havok/HavokPhysics_umd.js"></script>
+    <script src="js/Lib/babylon.js"></script>
+    <script src="js/Lib/babylon.gui.min.js"></script>
+</head>
+<body>
+    <canvas id="renderCanvas" tabindex="0"></canvas>
+    <div id="DebugPanel">
+        <div id="game_fps" class="dbg_txt">0</div>
+        <div id="dist" class="dbg_txt">0</div>
+        <div id="fwd_vel" class="dbg_txt">0</div>
+    </div>
+    <div id="MainMenu">
+        <div id="MenuPanel">
+            <div id="GameTitle" style="font-size: 5vh;">Space shooter</div>
+            <div style="display: grid; justify-items: center;">
+                <div id="EnemyNumberTxt" style="font-size: 2.5vh;">Number of enemies:</div>
+                <div style="font-size: 4vh;" id="EnemyNumber">3</div>
+                <div><input type="range" id="EnemyNumberSlider" min="1" max="9" step="1" value="3"></div>    
+            </div>
+            <div id="PlayTxt" class="ncw_btn" style="top: 46vh; left: 46vw;font-size: 2.5vh;z-index: 9;width: 5vw;" onmousedown="startGame()">Play</div>
+        </div>
+    </div>
+    <script src="js/Config/meshes_list.js"></script>
+    <script src="js/Utils/lang.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        console.log(`Secure context: ${window.isSecureContext}`);
+
+        let elem = document.getElementById('GameTitle');
+        elem.innerText = getLocText("TXT_TITLE");
+
+        elem = document.getElementById('EnemyNumberTxt');
+        elem.innerText = getLocText("TXT_ENEMIES_NUM");
+
+        elem = document.getElementById('PlayTxt');
+        elem.innerText = getLocText("TXT_PLAY");
+    </script>
+</body>
+</html>
