@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/range.css">
 
-    <script src="https://cdn.babylonjs.com/havok/HavokPhysics_umd.js"></script>
-    <script src="js/Lib/babylon.js"></script>
-    <script src="js/Lib/babylon.gui.min.js"></script>
+    <script src="js/Lib/babylon.js" defer></script>
+    <script src="js/Lib/babylon.gui.min.js" defer></script>
+    <script src="https://cdn.babylonjs.com/havok/HavokPhysics_umd.js" defer></script>
 </head>
 <body>
     <canvas id="renderCanvas" tabindex="0"></canvas>
@@ -30,20 +30,8 @@
             <div id="PlayTxt" class="ncw_btn" style="top: 46vh; left: 46vw;font-size: 2.5vh;z-index: 9;width: 5vw;" onmousedown="startGame()">Play</div>
         </div>
     </div>
-    <script src="js/Config/meshes_list.js"></script>
-    <script src="js/Utils/lang.js"></script>
-    <script src="js/app.js"></script>
-    <script>
-        console.log(`Secure context: ${window.isSecureContext}`);
-
-        let elem = document.getElementById('GameTitle');
-        elem.innerText = getLocText("TXT_TITLE");
-
-        elem = document.getElementById('EnemyNumberTxt');
-        elem.innerText = getLocText("TXT_ENEMIES_NUM");
-
-        elem = document.getElementById('PlayTxt');
-        elem.innerText = getLocText("TXT_PLAY");
-    </script>
+    <script src="js/Config/meshes_list.js" defer></script>
+    <script src="js/Utils/lang.js" defer></script>
+    <script src="js/app.js" defer></script>
 </body>
 </html>

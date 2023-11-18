@@ -35,3 +35,12 @@ let cur_lang = en;
 function getLocText(id) {
     return cur_lang[id];
 }
+
+let elem = document.getElementById('GameTitle');
+elem.innerText = getLocText("TXT_TITLE");
+
+elem = document.getElementById('EnemyNumberTxt');
+elem.innerText = getLocText("TXT_ENEMIES_NUM");
+
+elem = document.getElementById('PlayTxt');
+elem.innerText = getLocText("TXT_PLAY");
