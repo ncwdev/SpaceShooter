@@ -3,7 +3,7 @@ export default {
 
     radius_min: 1100,
     radius_max: 1600,
-    asteroids_num: 10, // it will be multiplied by number of asteroids models (currently 6)
+    asteroids_num: 30, // it will be multiplied by number of asteroids models (currently 6)
 
     // TEST
     // radius_min: 500,
