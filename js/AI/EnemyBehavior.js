@@ -187,8 +187,11 @@ function N3_do_attack(entity, context) {
     entity.turnToPlayerShip(dt);
 
     if (!context.last_fire_time || context.last_fire_time + context.AI_FIRE_INTERVAL < Date.now()) {
-        entity.firePlasmaShot(context.dist_to_target);
-        context.last_fire_time = Date.now();
+        const chance = Math.random();
+        if (chance < context.AI_FIRE_CHANCE) {
+            entity.firePlasmaShot(context.dist_to_target);
+            context.last_fire_time = Date.now();
+        }
     }
     return Node.RES_RUNNING;
 }

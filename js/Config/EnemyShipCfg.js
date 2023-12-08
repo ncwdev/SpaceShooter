@@ -46,7 +46,8 @@ const config = {
     ai: {
         AI_dt: 0.050,
         AI_TICK: 50,
-        AI_FIRE_INTERVAL: 250,
+        AI_FIRE_INTERVAL: 100,
+        AI_FIRE_CHANCE: 0.35,
         AI_RADIUS_FIRE: 300,
         AI_RADIUS_LEAVE:100,
         AI_RADIUS_RETREAT: 500,
