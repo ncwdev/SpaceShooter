@@ -1,4 +1,6 @@
-const GUI_FONT_SIZE = 0.02;
+const GUI_FONT_SIZE = 0.014;
+
+const textBlocks = [];
 
 export class BaseGui {
     game = null;
@@ -18,7 +20,7 @@ export class BaseGui {
         this.screen_width = engine.getRenderWidth();
         this.screen_height = engine.getRenderHeight();
 
-        this.font_size = this.screen_height * GUI_FONT_SIZE + 'px';
+        this.font_size = (this.screen_height + this.screen_width) * 0.5 * GUI_FONT_SIZE;
 
         this.padding_left = this.screen_width * 0.005;
     }
@@ -33,6 +35,21 @@ export class BaseGui {
         txt.horizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
         txt.paddingLeft = this.padding_left;
         parent.addControl(txt);
+
+        const ref = new WeakRef(txt);
+        textBlocks.push(ref);
+
         return txt;
     }
 }
+
+window.addEventListener('resize', function () {
+    const newFontSize = (window.innerHeight + window.innerWidth) * 0.5 * GUI_FONT_SIZE;
+
+    textBlocks.forEach(ref => {
+        const txt = ref.deref();
+        if (txt) {
+            txt.fontSize = newFontSize;
+        }
+    });
+});
