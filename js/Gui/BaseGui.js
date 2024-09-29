@@ -1,11 +1,11 @@
 const GUI_FONT_SIZE = 0.02;
 
 export class BaseGui {
-    game  = null;
+    game = null;
     scene = null;
 
     screen_width = 0;
-    screen_height= 0;
+    screen_height = 0;
 
     font_size = null;
     padding_left = 0;
@@ -16,17 +16,17 @@ export class BaseGui {
 
         const engine = this.scene.getEngine();
         this.screen_width = engine.getRenderWidth();
-        this.screen_height= engine.getRenderHeight();
+        this.screen_height = engine.getRenderHeight();
 
-        this.font_size = this.screen_height * GUI_FONT_SIZE + "px";
+        this.font_size = this.screen_height * GUI_FONT_SIZE + 'px';
 
         this.padding_left = this.screen_width * 0.005;
     }
 
     createTextBlock(parent) {
-        let txt = new BABYLON.GUI.TextBlock();
+        const txt = new BABYLON.GUI.TextBlock();
         txt.color = '#FFEBCD';
-        txt.outlineColor = "black";
+        txt.outlineColor = 'black';
         txt.outlineWidth = 1;
         txt.fontSize = this.font_size;
         txt.resizeToFit = true;

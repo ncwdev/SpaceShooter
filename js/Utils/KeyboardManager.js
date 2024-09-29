@@ -1,5 +1,4 @@
 export class KeyboardManager {
-
     scene = null;
     keys_observer = null;
 
@@ -8,7 +7,7 @@ export class KeyboardManager {
     is_shift_pressed = false;
 
     keys_map = {}; // object for multiple key presses
-    
+
     constructor(scene) {
         this.scene = scene;
         this.keys_observer = scene.onKeyboardObservable.add(this.onKeyboardHandler.bind(this));
@@ -51,7 +50,7 @@ export class KeyboardManager {
                 }
                 break;
         }
-        //console.log(e.event.code, e.event.keyCode);
+        // console.log(e.event.code, e.event.keyCode);
     }
 
     isShiftPressed() {

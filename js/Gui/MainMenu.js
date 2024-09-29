@@ -1,22 +1,22 @@
-const div_menu = document.getElementById("MainMenu");
-const div_enemy_number = document.getElementById("EnemyNumber");
-const div_enemy_number_slider = document.getElementById("EnemyNumberSlider");
+const divMenu = document.getElementById('MainMenu');
+const divEnemyNumber = document.getElementById('EnemyNumber');
+const divEnemyNumberSlider = document.getElementById('EnemyNumberSlider');
 
-let enemies_num = 3;
+let enemiesNumber = 3;
 
-div_enemy_number_slider.addEventListener("input", function() {
-    enemies_num = div_enemy_number_slider.value;
-    div_enemy_number.innerHTML = enemies_num;
+divEnemyNumberSlider.addEventListener('input', function() {
+    enemiesNumber = divEnemyNumberSlider.value;
+    divEnemyNumber.innerHTML = enemiesNumber;
 });
 
 export const MainMenu = {
     setVisible(flag) {
-        div_menu.style.display = flag ? "grid" : "none";
+        divMenu.style.display = flag ? 'grid' : 'none';
     },
     getEnemiesNumber() {
-        return enemies_num;
+        return enemiesNumber;
     },
     setMaxEnemiesNumber(num) {
-        div_enemy_number_slider.max = num;
+        divEnemyNumberSlider.max = num;
     }
 };

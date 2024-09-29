@@ -5,7 +5,6 @@ const ROT_SPEED_MAX =  40;
 const ROT_SPEED_K   =  120;
 
 export class Asteroid {
-
     scene= null;
     mesh = null;
     body = null;
@@ -39,7 +38,6 @@ export class Asteroid {
 
         // Create a shape and the static body. Size will be determined automatically.
         const body = new BABYLON.PhysicsBody(mesh, BABYLON.PhysicsMotionType.STATIC, false, this.scene);
-        //const body = new BABYLON.PhysicsBody(parent_mesh, BABYLON.PhysicsMotionType.DYNAMIC, false, this.scene);
         //const body = new BABYLON.PhysicsBody(mesh, BABYLON.PhysicsMotionType.ANIMATED, false, scene);
         body.setMassProperties({
             mass: 1000000,
@@ -64,9 +62,9 @@ export class Asteroid {
         // if (this.body && this.rotationAxis) {
         //     this.body.setAngularVelocity(this.rotationAxis);
         // }
-        
+
         if (this.mesh && this.rotationAxis) {
-            let angle = this.rot_speed * dt;
+            const angle = this.rot_speed * dt;
             this.mesh.rotate(this.rotationAxis, angle, BABYLON.Space.WORLD);
         }
     }

@@ -1,16 +1,15 @@
 import * as utils from '../Utils/utils.js';
 
-//import {SoundEffect} from './Effects/SoundEffect.js';
-import {PlasmaShot}  from './PlasmaShot.js';
+// import { SoundEffect } from './Effects/SoundEffect.js';
+import { PlasmaShot }  from './PlasmaShot.js';
 
 import * as DamageEffect from '../Effects/DamageEffect.js';
 import * as EngineFlaresEffect from '../Effects/EngineFlaresEffect.js';
 import { Missile } from './Missile.js';
 
 export class Ship {
-
-    game   = null;
-    scene  = null;
+    game = null;
+    scene = null;
     battle_area = null;
 
     mesh = null;
@@ -19,10 +18,10 @@ export class Ship {
     config = null;
 
     vel_fwd = 0;        // velocity along the main axis, keys W and S
-    vel_side= 0;        // velocity perpendicular to the main axis, keys A and D
+    vel_side = 0;       // velocity perpendicular to the main axis, keys A and D
     roll_speed = 0;     // keys Q and E
-    yaw_speed  = 0;     // yaw and pitch changes with mouse
-    pitch_speed= 0;
+    yaw_speed = 0;      // yaw and pitch changes with mouse
+    pitch_speed = 0;
 
     sounds = {};
     sounds_volume = 0.2;
@@ -40,14 +39,17 @@ export class Ship {
     armor_bar = null;
 
     missiles_num = 0;
+
     addMissile(num) {
         this.missiles_num += num;
     }
 
     is_destroyed = false;
+
     setDesroyed(flag) {
         this.is_destroyed = flag;
     }
+
     isDestroyed() {
         return this.is_destroyed;
     }
@@ -67,9 +69,11 @@ export class Ship {
     getMesh() {
         return this.mesh;
     }
+
     getBody() {
         return this.aggregate.body;
     }
+
     getConfig() {
         return this.config;
     }
@@ -77,6 +81,7 @@ export class Ship {
     setPosition(pos) {
         this.mesh.position = pos;
     }
+
     getPosition() {
         return this.mesh.position;
     }
@@ -86,7 +91,7 @@ export class Ship {
     }
 
     getBoundingRadius() {
-        let info = this.mesh.getBoundingInfo();
+        const info = this.mesh.getBoundingInfo();
         return info.boundingSphere.radius;
     }
 
@@ -103,9 +108,11 @@ export class Ship {
             this.updateHealthBar();
         }
     }
+
     getHealth() {
         return this.health;
     }
+
     updateHealthBar() {
         const progress = this.health / this.config.health;
         this.health_bar.setProgress(progress);
@@ -124,9 +131,11 @@ export class Ship {
             this.updateArmorBar();
         }
     }
+
     getArmor() {
         return this.armor;
     }
+
     updateArmorBar() {
         const progress = this.armor / this.config.armor;
         this.armor_bar.setProgress(progress);
@@ -135,9 +144,11 @@ export class Ship {
     getFwdVelocity() {
         return this.vel_fwd;
     }
+
     getMaxVelocity() {
         return this.config.vel_fwd_turbo;
     }
+
     getMinVelocity() {
         return this.config.vel_fwd_min;
     }
@@ -145,6 +156,7 @@ export class Ship {
     createEngineFlares(mesh, position) {
         return EngineFlaresEffect.create(this.scene, mesh, position);
     }
+
     setEngineFlaresMode(sizes) {
         this.left_flare_particles.minSize = sizes[0];
         this.left_flare_particles.maxSize = sizes[1];
@@ -154,19 +166,21 @@ export class Ship {
     }
 
     createPlasmaShot(pos, quaternion, entity_class, target) {
-        let shot = new PlasmaShot(this.game, this.plasma_shots_count, this, target);
+        const shot = new PlasmaShot(this.game, this.plasma_shots_count, this, target);
         shot.init(pos, quaternion, entity_class);
 
-        let id = shot.getId();
+        const id = shot.getId();
         this.plasma_shots[id] = shot;
         this.plasma_shots_count++;
         return shot;
     }
+
     deletePlasmaShot(id) {
-        let shot = this.plasma_shots[id];
+        const shot = this.plasma_shots[id];
         delete this.plasma_shots[id];
         shot.clear();
     }
+
     takeDamage(damage) {
         const effect = DamageEffect.create(this.scene, this.mesh);
         setTimeout(() => {
@@ -185,22 +199,23 @@ export class Ship {
         this.setHealth(this.getHealth() - damage);
     }
     createMissile(pos, quaternion, entity_class, target) {
-        let shot = new Missile(this.game, this.plasma_shots_count, this, target);
+        const shot = new Missile(this.game, this.plasma_shots_count, this, target);
         shot.init(pos, quaternion, entity_class);
-        let id = shot.getId();
-        
+        const id = shot.getId();
+
         this.plasma_shots[id] = shot;
         this.plasma_shots_count++;
         return shot;
     }
 
     roll(is_left, dt) {
-        let side = is_left ? 1 : -1;
+        const side = is_left ? 1 : -1;
 
         let v = this.roll_speed + side * this.config.roll_accel * dt;
         v = utils.clamp(v, this.config.roll_speed_min, this.config.roll_speed_max);
         this.roll_speed = v;
     }
+
     yawPitch(yaw, pitch, dt) {
         // linear dependency
         let yaw2 = yaw * this.config.yaw_mult;
@@ -208,7 +223,7 @@ export class Ship {
         yaw2 = Math.max(yaw2,-this.config.yaw_speed_max);
 
         const TINY = 0.01;
-        let delta_yaw = yaw2 - this.yaw_speed;
+        const delta_yaw = yaw2 - this.yaw_speed;
         if (Math.abs(delta_yaw) > TINY) {
             if (delta_yaw > 0) {
                 this.yaw_speed += this.config.yaw_accel * dt;
@@ -222,7 +237,7 @@ export class Ship {
         pitch2 = Math.min(pitch2, this.config.pitch_speed_max);
         pitch2 = Math.max(pitch2,-this.config.pitch_speed_max);
 
-        let delta_pitch = pitch2 - this.pitch_speed;
+        const delta_pitch = pitch2 - this.pitch_speed;
         if (Math.abs(delta_pitch) > TINY) {
             if (delta_pitch > 0) {
                 this.pitch_speed += this.config.pitch_accel * dt;
@@ -233,6 +248,7 @@ export class Ship {
             this.pitch_speed = pitch2;
         }
     }
+
     stopYawAndPitch(dt) {
         const TINY = 0.001;
         const rot_decreasing = this.config.rot_decreasing;
@@ -243,7 +259,7 @@ export class Ship {
     }
 
     moveSide(is_left, dt) {
-        let side = is_left ? 1 : -1;
+        const side = is_left ? 1 : -1;
 
         let v = this.vel_side + side * this.config.accel_side * dt;
         v = Math.min(v, this.config.vel_side_max);
@@ -252,9 +268,9 @@ export class Ship {
     }
 
     update(dt) {
-        for (let id in this.plasma_shots) {
-            let shot = this.plasma_shots[id];
-            let is_alive = shot.update(dt);
+        for (const id in this.plasma_shots) {
+            const shot = this.plasma_shots[id];
+            const is_alive = shot.update(dt);
             if (!is_alive) {
                 delete this.plasma_shots[id];
                 shot.clear();
@@ -278,7 +294,7 @@ export class Ship {
         // rotations
         let rot_vel = this.mesh.getDirection(BABYLON.Axis.X).clone();
         rot_vel = rot_vel.scale(this.roll_speed);
-        
+
         let yaw_vel = this.mesh.getDirection(BABYLON.Axis.Y).clone();
         yaw_vel = yaw_vel.scale(this.yaw_speed);
         rot_vel = rot_vel.add(yaw_vel);
@@ -286,7 +302,7 @@ export class Ship {
         let pitch_vel = this.mesh.getDirection(BABYLON.Axis.Z).clone();
         pitch_vel = pitch_vel.scale(this.pitch_speed);
         rot_vel = rot_vel.add(pitch_vel);
-        
+
         this.aggregate.body.setAngularVelocity(rot_vel);
     }
 
@@ -296,9 +312,9 @@ export class Ship {
 
         this.vel_fwd = utils.decreaseValueToZero(this.vel_fwd, TINY_SIDE, this.config.accel_fwd * DECREASING_K * dt);
         this.vel_side= utils.decreaseValueToZero(this.vel_side,TINY_SIDE, this.config.accel_side* DECREASING_K * dt);
-        
+
         const TINY = 0.001;
-        this.roll_speed = utils.decreaseValueToZero(this.roll_speed, TINY, this.config.roll_accel * DECREASING_K * dt);        
+        this.roll_speed = utils.decreaseValueToZero(this.roll_speed, TINY, this.config.roll_accel * DECREASING_K * dt);
     }
 
     destroy() {
@@ -314,7 +330,7 @@ export class Ship {
             if (this.aggregate.body) {
                 this.aggregate.body.dispose();
                 this.aggregate.body = null;
-            }    
+            }
         }
     }
 
@@ -322,8 +338,8 @@ export class Ship {
         if (!this.mesh) {
             return;
         }
-        for (let id in this.sounds) {
-            let sound = this.sounds[id];
+        for (const id in this.sounds) {
+            const sound = this.sounds[id];
             sound.dispose();
         }
         this.left_flare_particles.stop();
@@ -332,8 +348,8 @@ export class Ship {
         this.right_flare_particles.stop();
         this.right_flare_particles.dispose(true);
 
-        for (let id in this.plasma_shots) {
-            let shot = this.plasma_shots[id];
+        for (const id in this.plasma_shots) {
+            const shot = this.plasma_shots[id];
             shot.clear();
         }
         this.plasma_shots = {};

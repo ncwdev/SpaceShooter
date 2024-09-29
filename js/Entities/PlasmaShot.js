@@ -2,48 +2,52 @@ const SHOT_VEL = 30.5;
 const LIFE_TIME= 2000;
 
 export class PlasmaShot {
-
     id = null;
+
     getId() {
         return this.id;
     }
-    static parent_mesh = null;
-    static parent_shape= null;
+
+    static parentMesh = null;
+    static parentShape = null;
 
     game = null;
-    scene= null;
-    battle_area = null;
-    
+    scene = null;
+    battleArea = null;
+
     mesh = null;
     body = null;
+
     getPosition() {
         return this.mesh.position;
     }
 
-    create_time = 0;
+    createTime = 0;
 
-    owner = null;   // ship which owns this shot
+    owner = null; // ship which owns this shot
+
     getOwner() {
         return this.owner;
     }
-    target = null;  // ship which shot is shot to
+
+    target = null; // ship which shot is shot to
 
     constructor(game, counter, owner, target) {
-        this.id = "PlasmaShot" + counter;
-        
+        this.id = 'PlasmaShot' + counter;
+
         this.game = game;
-        this.scene= game.getScene();
-        this.battle_area = game.getBattleArea();
-        
+        this.scene = game.getScene();
+        this.battleArea = game.getBattleArea();
+
         this.owner = owner;
-        this.target= target;
+        this.target = target;
     }
 
     init(pos, quaternion, entity_class) {
-        let mesh = PlasmaShot.parent_mesh.createInstance(this.id);
+        const mesh = PlasmaShot.parentMesh.createInstance(this.id);
         mesh.position = pos;
 
-        let q = new BABYLON.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+        const q = new BABYLON.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
         mesh.rotationQuaternion = q;
 
         mesh.receiveShadows = false;
@@ -51,8 +55,8 @@ export class PlasmaShot {
         mesh.setEnabled(true);
         this.mesh = mesh;
 
-        const glow_layer = this.scene.getPlasmaShotLayer();
-        glow_layer.addIncludedOnlyMesh(mesh);
+        const glowLayer = this.scene.getPlasmaShotLayer();
+        glowLayer.addIncludedOnlyMesh(mesh);
 
         // shot has a physics body
         const body = new BABYLON.PhysicsBody(mesh, BABYLON.PhysicsMotionType.DYNAMIC, false, this.scene);
@@ -67,60 +71,60 @@ export class PlasmaShot {
         this.body = body;
 
         body.mfg = { name: 'PlasmaShot', id: this.id, entity_class: entity_class, entity: this };
-        
-        body.shape = PlasmaShot.parent_shape;
+
+        body.shape = PlasmaShot.parentShape;
 
         if (this.target) {
             // will rotate shot with quaternion
             //body.disablePreStep = false;
         }
-        this.create_time = Date.now();
+        this.createTime = Date.now();
 
         // give impulse only one time
         const vel = SHOT_VEL;
-        let dir = this.mesh.getDirection(BABYLON.Axis.X).clone();
-        let impulse_dir = dir.scale(vel);        
-        this.body.setLinearVelocity(impulse_dir);
+        const dir = this.mesh.getDirection(BABYLON.Axis.X).clone();
+        const impulseDir = dir.scale(vel);
+        this.body.setLinearVelocity(impulseDir);
     }
 
     static getParentMeshAndShape(scene) {
         // use one parent mesh for all instances of shots
-        if (!PlasmaShot.parent_mesh) {
-            const parent_mesh = new BABYLON.MeshBuilder.CreateBox("PlasmaShot", {}, scene);
-            parent_mesh.scaling = new BABYLON.Vector3(5.0, 0.1, 0.1);
+        if (!PlasmaShot.parentMesh) {
+            const parentMesh = new BABYLON.MeshBuilder.CreateBox('PlasmaShot', {}, scene);
+            parentMesh.scaling = new BABYLON.Vector3(5.0, 0.1, 0.1);
 
-            const material = new BABYLON.StandardMaterial("PlasmaShotMat");
+            const material = new BABYLON.StandardMaterial('PlasmaShotMat');
             material.diffuseColor = new BABYLON.Color3(0, 1, 0);
             material.emissiveColor= new BABYLON.Color3(0, 1, 0);
-            parent_mesh.material = material;
+            parentMesh.material = material;
 
-            parent_mesh.setEnabled(false);
-            PlasmaShot.parent_mesh = parent_mesh;
+            parentMesh.setEnabled(false);
+            PlasmaShot.parentMesh = parentMesh;
 
-            PlasmaShot.parent_shape = new BABYLON.PhysicsShapeConvexHull(
-                parent_mesh,
-                scene
+            PlasmaShot.parentShape = new BABYLON.PhysicsShapeConvexHull(
+                parentMesh,
+                scene,
             );
-            const shape_material = {friction: 0.99, restitution: 0};
-            PlasmaShot.parent_shape.material = shape_material;
+            const shapeMaterial = { friction: 0.99, restitution: 0 };
+            PlasmaShot.parentShape.material = shapeMaterial;
 
             console.log('PlasmaShot: parent mesh was created');
         }
-        return [PlasmaShot.parent_mesh, PlasmaShot.parent_shape];
+        return [PlasmaShot.parentMesh, PlasmaShot.parentShape];
     }
 
     getLifeTime() {
-        return Date.now() - this.create_time;
+        return Date.now() - this.createTime;
     }
 
     update(dt) {
         // check distance to the center, actually it's a length of a vector that is a position of mesh
-        let pos = this.mesh.position;
-        if (this.battle_area.isPlasmaShotTooFar(pos) || this.getLifeTime() > LIFE_TIME) {
+        const pos = this.mesh.position;
+        if (this.battleArea.isPlasmaShotTooFar(pos) || this.getLifeTime() > LIFE_TIME) {
             return false;
         }
         // if (this.target && !this.target.isDestroyed()) {
-        //     let q1 = this.mesh.rotationQuaternion.clone();        
+        //     let q1 = this.mesh.rotationQuaternion.clone();
         //     const fwd = {x: 1, y: 0, z: 0};
         //     const needed_dir = this.target.getPosition().clone().subtract(pos);
         //     let q2 = utils.quaternionShortestArc(fwd, needed_dir);
@@ -129,10 +133,9 @@ export class PlasmaShot {
         //     const q = BABYLON.Quaternion.Slerp(q1, q2, ROT_SPEED * dt);
         //     this.mesh.rotationQuaternion = q;
         // }
-        const vel = SHOT_VEL;
-        let dir = this.mesh.getDirection(BABYLON.Axis.X).clone();
-        let impulse_dir = dir.scale(vel);
-        this.body.setLinearVelocity(impulse_dir);
+        const dir = this.mesh.getDirection(BABYLON.Axis.X).clone();
+        const impulseDir = dir.scale(SHOT_VEL);
+        this.body.setLinearVelocity(impulseDir);
 
         return true;
     }
@@ -141,12 +144,12 @@ export class PlasmaShot {
         this.body.mfg = null;
 
         this.body.dispose();
-        this.mesh.dispose();    // don't dispose material
+        this.mesh.dispose(); // don't dispose material
 
-        this.battle_area = null;
-        this.scene= null;
+        this.battleArea = null;
+        this.scene = null;
         this.mesh = null;
         this.body = null;
-        this.owner= null;
+        this.owner = null;
     }
 }

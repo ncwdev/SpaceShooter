@@ -1,10 +1,8 @@
 // LootBox drops from enemy ship after destroying.
 // Gives a one missile to player.
 export class LootBox {
-
-    game   = null;
-    scene  = null;
-    battle_area = null;
+    game = null;
+    scene = null;
 
     mesh = null;
     body = null;
@@ -12,16 +10,16 @@ export class LootBox {
     static counter = 0;
 
     id = null;
+
     getId() {
         return this.id;
     }
 
     constructor(game, parent_mesh, pos) {
-        this.game   = game;
-        this.scene  = game.getScene();
-        this.battle_area = game.getBattleArea();
+        this.game = game;
+        this.scene = game.getScene();
 
-        this.id = "LootBox" + LootBox.counter;
+        this.id = 'LootBox' + LootBox.counter;
         LootBox.counter++;
 
         //const mesh = parent_mesh.createInstance(this.id);
@@ -46,7 +44,7 @@ export class LootBox {
         this.body = body;
 
         body.mfg = { name: 'LootBox', id: this.id, entity_class: ENTITY_CLASS_LOOTBOX, entity: this };
-        
+
         const shape = new BABYLON.PhysicsShapeCylinder(
             new BABYLON.Vector3(0, -1.5, 0),
             new BABYLON.Vector3(0,  1.5, 0),
@@ -71,8 +69,7 @@ export class LootBox {
         this.mesh.dispose();
         this.mesh = null;
 
-        this.game   = null;
-        this.scene  = null;
-        this.battle_area = null;
+        this.game = null;
+        this.scene = null;
     }
 }

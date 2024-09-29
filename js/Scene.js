@@ -1,6 +1,6 @@
 export class Scene extends BABYLON.Scene {
-
     plasma_shot_layer = null;
+
     getPlasmaShotLayer() {
         return this.plasma_shot_layer;
     }
@@ -17,7 +17,7 @@ export class Scene extends BABYLON.Scene {
         //     embedMode: false,
         // });
 
-        const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0));
+        const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0));
         light.intensity = 0.001;
         light.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
 
@@ -30,11 +30,11 @@ export class Scene extends BABYLON.Scene {
         scene.fogColor = new BABYLON.Color3(0.2, 0.2, 0.4);
         scene.fogDensity = 0.00025;
 
-        let glow_layer = new BABYLON.GlowLayer("PlasmaShotGlow", scene);
+        const glow_layer = new BABYLON.GlowLayer('PlasmaShotGlow', scene);
         glow_layer.intensity = 0.95;
         this.plasma_shot_layer = glow_layer;
 
-        const camera = new BABYLON.FreeCamera("MainCamera", BABYLON.Vector3.Zero(), scene);
+        const camera = new BABYLON.FreeCamera('MainCamera', BABYLON.Vector3.Zero(), scene);
         this.activeCamera = camera;
     }
 
@@ -42,12 +42,12 @@ export class Scene extends BABYLON.Scene {
         const scene = this;
 
         const dist = space_radius_max * 3;
-        const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", { size: dist }, scene);
+        const skybox = BABYLON.MeshBuilder.CreateBox('skyBox', { size: dist }, scene);
 
-        let skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+        const skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene);
         skyboxMaterial.backFaceCulling = false;
 
-        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("./assets/skybox/sky", scene);
+        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('./assets/skybox/sky', scene);
         skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
 
         skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
@@ -60,7 +60,7 @@ export class Scene extends BABYLON.Scene {
         skyboxMaterial.freeze();
 
         //skybox.isPickable = false;
-        //skybox.renderingGroupId = 0;    // behind any other objects
+        //skybox.renderingGroupId = 0; // behind any other objects
     }
 
     applyOptimizations() {

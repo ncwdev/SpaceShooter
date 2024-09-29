@@ -16,7 +16,7 @@ const ENTITY_CLASS_MISSILE    = 6;
 const ENTITY_CLASS_LOOTBOX    = 7;
 
 const initEngine = async function() {
-    canvas = document.getElementById("renderCanvas");
+    canvas = document.getElementById('renderCanvas');
     if (!canvas) {
         throw 'initEngine(): canvas was not found';
     }
@@ -24,16 +24,18 @@ const initEngine = async function() {
     const adaptToDeviceRatio = false;
     const options = { preserveDrawingBuffer: false, stencil: true, disableWebGL2Support: false };
     engine = new BABYLON.Engine(canvas, antialias, options, adaptToDeviceRatio);
+    // engine = new BABYLON.WebGPUEngine(canvas, options);
+    // await engine.initAsync();
 
     if (!engine) {
         throw 'initEngine(): engine should not be null';
     }
-    const {MyGame} = await import('./Game.js');
-    const {MainMenu} = await import('./Gui/MainMenu.js');
-    
+    const { MyGame } = await import('./Game.js');
+    const { MainMenu } = await import('./Gui/MainMenu.js');
+
     havokInstance = await HavokPhysics();
 
-    let {default: game_config} = await import("./Config/GameCfg.js");
+    const { default: game_config } = await import('./Config/GameCfg.js');
     game = new MyGame(engine, game_config);
 
     menu = MainMenu;
@@ -64,25 +66,26 @@ async function startGame() {
         return;
     }
     menu.setVisible(false);
-    
+
     engine.enterPointerlock();
-    
-    const enemies_num = menu.getEnemiesNumber();
-    game.start(enemies_num);
+
+    const enemiesNumber = menu.getEnemiesNumber();
+    game.start(enemiesNumber);
 }
 
 function pauseGame() {
     engine.stopRenderLoop();
-    
+
     scene.physicsEnabled = false;
 }
+
 function resumeGame() {
     scene.physicsEnabled = true;
 
     runRenderLoop();
 }
 
-document.addEventListener("pointerlockchange", () => {    
+document.addEventListener('pointerlockchange', () => {
     // Pointer lock is disabled (user pressed Escape)
     if (document.pointerLockElement === null) {
         if (game.isStateInMenu()) {
@@ -90,7 +93,7 @@ document.addEventListener("pointerlockchange", () => {
         }
         pauseGame();
 
-        const result = confirm(getLocText("TXT_EXIT_CONFIRM"));
+        const result = confirm(getLocText('TXT_EXIT_CONFIRM'));
         resumeGame();
 
         if (result) {

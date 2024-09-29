@@ -1,28 +1,27 @@
 import * as utils from '../Utils/utils.js';
 import * as dbg from '../Utils/DebugPanel.js';
 
-import {Octree} from '../Utils/Octree.js';
+import { Octree } from '../Utils/Octree.js';
 
-import {PlayerShip}  from './PlayerShip.js';
-import {EnemyShip}   from './EnemyShip.js';
-import {Asteroid}    from './Asteroid.js';
-import {PlasmaShot}  from './PlasmaShot.js';
-import {Missile}     from './Missile.js';
-import {LootBox}     from './LootBox.js';
+import { PlayerShip } from './PlayerShip.js';
+import { EnemyShip } from './EnemyShip.js';
+import { Asteroid } from './Asteroid.js';
+import { PlasmaShot } from './PlasmaShot.js';
+import { Missile } from './Missile.js';
+import { LootBox } from './LootBox.js';
 
-import {SpaceDustEffect} from '../Effects/SpaceDustEffect.js';
+import { SpaceDustEffect } from '../Effects/SpaceDustEffect.js';
 import * as ExplosionEffect from '../Effects/ExplosionEffect.js';
 
-import {enemy_bt} from '../AI/EnemyBehavior.js';
-import {TreeBuilder} from '../BehaviorTree/TreeBuilder.js';
+import { enemy_bt } from '../AI/EnemyBehavior.js';
+import { TreeBuilder } from '../BehaviorTree/TreeBuilder.js';
 
 // contains player's ship, enemy ships, asteroids, space dust
 // uses physics engine to detect collisions between plasma shots and ships
 export class BattleArea {
-
     scene = null;
-    game  = null;
-    config= null;
+    game = null;
+    config = null;
 
     getScene() {
         return this.scene;
@@ -30,6 +29,7 @@ export class BattleArea {
 
     space_radius_min = 100;
     space_radius_max = 500;
+
     isMaxRadiusExit(pos) {
         const distance_to_center = pos.length();
 
@@ -37,25 +37,28 @@ export class BattleArea {
 
         return distance_to_center > this.space_radius_max;
     }
+
     isPlasmaShotTooFar(pos) {
         const distance_to_center = pos.length();
         return distance_to_center > this.space_radius_max * 2;
     }
-    
-    octree = null;    
+
+    octree = null;
 
     player_ship = null;
+
     getPlayerShip() {
         return this.player_ship;
     }
 
-    parent_meshes = [];     // parents for all mesh instances and clones (enemy, asteroids, plasma shots, missiles)
-    loot_box_mesh = null;   // parent for loot boxes
-    missile_mesh  = null;   // parent for missiles
-    
+    parent_meshes = []; // parents for all mesh instances and clones (enemy, asteroids, plasma shots, missiles)
+
+    loot_box_mesh = null; // parent for loot boxes
+    missileMesh = null; // parent for missiles
+
     enemies_num = 0;
     enemies = [];
-    
+
     asteroids_num = 0;
     asteroids = [];
 
@@ -72,7 +75,7 @@ export class BattleArea {
         this.game  = game;
         this.scene = game.getScene();
         this.config= config;
-        
+
         this.enemies_num = enemies_num;
 
         this.asteroids_num = config.asteroids_num;
@@ -87,6 +90,7 @@ export class BattleArea {
     getEnemies() {
         return this.enemies;
     }
+
     getEnemiesCount() {
         return this.enemies_num;
     }
@@ -98,13 +102,14 @@ export class BattleArea {
         const gravity = new BABYLON.Vector3(0, 0, 0);
         const result = this.scene.enablePhysics(gravity, this.havok_plugin);
         if (result) {
-            console.log(`Physics engine enabled`);
+            console.log('Physics engine enabled');
         } else {
-            console.log(`Physics engine could not be enabled`);
+            console.log('Physics engine could not be enabled');
         }
         const observable = this.havok_plugin.onCollisionObservable;
         this.collision_observer = observable.add(this.onCollisionHandler.bind(this));
     }
+
     disposePhysics() {
         const observable = this.havok_plugin.onCollisionObservable;
         observable.remove(this.collision_observer);
@@ -116,28 +121,28 @@ export class BattleArea {
 
     async spawnEntities() {
         let mesh_data = meshes_list.MyShip;
-        let result = await BABYLON.SceneLoader.ImportMeshAsync("", mesh_data.path, mesh_data.file, this.scene);
+        let result = await BABYLON.SceneLoader.ImportMeshAsync('', mesh_data.path, mesh_data.file, this.scene);
         this.instancePlayerShip(result);
 
         mesh_data = meshes_list.EnemyShip;
-        result = await BABYLON.SceneLoader.ImportMeshAsync("", mesh_data.path, mesh_data.file, this.scene);
+        result = await BABYLON.SceneLoader.ImportMeshAsync('', mesh_data.path, mesh_data.file, this.scene);
         this.instanceEnemyShips(result, this.enemies_num);
-        
+
         // create a bunch of asteroids - use all 6 models
-        let asteroids = meshes_list.Asteroids;
+        const asteroids = meshes_list.Asteroids;
         asteroids.forEach( ast_data => {
-            BABYLON.SceneLoader.ImportMesh("", ast_data.path, ast_data.file, this.scene, this.instanceAsteroids.bind(this));
+            BABYLON.SceneLoader.ImportMesh('', ast_data.path, ast_data.file, this.scene, this.instanceAsteroids.bind(this));
         });
 
         mesh_data = meshes_list.LootBox;
-        result = await BABYLON.SceneLoader.ImportMeshAsync("", mesh_data.path, mesh_data.file, this.scene);
+        result = await BABYLON.SceneLoader.ImportMeshAsync('', mesh_data.path, mesh_data.file, this.scene);
         this.instanceLootBox(result);
 
         mesh_data = meshes_list.Missile;
-        result = await BABYLON.SceneLoader.ImportMeshAsync("", mesh_data.path, mesh_data.file, this.scene);
+        result = await BABYLON.SceneLoader.ImportMeshAsync('', mesh_data.path, mesh_data.file, this.scene);
         this.instanceMissile(result);
 
-        let parents = PlasmaShot.getParentMeshAndShape(this.scene);
+        const parents = PlasmaShot.getParentMeshAndShape(this.scene);
         this.parent_meshes.push(...parents);
 
         //console.log(this.parent_meshes);
@@ -167,15 +172,15 @@ export class BattleArea {
     instanceMissile(data) {
         const mesh = data.meshes[0];
         mesh.setEnabled(false);
-        this.missile_mesh = mesh;
+        this.missileMesh = mesh;
         this.parent_meshes.push(mesh);
     }
 
     instanceEnemyShips(data, number) {
         // create a bunch of enemy ships in random positions with fixed radius
-        const parent_mesh = data.meshes[0];
-        parent_mesh.isVisible = false;
-        this.parent_meshes.push(parent_mesh);
+        const parentMesh = data.meshes[0];
+        parentMesh.isVisible = false;
+        this.parent_meshes.push(parentMesh);
 
         const ship_min_dist = this.config.spawn_ships_min_dist; // minimal distance between ships = 250
         const radius = this.space_radius_min * this.config.spawn_enemies_radius;    // 0.8;
@@ -184,15 +189,15 @@ export class BattleArea {
         for (let i = 0; i < number; ++i) {
             // make maximum 10 attempts
             for (let j = 0; j < 10; ++j) {
-                let pos = utils.getRandomSphereRadiusPos(radius);
-                
+                const pos = utils.getRandomSphereRadiusPos(radius);
+
                 if (!this.octree.findClosestObject(pos, ship_min_dist)) {
                     // use clones because we need to set shaders to every instance
-                    const mesh = parent_mesh.clone(parent_mesh.name + i);
+                    const mesh = parentMesh.clone(parentMesh.name + i);
                     mesh.isVisible = true;
                     mesh.position = new BABYLON.Vector3(pos.x, pos.y, pos.z);
 
-                    let ship = new EnemyShip(this.game, mesh);
+                    const ship = new EnemyShip(this.game, mesh);
                     mesh.mfg = {entity_class: ENTITY_CLASS_ENEMY_SHIP, entity: ship};
                     this.enemies.push(ship);
 
@@ -204,13 +209,13 @@ export class BattleArea {
     }
 
     instanceAsteroids(newMeshes) {
-        const parent_mesh = newMeshes[0];
-        parent_mesh.receiveShadows = true;
-        parent_mesh.checkCollisions= true;
-        parent_mesh.isVisible = false;
-        this.parent_meshes.push(parent_mesh);
-        
-        console.log("instanceAsteroids() entered", parent_mesh.name);
+        const parentMesh = newMeshes[0];
+        parentMesh.receiveShadows = true;
+        parentMesh.checkCollisions= true;
+        parentMesh.isVisible = false;
+        this.parent_meshes.push(parentMesh);
+
+        console.log('instanceAsteroids() entered', parentMesh.name);
 
         const ast_min_dist = this.config.spawn_asteroids_min_dist;  // minimal distance between asteroids = 250
 
@@ -218,10 +223,10 @@ export class BattleArea {
         for (let i = 0; i < this.asteroids_num; ++i) {
             // make maximum 10 attempts
             for (let j = 0; j < 10; ++j) {
-                let pos = utils.getRandomSpherePos(this.space_radius_min);
-                
+                const pos = utils.getRandomSpherePos(this.space_radius_min);
+
                 if (!this.octree.findClosestObject(pos, ast_min_dist)) {
-                    const mesh = parent_mesh.createInstance(parent_mesh.name + i);
+                    const mesh = parentMesh.createInstance(parentMesh.name + i);
                     mesh.position = new BABYLON.Vector3(pos.x, pos.y, pos.z);
 
                     const ast = new Asteroid(this.scene, mesh);
@@ -239,13 +244,13 @@ export class BattleArea {
         return this.asteroids.every( ast => ast.getMesh().isReady(true, true) );
     }
 
-    warpShipToRadius(mesh, dist_from_center) {        
-        let pos = utils.getRandomSphereRadiusPos(dist_from_center * this.space_radius_min);
+    warpShipToRadius(mesh, dist_from_center) {
+        const pos = utils.getRandomSphereRadiusPos(dist_from_center * this.space_radius_min);
         mesh.position = pos;
 
         // turn ship to origin of coordinates - just invert pos
-        let dir = utils.mult3d(pos, -1);
-        let fwd = {x: 1, y: 0, z: 0};
+        const dir = utils.mult3d(pos, -1);
+        const fwd = {x: 1, y: 0, z: 0};
         let q = utils.quaternionShortestArc(fwd, dir);
         q = new BABYLON.Quaternion(q.x, q.y, q.z, q.w);
         mesh.rotationQuaternion = q;
@@ -278,13 +283,13 @@ export class BattleArea {
 
         if (missile.getLifeTime() < this.config.time_missile_no_collision) {
             return;
-        }        
+        }
         this.explodeMissile(missile.getPosition());
         owner.deletePlasmaShot(shot_id);
     }
 
     onPlayerHitLootBox(loot_box) {
-        let id = loot_box.getId();
+        const id = loot_box.getId();
         loot_box.clear();
 
         this.loot_boxes.delete(id);
@@ -306,7 +311,7 @@ export class BattleArea {
         if (event.collider.mfg.entity_class === ENTITY_CLASS_ASTEROID &&
             event.collidedAgainst.mfg.entity_class == ENTITY_CLASS_MY_SHOT)
         {
-            let shot_id = event.collidedAgainst.mfg.id;
+            const shot_id = event.collidedAgainst.mfg.id;
             this.player_ship.deletePlasmaShot(shot_id);
             return;
         }
@@ -314,10 +319,10 @@ export class BattleArea {
         if (event.collider.mfg.entity_class === ENTITY_CLASS_ENEMY_SHIP &&
             event.collidedAgainst.mfg.entity_class == ENTITY_CLASS_MY_SHOT)
         {
-            let shot_id = event.collidedAgainst.mfg.id;
+            const shot_id = event.collidedAgainst.mfg.id;
             this.player_ship.deletePlasmaShot(shot_id);
 
-            let ship = event.collider.mfg.entity;
+            const ship = event.collider.mfg.entity;
             const damage = this.player_ship.getPlasmaShotDamage();
             ship.takeDamage(damage);
 
@@ -331,9 +336,9 @@ export class BattleArea {
         if (event.collider.mfg.entity_class === ENTITY_CLASS_MY_SHIP &&
             event.collidedAgainst.mfg.entity_class == ENTITY_CLASS_ENEMY_SHOT)
         {
-            let shot_id = event.collidedAgainst.mfg.id;
-            let shot = event.collidedAgainst.mfg.entity;
-            let enemy_ship = shot.getOwner();
+            const shot_id = event.collidedAgainst.mfg.id;
+            const shot = event.collidedAgainst.mfg.entity;
+            const enemy_ship = shot.getOwner();
             enemy_ship.deletePlasmaShot(shot_id);
 
             const damage = enemy_ship.getPlasmaShotDamage();
@@ -349,14 +354,14 @@ export class BattleArea {
         if (event.collider.mfg.entity_class === ENTITY_CLASS_MY_SHIP &&
             event.collidedAgainst.mfg.entity_class === ENTITY_CLASS_LOOTBOX)
         {
-            let loot_box = event.collidedAgainst.mfg.entity;
+            const loot_box = event.collidedAgainst.mfg.entity;
             this.onPlayerHitLootBox(loot_box);
             return;
         }
         if (event.collider.mfg.entity_class === ENTITY_CLASS_LOOTBOX &&
             event.collidedAgainst.mfg.entity_class === ENTITY_CLASS_MY_SHIP)
         {
-            let loot_box = event.collider.mfg.entity;
+            const loot_box = event.collider.mfg.entity;
             this.onPlayerHitLootBox(loot_box);
             return;
         }
@@ -388,7 +393,7 @@ export class BattleArea {
         } else {
             if (this.need_to_show_tutor) {
                 this.need_to_show_tutor = false;
-    
+
                 this.game.getHud().showTutor();
             }
         }
@@ -435,7 +440,7 @@ export class BattleArea {
         });
 
         // apply damage to ships
-        for (let [ship, distance] of ships) {
+        for (const [ship, distance] of ships) {
             const damage = MISSILE_DAMAGE * (1 - distance / DAMAGE_RADIUS);
             ship.takeDamage(damage);
 
@@ -460,26 +465,26 @@ export class BattleArea {
             this.dust_particles.clear();
         }
         this.dust_particles = null;
-        
+
         this.octree.clear();
 
-        PlasmaShot.parent_shape = null;
-        PlasmaShot.parent_mesh = null;
+        PlasmaShot.parentShape = null;
+        PlasmaShot.parentMesh = null;
 
         Missile.parent_shape = null;
         Missile.parent_mesh = null;
 
-        this.asteroids.forEach( ast => {
+        this.asteroids.forEach(ast => {
             ast.clear();
         });
         this.asteroids = null;
 
-        this.enemies.forEach( enemy => {
+        this.enemies.forEach(enemy => {
             enemy.clear();
         });
         this.enemies = null;
 
-        this.loot_boxes.forEach( loot => {
+        this.loot_boxes.forEach(loot => {
             loot.clear();
         });
         this.loot_boxes.clear();
@@ -493,14 +498,14 @@ export class BattleArea {
         });
         this.parent_meshes = [];
         this.loot_box_mesh = null;
-        this.missile_mesh  = null;
+        this.missileMesh = null;
 
         this.disposePhysics();
     }
 
     createTestLootBox() {
         const dir = this.player_ship.getMesh().getDirection(BABYLON.Axis.X).clone();
-        let pos = this.player_ship.getPosition().clone().add(dir.scale(15));
+        const pos = this.player_ship.getPosition().clone().add(dir.scale(15));
 
         const loot = new LootBox(this.game, this.loot_box_mesh, pos);
         this.loot_boxes.set(loot.getId(), loot);

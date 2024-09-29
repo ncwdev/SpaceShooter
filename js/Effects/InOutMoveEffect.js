@@ -1,9 +1,9 @@
-import {EasingFunctions} from '../Utils/EasingFunctions.js';
+import { EasingFunctions } from '../Utils/EasingFunctions.js';
 
 const STATE_MOVE_IN = 1;
-const STATE_WAIT    = 2;
-const STATE_MOVE_OUT= 3;
-const STATE_FINISHED= 4;
+const STATE_WAIT = 2;
+const STATE_MOVE_OUT = 3;
+const STATE_FINISHED = 4;
 
 export class InOutMoveEffect {
     start_pos = 0;
@@ -14,7 +14,7 @@ export class InOutMoveEffect {
     out_time = 0;
 
     cur_time = 0;
-    
+
     state = STATE_MOVE_IN;
 
     constructor(start_pos, end_pos, in_time, wait_time, out_time) {

@@ -1,7 +1,7 @@
 const TINY = 0.0001;
 
 export function clamp(value, min, max) {
-	return Math.max(min, Math.min(max, value));
+    return Math.max(min, Math.min(max, value));
 }
 
 export function randomInt(min, max) {
@@ -11,8 +11,8 @@ export function randomInt(min, max) {
 
 export function addMultipleCoordinates(multiLine, coordinates, origin_point = {x: 0, y: 0}) {
     coordinates.forEach(coordinate => {
-        let x = coordinate.x * 100 + origin_point.x * 100;  // Convert to percentage
-        let y = coordinate.y * 100 + origin_point.y * 100;
+        const x = coordinate.x * 100 + origin_point.x * 100; // Convert to percentage
+        const y = coordinate.y * 100 + origin_point.y * 100;
         multiLine.add({ x: x + '%', y: y + '%' });  // Add as string with "%" symbol
     });
 }
@@ -39,21 +39,22 @@ export function decreaseValueToZero(value, tiny_value, change_value) {
 export function polarToCartesian(radius, fi, teta) {
     // angles in radians
     // https://en.wikipedia.org/wiki/Spherical_coordinate_system
-    let x = radius * Math.sin(teta) * Math.cos(fi);
-    let y = radius * Math.sin(teta) * Math.sin(fi);
-    let z = radius * Math.cos(teta);
+    const x = radius * Math.sin(teta) * Math.cos(fi);
+    const y = radius * Math.sin(teta) * Math.sin(fi);
+    const z = radius * Math.cos(teta);
 
     return {x: x, y: y, z: z};
 }
+
 export function cartesianToPolar(center_pos, pos, radius) {
     // Calculate the Cartesian coordinates relative to the center of the sphere
-    let x = pos.x - center_pos.x;
-    let y = pos.y - center_pos.y;
-    let z = pos.z - center_pos.z;
+    const x = pos.x - center_pos.x;
+    const y = pos.y - center_pos.y;
+    const z = pos.z - center_pos.z;
 
     // https://en.wikipedia.org/wiki/Spherical_coordinate_system
-    let theta = Math.acos(z / radius);
-    let phi = Math.atan2(y, x);
+    const theta = Math.acos(z / radius);
+    const phi = Math.atan2(y, x);
 
     // Return the spherical coordinates as an object
     return {
@@ -62,6 +63,7 @@ export function cartesianToPolar(center_pos, pos, radius) {
         phi: phi
     };
 }
+
 /*
 // test
 let center_pos = {x: 0, y: 0, z: 0};
@@ -75,31 +77,31 @@ console.log('CARTESIAN:', cartesian);
 */
 
 export function rotateVector2d(vector, angle) {
-    let x = vector.x;
-    let y = vector.y;
-    let cos_a = Math.cos(angle);
-    let sin_a = Math.sin(angle);
+    const x = vector.x;
+    const y = vector.y;
+    const cos_a = Math.cos(angle);
+    const sin_a = Math.sin(angle);
 
-    let rotatedX = x * cos_a + y * sin_a;
-    let rotatedY = y * cos_a - x * sin_a;
+    const rotatedX = x * cos_a + y * sin_a;
+    const rotatedY = y * cos_a - x * sin_a;
 
     return { x: rotatedX, y: rotatedY };
 }
 
 export function getRandomSpherePos(max_radius) {
-    let radius = randomInt(-max_radius, max_radius);
-    
-    let fi = randomInt(0, 360);
-    let teta = randomInt(0, 360);
-    
-    let pos = polarToCartesian(radius, fi, teta);
+    const radius = randomInt(-max_radius, max_radius);
+
+    const fi = randomInt(0, 360);
+    const teta = randomInt(0, 360);
+
+    const pos = polarToCartesian(radius, fi, teta);
     return pos;
 }
 
 export function getRandomSphereRadiusPos(radius) {
     let pos = getRandomSpherePos(100);
-    let dir = normalize(pos);
-    
+    const dir = normalize(pos);
+
     pos = mult3d(dir, radius);
     pos = new BABYLON.Vector3(pos.x, pos.y, pos.z);
     return pos;
@@ -108,15 +110,15 @@ export function getRandomSphereRadiusPos(radius) {
 export function spiralPoint(t, r) {
     // Calculate the angle in radians
     //let angle = t * 2 * Math.PI;
-    let angle = t;
-  
+    const angle = t;
+
     // Calculate the distance from the center (0, 0) based on the unwinding rate (r)
-    let distance = r * t + 0.04;
-  
+    const distance = r * t + 0.04;
+
     // Calculate the x and y coordinates of the point
-    let x = distance * Math.cos(angle);
-    let y = distance * Math.sin(angle);
-  
+    const x = distance * Math.cos(angle);
+    const y = distance * Math.sin(angle);
+
     // Return the point as an object
     return {
         x: x,
@@ -126,9 +128,9 @@ export function spiralPoint(t, r) {
 
 export function normalize(v) {
     let {x, y, z} = v;
-    let vlen = Math.sqrt(x*x + y*y + z*z);
+    const vlen = Math.sqrt(x*x + y*y + z*z);
     if (vlen > TINY) {
-        let ilen = 1.0 / vlen;
+        const ilen = 1.0 / vlen;
 
         x = x * ilen;
         y = y * ilen;
@@ -140,46 +142,53 @@ export function normalize(v) {
     }
     return {x: x, y: y, z: z};
 }
+
 export function dist3d(v1, v2) {
-    let dx = v2.x - v1.x;
-    let dy = v2.y - v1.y;
-    let dz = v2.z - v1.z;
+    const dx = v2.x - v1.x;
+    const dy = v2.y - v1.y;
+    const dz = v2.z - v1.z;
     return Math.sqrt(dx*dx + dy*dy + dz*dz);
 }
+
 export function mult3d(dir, v) {
-    let x = dir.x * v;
-    let y = dir.y * v;
-    let z = dir.z * v;
+    const x = dir.x * v;
+    const y = dir.y * v;
+    const z = dir.z * v;
     return {x: x, y: y, z: z};
 }
+
 export function add3d(v1, v2) {
-    let dx = v2.x + v1.x;
-    let dy = v2.y + v1.y;
-    let dz = v2.z + v1.z;
+    const dx = v2.x + v1.x;
+    const dy = v2.y + v1.y;
+    const dz = v2.z + v1.z;
     return {x: dx, y: dy, z: dz};
 }
+
 export function sub3d(v1, v2) {
-    let dx = v1.x - v2.x;
-    let dy = v1.y - v2.y;
-    let dz = v1.z - v2.z;
+    const dx = v1.x - v2.x;
+    const dy = v1.y - v2.y;
+    const dz = v1.z - v2.z;
     return {x: dx, y: dy, z: dz};
 }
+
 export function dotProduct3d(v1, v2) {
     return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
 }
+
 export function crossProduct3d(v1, v2) {
-    let x = v1.y * v2.z - v1.z * v2.y;
-    let y = v1.z * v2.x - v1.x * v2.z;
-    let z = v1.x * v2.y - v1.y * v2.x;
+    const x = v1.y * v2.z - v1.z * v2.y;
+    const y = v1.z * v2.x - v1.x * v2.z;
+    const z = v1.x * v2.y - v1.y * v2.x;
     return {x: x, y: y, z: z};
 }
+
 export function vectors3dAngle(a, b) {
-	// angle between vectors in radians
-	const dot = dotProduct3d(a, b);
-	const len1= a.length();
-	const len2= b.length();
-	const angle = Math.acos(dot / (len1 * len2));
-	return angle;
+    // angle between vectors in radians
+    const dot = dotProduct3d(a, b);
+    const len1= a.length();
+    const len2= b.length();
+    const angle = Math.acos(dot / (len1 * len2));
+    return angle;
 }
 
 // line intercept math by Paul Bourke http://paulbourke.net/geometry/pointlineplane/
@@ -197,8 +206,8 @@ export function intersectSegments(x1, y1, x2, y2, x3, y3, x4, y4) {
         return false;
     }
 
-    let ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
-    let ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+    const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+    const ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
 
     // is the intersection along the segments
     if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
@@ -206,8 +215,8 @@ export function intersectSegments(x1, y1, x2, y2, x3, y3, x4, y4) {
     }
 
     // Return a object with the x and y coordinates of the intersection
-    let x = x1 + ua * (x2 - x1);
-    let y = y1 + ua * (y2 - y1);
+    const x = x1 + ua * (x2 - x1);
+    const y = y1 + ua * (y2 - y1);
 
     return {x: x, y: y};
 }
@@ -248,40 +257,40 @@ export function getVectorRectangleIntersection(vx, vy, width, height) {
     return points[0];
 }
 
-// convert a quaternion to axis angle representation, 
+// convert a quaternion to axis angle representation,
 // preserve the axis direction and angle from -PI to +PI
 export function quaternionToAxisAngle(q) {
     // returns [dir, angle]
-    let dir = {x: 0, y: 0, z: 0};
+    const dir = {x: 0, y: 0, z: 0};
     let angle = 0;
 
-    let vl = Math.sqrt(q.x*q.x + q.y*q.y + q.z*q.z);
+    const vl = Math.sqrt(q.x*q.x + q.y*q.y + q.z*q.z);
     if (vl > TINY) {
-        let ivl = 1.0 / vl;
+        const ivl = 1.0 / vl;
         dir.x = q.x*ivl;
         dir.y = q.y*ivl;
         dir.z = q.z*ivl;
 
         if (q.w < 0) {
-            angle = 2.0 * Math.atan2(-vl, -q.w); //-PI,0 
+            angle = 2.0 * Math.atan2(-vl, -q.w); //-PI,0
         }
         else {
-            angle = 2.0 * Math.atan2( vl,  q.w); //0,PI 
+            angle = 2.0 * Math.atan2( vl,  q.w); //0,PI
         }
     }
     return [dir, angle];
 }
 
 export function quaternionFromAxisAngle(dir, angle) {
-    let v = normalize(dir);
-    let half_angle = angle*0.5;
-    let sin_a = Math.sin(half_angle);
-    let q = {x: v.x*sin_a, y: v.y*sin_a, z: v.z*sin_a, w: Math.cos(half_angle)};
+    const v = normalize(dir);
+    const half_angle = angle*0.5;
+    const sin_a = Math.sin(half_angle);
+    const q = {x: v.x*sin_a, y: v.y*sin_a, z: v.z*sin_a, w: Math.cos(half_angle)};
     return q;
 }
 
 export function quaternionNormalise(q) {
-    let n = Math.sqrt(q.x*q.x + q.y*q.y + q.z*q.z + q.w*q.w);
+    const n = Math.sqrt(q.x*q.x + q.y*q.y + q.z*q.z + q.w*q.w);
 
     if (n == 0) {
         return {w: 1, x: 0, y: 0, z: 0};
@@ -292,17 +301,17 @@ export function quaternionNormalise(q) {
 }
 
 export function quaternionShortestArc(dir1, dir2) {
-    let v1 = normalize(dir1);
-    let v2 = normalize(dir2);
+    const v1 = normalize(dir1);
+    const v2 = normalize(dir2);
 
-    let dot = dotProduct3d(v1, v2);
-    let vc  = crossProduct3d(v1, v2);
-    
+    const dot = dotProduct3d(v1, v2);
+    const vc  = crossProduct3d(v1, v2);
+
     let q = {w: dot, x: vc.x, y: vc.y, z: vc.z};
     q = quaternionNormalise(q);
 
     q.w = q.w + 1.0;    // reducing angle to halfangle
-    
+
     if (q.w <= TINY) {  // angle close to PI
         if (v1.z*v1.z > v1.x*v1.x) {
             q.x = 0;
@@ -319,22 +328,22 @@ export function quaternionShortestArc(dir1, dir2) {
 }
 
 export function quaternionRotateVector(rotation, value) {
-    let vector = {x: 0, y: 0, z: 0};
-    let num12 = rotation.x + rotation.x;
-    let num2  = rotation.y + rotation.y;
-    let num   = rotation.z + rotation.z;
-    let num11 = rotation.w * num12;
-    let num10 = rotation.w * num2;
-    let num9  = rotation.w * num;
-    let num8  = rotation.x * num12;
-    let num7  = rotation.x * num2;
-    let num6  = rotation.x * num;
-    let num5  = rotation.y * num2;
-    let num4  = rotation.y * num;
-    let num3  = rotation.z * num;
-    let num15 = ((value.x * ((1.0 - num5) - num3)) + (value.y * (num7 - num9))) + (value.z * (num6 + num10));
-    let num14 = ((value.x * (num7 + num9)) + (value.y * ((1.0 - num8) - num3))) + (value.z * (num4 - num11));
-    let num13 = ((value.x * (num6 - num10)) + (value.y * (num4 + num11))) + (value.z * ((1.0 - num8) - num5));
+    const vector = {x: 0, y: 0, z: 0};
+    const num12 = rotation.x + rotation.x;
+    const num2  = rotation.y + rotation.y;
+    const num   = rotation.z + rotation.z;
+    const num11 = rotation.w * num12;
+    const num10 = rotation.w * num2;
+    const num9  = rotation.w * num;
+    const num8  = rotation.x * num12;
+    const num7  = rotation.x * num2;
+    const num6  = rotation.x * num;
+    const num5  = rotation.y * num2;
+    const num4  = rotation.y * num;
+    const num3  = rotation.z * num;
+    const num15 = ((value.x * ((1.0 - num5) - num3)) + (value.y * (num7 - num9))) + (value.z * (num6 + num10));
+    const num14 = ((value.x * (num7 + num9)) + (value.y * ((1.0 - num8) - num3))) + (value.z * (num4 - num11));
+    const num13 = ((value.x * (num6 - num10)) + (value.y * (num4 + num11))) + (value.z * ((1.0 - num8) - num5));
     vector.x = num15;
     vector.y = num14;
     vector.z = num13;
@@ -342,17 +351,17 @@ export function quaternionRotateVector(rotation, value) {
 }
 
 export function quaternionMul(q1, q2) {
-    let A = (q1.w + q1.x)*(q2.w + q2.x);
-    let B = (q1.z - q1.y)*(q2.y - q2.z);
-    let C = (q1.w - q1.x)*(q2.y + q2.z);
-    let D = (q1.y + q1.z)*(q2.w - q2.x);
-    let E = (q1.x + q1.z)*(q2.x + q2.y);
-    let F = (q1.x - q1.z)*(q2.x - q2.y);
-    let G = (q1.w + q1.y)*(q2.w - q2.z);
-    let H = (q1.w - q1.y)*(q2.w + q2.z);
+    const A = (q1.w + q1.x)*(q2.w + q2.x);
+    const B = (q1.z - q1.y)*(q2.y - q2.z);
+    const C = (q1.w - q1.x)*(q2.y + q2.z);
+    const D = (q1.y + q1.z)*(q2.w - q2.x);
+    const E = (q1.x + q1.z)*(q2.x + q2.y);
+    const F = (q1.x - q1.z)*(q2.x - q2.y);
+    const G = (q1.w + q1.y)*(q2.w - q2.z);
+    const H = (q1.w - q1.y)*(q2.w + q2.z);
 
     return {w: B + (-E - F + G + H)/2,
-            x: A - ( E + F + G + H)/2,
-            y: C + ( E - F + G - H)/2,
-            z: D + ( E - F - G + H)/2};
+        x: A - ( E + F + G + H)/2,
+        y: C + ( E - F + G - H)/2,
+        z: D + ( E - F - G + H)/2};
 }

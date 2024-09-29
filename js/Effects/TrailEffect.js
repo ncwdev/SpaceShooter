@@ -1,8 +1,8 @@
 export function create(scene, mesh, position) {
     const capacity = 2000;
-    const ps = new BABYLON.ParticleSystem("MissileTrail", capacity, scene);
+    const ps = new BABYLON.ParticleSystem('MissileTrail', capacity, scene);
 
-    ps.particleTexture = new BABYLON.Texture("./assets/images/smoke_particle.png");
+    ps.particleTexture = new BABYLON.Texture('./assets/images/smoke_particle.png');
     ps.gravity = new BABYLON.Vector3(0, 0, 0);
 
     ps.minLifeTime = 1.0;
@@ -29,12 +29,12 @@ export function create(scene, mesh, position) {
         out.x = position.x;
         out.y = position.y;
         out.z = position.z;
-    }
+    };
     emitter.particleDestinationGenerator = (index, particle, out) => {
         out.x = position.x;
         out.y = position.y;
         out.z = position.z;
-    }
+    };
     ps.particleEmitterType = emitter;
     ps.emitter = mesh;
 

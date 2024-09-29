@@ -1,20 +1,19 @@
 export class SpaceDustEffect {
-
     effect = null;
 
     constructor(mesh, size, scene) {
         const capacity = 2000;
-        const ps = new BABYLON.ParticleSystem("SpaceDust", capacity, scene);
-        
-        ps.particleTexture = new BABYLON.Texture("./assets/images/dust.png");
+        const ps = new BABYLON.ParticleSystem('SpaceDust', capacity, scene);
+
+        ps.particleTexture = new BABYLON.Texture('./assets/images/dust.png');
         ps.gravity = new BABYLON.Vector3(0, 0, 0);
-        
+
         ps.minSize = 0.1;
         ps.maxSize = 0.3;
 
         ps.minLifeTime = 5;
         ps.maxLifeTime = 10;
-        
+
         ps.emitRate = 500;
         ps.minEmitPower = 1;
         ps.maxEmitPower = 3;
@@ -37,7 +36,7 @@ export class SpaceDustEffect {
     start() {
         this.effect.start();
     }
-    
+
     clear() {
         if (this.effect) {
             this.effect.dispose(true);

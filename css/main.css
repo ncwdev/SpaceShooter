@@ -31,8 +31,8 @@ html, body {
     text-align: center;
     font-size: 1.2vh;
     color: white;
-    top: 0vh;
-    right: 0vw;
+    top: 1px;
+    right: 1px;
     width: 3vw;
     display: grid;
 }

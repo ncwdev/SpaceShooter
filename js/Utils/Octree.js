@@ -17,7 +17,6 @@ octree.insert(object1);
 octree.insert(object2);
 */
 
-
 class OctreeNode {
     constructor(min, max) {
         this.min = min;
@@ -166,9 +165,9 @@ export class Octree {
     }
 
     addMesh(mesh) {
-        let info = mesh.getBoundingInfo();
+        const info = mesh.getBoundingInfo();
         const radius = info.boundingSphere.radius * 2;
-        
+
         const pos = mesh.position;
         const oct_object = {
             min: { x: pos.x-radius, y: pos.y-radius, z: pos.z-radius },

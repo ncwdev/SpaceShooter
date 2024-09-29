@@ -13,26 +13,26 @@ const config = {
     accel_side: 20.0,
     turbo_k:    3.0,
     dec_vel_k:  0.5,
-    
+
     vel_fwd_min:   -25.0,
     vel_fwd_max:    25.0,
     vel_fwd_turbo:  50.0,
 
     vel_side_min: -25.0,
     vel_side_max:  25.0,
-    
+
     roll_accel: 0.25,
     roll_speed_min:-0.45,
     roll_speed_max: 0.45,
-    
+
     yaw_mult:  2.0,
     yaw_accel: 0.5,
     yaw_speed_max: 0.85,
-    
+
     pitch_mult: 2.0,
     pitch_accel:1.0,
     pitch_speed_max: 0.85,
-    
+
     rot_decreasing: 0.24,
 
     energy: {
