@@ -18,12 +18,12 @@ export function create(scene, mesh) {
     ps.emitRate = 25;
     ps.minEmitPower = 0;
     ps.maxEmitPower = 0;
-    ps.updateSpeed  = 1/60;
+    ps.updateSpeed  = 1 / 60;
 
     ps.isLocal = true;
 
-    ps.color1    = new BABYLON.Color4(1.0, 1.0, 1.0, 1.0);
-    ps.color2    = new BABYLON.Color4(0.0, 0.0, 1.0, 1.0);
+    ps.color1 = new BABYLON.Color4(1.0, 1.0, 1.0, 1.0);
+    ps.color2 = new BABYLON.Color4(0.0, 0.0, 1.0, 1.0);
     // ps.colorDead = new BABYLON.Color4(1.0, 0, 0, 0.0);
 
     ps.start();

@@ -14,26 +14,35 @@ const ENTITY_CLASS_ENEMY_SHOT = 5;
 const ENTITY_CLASS_MISSILE    = 6;
 const ENTITY_CLASS_LOOTBOX    = 7;
 
-const initEngine = async function() {
+async function createEngine() {
+    const options = { preserveDrawingBuffer: false, stencil: true, disableWebGL2Support: false };
+
+    const webGPUSupported = await BABYLON.WebGPUEngine.IsSupportedAsync;
+    if (webGPUSupported) {
+        engine = new BABYLON.WebGPUEngine(canvas, options);
+        await engine.initAsync();
+        // engine.compatibilityMode = false;
+        // engine.snapshotRendering = true;
+    } else {
+        const antialias = true;
+        const adaptToDeviceRatio = false;
+        engine = new BABYLON.Engine(canvas, antialias, options, adaptToDeviceRatio);
+    }
+}
+
+const init = async function() {
     canvas = document.getElementById('renderCanvas');
     if (!canvas) {
-        throw 'initEngine(): canvas was not found';
+        throw 'init(): canvas was not found';
     }
-    const antialias = true;
-    const adaptToDeviceRatio = false;
-    const options = { preserveDrawingBuffer: false, stencil: true, disableWebGL2Support: false };
-    engine = new BABYLON.Engine(canvas, antialias, options, adaptToDeviceRatio);
-    // engine = new BABYLON.WebGPUEngine(canvas, options);
-    // await engine.initAsync();
-
+    await createEngine();
     if (!engine) {
-        throw 'initEngine(): engine should not be null';
+        throw 'init(): engine should not be null';
     }
-    const { MyGame } = await import('./Game.js');
-
     havokInstance = await HavokPhysics();
 
     const { default: gameConfig } = await import('./Config/GameCfg.js');
+    const { MyGame } = await import('./Game.js');
     game = new MyGame(engine, gameConfig);
 
     scene = game.getScene();
@@ -94,4 +103,4 @@ document.addEventListener('pointerlockchange', () => {
 });
 
 // Entry point
-initEngine();
+init();

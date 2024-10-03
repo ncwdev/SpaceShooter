@@ -78,11 +78,11 @@ export class Scene extends BABYLON.Scene {
         // this gives a strange error: Uncaught TypeError: Cannot read properties of null (reading 'hpBodyId')
         // BABYLON.SceneOptimizer.OptimizeAsync(this);
 
-        // const target_FPS = 60;
-        // const update_rate= 250;
-        // let options = new BABYLON.SceneOptimizerOptions(target_FPS, update_rate);
-        // this.optimizer = new BABYLON.SceneOptimizer(this.scene, options);
-        // this.optimizer.targetFrameRate = target_FPS;
-        // this.optimizer.start();
+        const targetFPS = 60;
+        const updateRate = 250;
+        const options = new BABYLON.SceneOptimizerOptions(targetFPS, updateRate);
+        this.optimizer = new BABYLON.SceneOptimizer(this, options);
+        this.optimizer.targetFrameRate = targetFPS;
+        this.optimizer.start();
     }
 }
