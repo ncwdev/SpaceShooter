@@ -56,7 +56,7 @@ export class BattleArea {
     loot_box_mesh = null; // parent for loot boxes
     missileMesh = null; // parent for missiles
 
-    enemies_num = 0;
+    enemiesNumber = 0;
     enemies = [];
 
     asteroids_num = 0;
@@ -71,12 +71,10 @@ export class BattleArea {
 
     need_to_show_tutor = true;
 
-    constructor(game, config, enemies_num) {
+    constructor(game, config) {
         this.game  = game;
         this.scene = game.getScene();
         this.config= config;
-
-        this.enemies_num = enemies_num;
 
         this.asteroids_num = config.asteroids_num;
         this.space_radius_min = config.radius_min;
@@ -92,7 +90,7 @@ export class BattleArea {
     }
 
     getEnemiesCount() {
-        return this.enemies_num;
+        return this.enemiesNumber;
     }
 
     async initPhysics() {
@@ -126,7 +124,7 @@ export class BattleArea {
 
         mesh_data = meshes_list.EnemyShip;
         result = await BABYLON.SceneLoader.ImportMeshAsync('', mesh_data.path, mesh_data.file, this.scene);
-        this.instanceEnemyShips(result, this.enemies_num);
+        this.instanceEnemyShips(result, this.enemiesNumber);
 
         // create a bunch of asteroids - use all 6 models
         const asteroids = meshes_list.Asteroids;
@@ -368,7 +366,7 @@ export class BattleArea {
     }
 
     destroyEnemyShip(ship) {
-        if (ship.isDestroyed() || this.game.isStateInMenu()) {
+        if (ship.isDestroyed() || !this.game.isPlayState()) {
             return;
         }
         ship.setDesroyed(true);
@@ -385,8 +383,8 @@ export class BattleArea {
 
         }, this.config.time_destroy_ship_after_explode);
 
-        --this.enemies_num;
-        if (this.enemies_num <= 0) {
+        --this.enemiesNumber;
+        if (this.enemiesNumber <= 0) {
             this.player_ship.hideHud();
 
             this.game.onPlayerWin();
@@ -400,7 +398,7 @@ export class BattleArea {
     }
 
     destroyPlayerShip() {
-        if (this.player_ship.isDestroyed() || this.game.isStateInMenu()) {
+        if (this.player_ship.isDestroyed() || !this.game.isPlayState()) {
             return;
         }
         this.player_ship.setDesroyed(true);
@@ -423,8 +421,8 @@ export class BattleArea {
 
         // get all ships in damage radius
         const ships = new Map();
-        const DAMAGE_RADIUS = this.config.missile_damage_radius;    // 50
-        const MISSILE_DAMAGE= this.config.missile_damage;           // 1000
+        const DAMAGE_RADIUS = this.config.missile_damage_radius; // 50
+        const MISSILE_DAMAGE = this.config.missile_damage; // 1000
 
         const pos = this.player_ship.getPosition();
         const dist= BABYLON.Vector3.Distance(position, pos);

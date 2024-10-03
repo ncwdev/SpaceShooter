@@ -36,6 +36,14 @@ export class Scene extends BABYLON.Scene {
 
         const camera = new BABYLON.FreeCamera('MainCamera', BABYLON.Vector3.Zero(), scene);
         this.activeCamera = camera;
+        // camera.inertia = 0;
+
+        const postProcess = new BABYLON.PostProcess('FadeIn', 'fade', ['fadeLevel'], null, 1.0, this.activeCamera);
+        postProcess.fadeLevel = 0;
+        postProcess.onApply = (effect) => {
+            effect.setFloat('fadeLevel', postProcess.fadeLevel);
+        };
+        this.hideSceneEffect = postProcess;
     }
 
     createSkyBox(space_radius_max) {
@@ -59,8 +67,8 @@ export class Scene extends BABYLON.Scene {
         skyboxMaterial.disableLighting = true;
         skyboxMaterial.freeze();
 
-        //skybox.isPickable = false;
-        //skybox.renderingGroupId = 0; // behind any other objects
+        // skybox.isPickable = false;
+        // skybox.renderingGroupId = 0; // behind any other objects
     }
 
     applyOptimizations() {
@@ -68,7 +76,7 @@ export class Scene extends BABYLON.Scene {
         this.skipPointerMovePicking = true;
 
         // this gives a strange error: Uncaught TypeError: Cannot read properties of null (reading 'hpBodyId')
-        //BABYLON.SceneOptimizer.OptimizeAsync(this);
+        // BABYLON.SceneOptimizer.OptimizeAsync(this);
 
         // const target_FPS = 60;
         // const update_rate= 250;

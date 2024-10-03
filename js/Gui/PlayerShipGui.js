@@ -356,13 +356,13 @@ export class PlayerShipGui extends BaseGui {
         // draw icons of enemies
         const inv_matrix = pl_ship.getMesh().computeWorldMatrix(true).clone().invert();
 
-        const enemies = this.ship.battle_area.getEnemies();
-        enemies.forEach( enemy => {
+        const enemies = this.game.getBattleArea().getEnemies();
+        enemies.forEach(enemy => {
             if (!enemy.isDestroyed()) {
                 this.drawEnemyIcon(enemy, inv_matrix);
             }
         });
-        this.setEnemiesCount(pl_ship.battle_area.getEnemiesCount());
+        this.setEnemiesCount(this.game.getBattleArea().getEnemiesCount());
     }
 
     drawEnemyIcon(enemy, inv_matrix) {

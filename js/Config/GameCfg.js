@@ -10,7 +10,6 @@ export default {
     // radius_max: 940,
     // asteroids_num: 0, // it will be multiplied by number of asteroids models (currently 6)
 
-    show_goal_time: 3000,
     game_win_backcolor: '#128F12',
     game_lost_backcolor:'#8F1212',
     game_over_text_times: [0.3, 1.2, 1.4],

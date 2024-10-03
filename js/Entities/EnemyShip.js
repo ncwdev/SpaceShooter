@@ -98,7 +98,7 @@ export class EnemyShip extends Ship {
     initAI(behaviorTree) {
         const context = {
             scene: this.scene,
-            player_ship: this.battle_area.getPlayerShip(),
+            player_ship: this.battleArea.getPlayerShip(),
         };
         Object.assign(context, this.config.ai);
 
@@ -141,7 +141,7 @@ export class EnemyShip extends Ship {
             }
         }
         if (this.radarIcon) {
-            const playerShip = this.battle_area.getPlayerShip();
+            const playerShip = this.battleArea.getPlayerShip();
             const playerPos = playerShip.getPosition();
             let dist = playerPos.subtract(this.getPosition()).length();
             if (dist >= 1000) {
@@ -158,7 +158,7 @@ export class EnemyShip extends Ship {
     turnToPlayerShip(dt) {
         //this.aggregate.body.disablePreStep = false;
 
-        const playerShip = this.battle_area.getPlayerShip();
+        const playerShip = this.battleArea.getPlayerShip();
         const playerPos = playerShip.getPosition();
 
         const pos = this.getPosition();
@@ -188,7 +188,7 @@ export class EnemyShip extends Ship {
     firePlasmaShot(distToTarget) {
         const fwd = {x: 1, y: 0, z: 0};
 
-        const playerShip = this.battle_area.getPlayerShip();
+        const playerShip = this.battleArea.getPlayerShip();
         const targetPos = playerShip.getPosition().clone();
 
         const targetDir = targetPos.subtract(this.getPosition()).normalize();

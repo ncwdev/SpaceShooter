@@ -5,7 +5,6 @@ let scene  = null;
 let havokInstance = null;
 
 let game = null;
-let menu = null;
 
 const ENTITY_CLASS_MY_SHIP    = 1;
 const ENTITY_CLASS_ENEMY_SHIP = 2;
@@ -31,15 +30,11 @@ const initEngine = async function() {
         throw 'initEngine(): engine should not be null';
     }
     const { MyGame } = await import('./Game.js');
-    const { MainMenu } = await import('./Gui/MainMenu.js');
 
     havokInstance = await HavokPhysics();
 
-    const { default: game_config } = await import('./Config/GameCfg.js');
-    game = new MyGame(engine, game_config);
-
-    menu = MainMenu;
-    menu.setMaxEnemiesNumber(game_config.max_enemies_num);
+    const { default: gameConfig } = await import('./Config/GameCfg.js');
+    game = new MyGame(engine, gameConfig);
 
     scene = game.getScene();
     if (!scene) {
@@ -59,18 +54,15 @@ function runRenderLoop() {
     });
 }
 
-async function startGame() {
+function startGame() {
     // menu button click handler
     if (!game) {
         console.error('startGame(): game should not be null');
         return;
     }
-    menu.setVisible(false);
-
     engine.enterPointerlock();
 
-    const enemiesNumber = menu.getEnemiesNumber();
-    game.start(enemiesNumber);
+    game.hideMenu();
 }
 
 function pauseGame() {
@@ -87,10 +79,7 @@ function resumeGame() {
 
 document.addEventListener('pointerlockchange', () => {
     // Pointer lock is disabled (user pressed Escape)
-    if (document.pointerLockElement === null) {
-        if (game.isStateInMenu()) {
-            return;
-        }
+    if (document.pointerLockElement === null && game.isPlayState()) {
         pauseGame();
 
         const result = confirm(getLocText('TXT_EXIT_CONFIRM'));

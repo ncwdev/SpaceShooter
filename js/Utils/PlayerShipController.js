@@ -82,7 +82,7 @@ export class PlayerShipController {
                 if (e.pickInfo.hit && this.playerShip && !this.playerShip.isDestroyed()) {
                     this.playerShip.firePlasmaShot(e);
                 }
-                if (this.game.isStatePlay() && !this.scene.getEngine().isPointerLock) {
+                if (this.game.isPlayState() && !this.scene.getEngine().isPointerLock) {
                     this.scene.getEngine().enterPointerlock();
                 }
             }

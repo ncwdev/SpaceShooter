@@ -10,7 +10,7 @@ import { Missile } from './Missile.js';
 export class Ship {
     game = null;
     scene = null;
-    battle_area = null;
+    battleArea = null;
 
     mesh = null;
     aggregate = null;
@@ -57,7 +57,7 @@ export class Ship {
     constructor(game, mesh, config) {
         this.game  = game;
         this.scene = game.getScene();
-        this.battle_area = game.getBattleArea();
+        this.battleArea = game.getBattleArea();
         this.mesh  = mesh;
         this.config= config;
 

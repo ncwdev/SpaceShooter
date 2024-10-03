@@ -119,6 +119,13 @@ export class GameGui extends BaseGui {
         this.goalBoardText.show();
     }
 
+    isGoalEffectFinished() {
+        if (!this.goalBoardText) {
+            return true;
+        }
+        return this.goalBoardText.isFinished();
+    }
+
     update(dt) {
         if (this.moveTutorEffect) {
             const x = this.moveTutorEffect.update(dt);

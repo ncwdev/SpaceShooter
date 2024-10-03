@@ -3,16 +3,16 @@ import * as dbg from './Utils/DebugPanel.js';
 import { Scene } from './Scene.js';
 import { GameGui } from './Gui/GameGui.js';
 
-import { BattleLoader } from './Utils/BattleLoader.js';
-import { BattleCleaner } from './Utils/BattleCleaner.js';
-
 import { KeyboardManager } from './Utils/KeyboardManager.js';
 import { PlayerShipController } from './Utils/PlayerShipController.js';
 
 import { BattleArea } from './Entities/BattleArea.js';
 
-const GS_MENU = 1;
-const GS_PLAY = 2;
+import { MenuState } from './GameStates/MenuState.js';
+import { LoadingLevelState } from './GameStates/LoadingLevelState.js';
+import { PlayState } from './GameStates/PlayState.js';
+import { ShowResultState } from './GameStates/ShowResultState.js';
+import { ShowMenuState } from './GameStates/ShowMenuState.js';
 
 // manages transition from menu to game and back
 export class MyGame {
@@ -20,46 +20,16 @@ export class MyGame {
     config = null;
     scene = null;
 
-    getScene() {
-        return this.scene;
-    }
-
-    battle_loader = null;
-    battle_cleaner = null;
-    battle_area = null;
-
-    getBattleArea() {
-        return this.battle_area;
-    }
-
-    keyboard_manager = null;
+    prerenderObserver = null;
+    keyboardManager = null;
     controller = null;
 
-    game_state = GS_MENU;
+    gameState = null;
 
-    setStateInMenu() {
-        this.game_state = GS_MENU;
-    }
+    enemiesNumber = 0;
 
-    setStatePlay() {
-        this.game_state = GS_PLAY;
-    }
-
-    isStateInMenu() {
-        return this.game_state === GS_MENU;
-    }
-
-    isStatePlay() {
-        return this.game_state === GS_PLAY;
-    }
-
-    prerender_observer = null;
-
+    battleArea = null;
     hud = null;
-
-    getHud() {
-        return this.hud;
-    }
 
     // TODO: add sounds manager
     music = null;
@@ -72,8 +42,7 @@ export class MyGame {
         this.scene.createSkyBox(config.radius_max);
         this.scene.applyOptimizations();
 
-        this.battle_loader = new BattleLoader(this);
-        this.battle_cleaner= new BattleCleaner(this);
+        this.changeState(new MenuState(this));
 
         // this.music = new BABYLON.Sound('music', './assets/sounds/back.wav', this.scene, null, {
         //     loop: true,
@@ -84,13 +53,43 @@ export class MyGame {
         dbg.setVisible(false);
     }
 
-    start(enemiesNumber) {
-        this.battle_area = new BattleArea(this, this.config, enemiesNumber);
+    getScene() {
+        return this.scene;
+    }
 
+    getHud() {
+        return this.hud;
+    }
+
+    getBattleArea() {
+        return this.battleArea;
+    }
+
+    changeState(state) {
+        if (this.gameState?.exit) {
+            this.gameState.exit();
+        }
+        this.gameState = state;
+
+        if (this.gameState?.enter) {
+            this.gameState.enter();
+        }
+    }
+
+    isPlayState() {
+        return this.gameState.isPlayState;
+    }
+
+    hideMenu() {
+        // MenuState is watching for this.hud to be not null in order to hide menu
         this.hud = new GameGui(this);
-        this.hud.blackScreen.isVisible = true;
+        this.prerenderObserver = this.scene.onBeforeRenderObservable.add(this.onPrerenderHandler.bind(this));
+    }
 
-        this.battle_loader.start();
+    loadLevel() {
+        this.battleArea = new BattleArea(this, this.config);
+
+        this.changeState(new LoadingLevelState(this));
 
         // let music = new BABYLON.Sound('Music', './assets/sounds/saintro.mp3', this.scene, null, {
         //     loop: true,
@@ -101,25 +100,12 @@ export class MyGame {
         dbg.setVisible(true);
     }
 
-    onStartBattle() {
-        // when game level is completely loaded we attach keyboard, mouse and prerender handlers
-        this.hud.showGoal();
+    setPlayState() {
+        // when game level is completely loaded we attach keyboard and mouse
+        this.keyboardManager = new KeyboardManager(this.scene);
+        this.controller = new PlayerShipController(this, this.keyboardManager);
 
-        this.prerender_observer = this.scene.onBeforeRenderObservable.add(this.onPrerenderHandler.bind(this));
-
-        setTimeout(() => {
-            this.keyboard_manager = new KeyboardManager(this.scene);
-            this.controller = new PlayerShipController(this, this.keyboard_manager);
-
-            this.battle_area.startBattle();
-            this.setStatePlay();
-        }, this.config.show_goal_time);
-    }
-
-    returnToMenu() {
-        this.setStateInMenu();
-
-        this.battle_cleaner.start();
+        this.changeState(new PlayState(this));
     }
 
     onPrerenderHandler() {
@@ -130,11 +116,10 @@ export class MyGame {
             return;
         }
         dbg.updateFps();
-        this.hud.update(dt);
+        this.hud?.update(dt);
 
-        if (this.isStatePlay()) {
-            this.controller.update(dt);
-            this.battle_area.update(dt);
+        if (this.gameState.update) {
+            this.gameState.update(dt);
         }
     }
 
@@ -156,16 +141,25 @@ export class MyGame {
         this.returnToMenu();
     }
 
+    returnToMenu() {
+        this.changeState(new ShowResultState(this));
+    }
+
+    onMenuShown() {
+        this.scene.onBeforeRenderObservable.remove(this.prerenderObserver);
+
+        this.engine.exitPointerlock();
+        this.changeState(new MenuState(this));
+    }
+
     clear() {
         this.controller.clear();
         this.controller = null;
 
-        this.keyboard_manager.clear();
-        this.keyboard_manager = null;
+        this.keyboardManager.clear();
+        this.keyboardManager = null;
 
-        this.scene.onBeforeRenderObservable.remove(this.prerender_observer);
-
-        this.battle_area.clear();
+        this.battleArea.clear();
 
         this.hud.clear();
         this.hud = null;
@@ -176,5 +170,7 @@ export class MyGame {
         // }
 
         dbg.setVisible(false);
+
+        this.changeState(new ShowMenuState(this));
     }
 }
