@@ -21,8 +21,6 @@ async function createEngine() {
     if (webGPUSupported) {
         engine = new BABYLON.WebGPUEngine(canvas, options);
         await engine.initAsync();
-        // engine.compatibilityMode = false;
-        // engine.snapshotRendering = true;
     } else {
         const antialias = true;
         const adaptToDeviceRatio = false;

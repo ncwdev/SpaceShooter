@@ -39,7 +39,7 @@ export class MyGame {
         this.config = config;
 
         this.scene = new Scene(engine);
-        this.scene.createSkyBox(config.radius_max);
+        this.scene.createSkyBox(config);
         this.scene.applyOptimizations();
 
         this.changeState(new MenuState(this));

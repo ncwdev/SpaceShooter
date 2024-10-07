@@ -1,5 +1,5 @@
-import {Node} from '../BehaviorTree/Node.js';
-import {TreeBuilder} from '../BehaviorTree/TreeBuilder.js';
+import { Node } from '../BehaviorTree/Node.js';
+import { TreeBuilder } from '../BehaviorTree/TreeBuilder.js';
 
 // Description of behavior tree:
 // Each node contains:
@@ -9,111 +9,109 @@ import {TreeBuilder} from '../BehaviorTree/TreeBuilder.js';
 //  children ids
 
 const enemy_bt = {
-
-root: {
-    id: "root",
-    type: TreeBuilder.NT_IF_THEN_ELSE,
-    nodes: ["N1_if_has_obstacle", "N1_escape_obstacle", "N1_maneuver"],
-},
-//-----
-
-N1_if_has_obstacle: {
-    id: "N1_if_has_obstacle",
-    type: TreeBuilder.NT_LEAF,
-    func: N1_if_has_obstacle,
-},
-
-N1_escape_obstacle: {
-    id: "N1_escape_obstacle",
-    type: TreeBuilder.NT_LEAF,
-    func: N1_escape_obstacle,
-},
-
-N1_maneuver: {
-    id: "N1_maneuver",
-    type: TreeBuilder.NT_SEQUENCE,
-    nodes: ["N2_approach", "N2_attack", "N2_retreat"],
-},
-//-----
-
-N2_approach: {
-    id: "N2_approach",
-    type: TreeBuilder.NT_IF_THEN_ELSE,
-    nodes: ["N3_is_too_far", "N3_do_approach", "N3_go_to_attack"],
-},
-//-----
-
-N2_attack: {
-    id: "N2_attack",
-    type: TreeBuilder.NT_IF_THEN_ELSE,
-    nodes: ["N3_is_near", "N3_do_attack", "N3_go_to_retreat"],
-},
-//-----
-
-N2_retreat: {
-    id: "N2_retreat",
-    type: TreeBuilder.NT_IF_THEN_ELSE,
-    nodes: ["N3_is_too_close", "N3_do_retreat", "N3_repeat"],
-},
-//-----
-
-// approach nodes
-N3_is_too_far: {
-    id: "N3_is_too_far",
-    type: TreeBuilder.NT_LEAF,
-    func: N3_is_too_far,
-},
-N3_do_approach: {
-    id: "N3_do_approach",
-    type: TreeBuilder.NT_LEAF,
-    func: N3_do_approach,
-},
-N3_go_to_attack: {
-    id: "N3_go_to_attack",
-    type: TreeBuilder.NT_LEAF,
-    func: (entity, context) => {
-        return Node.RES_SUCCESS;
-    }
-},
-
-// attack nodes
-N3_is_near: {
-    id: "N3_is_near",
-    type: TreeBuilder.NT_LEAF,
-    func: N3_is_near,
-},
-N3_do_attack: {
-    id: "N3_do_attack",
-    type: TreeBuilder.NT_LEAF,
-    func: N3_do_attack,
-},
-N3_go_to_retreat: {
-    id: "N3_go_to_retreat",
-    type: TreeBuilder.NT_LEAF,
-    func: (entity, context) => {
-        return Node.RES_SUCCESS;
-    }
-},
-
-// retreat nodes
-N3_is_too_close: {
-    id: "N3_is_too_close",
-    type: TreeBuilder.NT_LEAF,
-    func: N3_is_too_close,
-},
-N3_do_retreat: {
-    id: "N3_do_retreat",
-    type: TreeBuilder.NT_LEAF,
-    func: N3_do_retreat,
-},
-N3_repeat: {
-    id: "N3_repeat",
-    type: TreeBuilder.NT_LEAF,
-    func: (entity, context) => {
-        return Node.RES_SUCCESS;
+    root: {
+        id: 'root',
+        type: TreeBuilder.NT_IF_THEN_ELSE,
+        nodes: ['N1_if_has_obstacle', 'N1_escape_obstacle', 'N1_maneuver'],
     },
-},
+    //-----
 
+    N1_if_has_obstacle: {
+        id: 'N1_if_has_obstacle',
+        type: TreeBuilder.NT_LEAF,
+        func: N1_if_has_obstacle,
+    },
+
+    N1_escape_obstacle: {
+        id: 'N1_escape_obstacle',
+        type: TreeBuilder.NT_LEAF,
+        func: N1_escape_obstacle,
+    },
+
+    N1_maneuver: {
+        id: 'N1_maneuver',
+        type: TreeBuilder.NT_SEQUENCE,
+        nodes: ['N2_approach', 'N2_attack', 'N2_retreat'],
+    },
+    //-----
+
+    N2_approach: {
+        id: 'N2_approach',
+        type: TreeBuilder.NT_IF_THEN_ELSE,
+        nodes: ['N3_is_too_far', 'N3_do_approach', 'N3_go_to_attack'],
+    },
+    //-----
+
+    N2_attack: {
+        id: 'N2_attack',
+        type: TreeBuilder.NT_IF_THEN_ELSE,
+        nodes: ['N3_is_near', 'N3_do_attack', 'N3_go_to_retreat'],
+    },
+    //-----
+
+    N2_retreat: {
+        id: 'N2_retreat',
+        type: TreeBuilder.NT_IF_THEN_ELSE,
+        nodes: ['N3_is_too_close', 'N3_do_retreat', 'N3_repeat'],
+    },
+    //-----
+
+    // approach nodes
+    N3_is_too_far: {
+        id: 'N3_is_too_far',
+        type: TreeBuilder.NT_LEAF,
+        func: N3_is_too_far,
+    },
+    N3_do_approach: {
+        id: 'N3_do_approach',
+        type: TreeBuilder.NT_LEAF,
+        func: N3_do_approach,
+    },
+    N3_go_to_attack: {
+        id: 'N3_go_to_attack',
+        type: TreeBuilder.NT_LEAF,
+        func: (entity, context) => {
+            return Node.RES_SUCCESS;
+        }
+    },
+
+    // attack nodes
+    N3_is_near: {
+        id: 'N3_is_near',
+        type: TreeBuilder.NT_LEAF,
+        func: N3_is_near,
+    },
+    N3_do_attack: {
+        id: 'N3_do_attack',
+        type: TreeBuilder.NT_LEAF,
+        func: N3_do_attack,
+    },
+    N3_go_to_retreat: {
+        id: 'N3_go_to_retreat',
+        type: TreeBuilder.NT_LEAF,
+        func: (entity, context) => {
+            return Node.RES_SUCCESS;
+        }
+    },
+
+    // retreat nodes
+    N3_is_too_close: {
+        id: 'N3_is_too_close',
+        type: TreeBuilder.NT_LEAF,
+        func: N3_is_too_close,
+    },
+    N3_do_retreat: {
+        id: 'N3_do_retreat',
+        type: TreeBuilder.NT_LEAF,
+        func: N3_do_retreat,
+    },
+    N3_repeat: {
+        id: 'N3_repeat',
+        type: TreeBuilder.NT_LEAF,
+        func: (entity, context) => {
+            return Node.RES_SUCCESS;
+        },
+    },
 };
 //------------------------------------------------------------
 
@@ -146,7 +144,7 @@ function N1_escape_obstacle(entity, context) {
     return Node.RES_RUNNING;
 }
 
-function N3_is_too_far(entity, context) {    
+function N3_is_too_far(entity, context) {
     const pl_pos = context.player_ship.getPosition();
     const pos = entity.getPosition();
     const dist = pl_pos.clone().subtract(pos).length();
@@ -218,4 +216,4 @@ function N3_do_retreat(entity, context) {
     return Node.RES_RUNNING;
 }
 
-export {enemy_bt};
+export { enemy_bt };

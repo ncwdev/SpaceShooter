@@ -1,8 +1,8 @@
 export class Scene extends BABYLON.Scene {
-    plasma_shot_layer = null;
+    plasmaShotLayer = null;
 
     getPlasmaShotLayer() {
-        return this.plasma_shot_layer;
+        return this.plasmaShotLayer;
     }
 
     constructor(engine) {
@@ -25,18 +25,22 @@ export class Scene extends BABYLON.Scene {
             createGround: false,
             createSkybox: false,
         });
+        scene.clearColor = new BABYLON.Color3(0, 0, 0);
 
-        scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-        scene.fogColor = new BABYLON.Color3(0.2, 0.2, 0.4);
-        scene.fogDensity = 0.00025;
+        // fog creates a strange artifacts on the skybox
+        // scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+        // // scene.fogColor = new BABYLON.Color3(0.2, 0.2, 0.4);
+        // scene.fogColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+        // // scene.fogDensity = 0.00025;
+        // scene.fogDensity = 0.00046;
 
         const glow_layer = new BABYLON.GlowLayer('PlasmaShotGlow', scene);
         glow_layer.intensity = 0.95;
-        this.plasma_shot_layer = glow_layer;
+        this.plasmaShotLayer = glow_layer;
 
         const camera = new BABYLON.FreeCamera('MainCamera', BABYLON.Vector3.Zero(), scene);
         this.activeCamera = camera;
-        // camera.inertia = 0;
+        camera.inertia = 0;
 
         const postProcess = new BABYLON.PostProcess('FadeIn', 'fade', ['fadeLevel'], null, 1.0, this.activeCamera);
         postProcess.fadeLevel = 0;
@@ -46,26 +50,73 @@ export class Scene extends BABYLON.Scene {
         this.hideSceneEffect = postProcess;
     }
 
-    createSkyBox(space_radius_max) {
+    randomPoints(ctx, count, size) {
+        const starColors = ['#4DB9FA', '#6ABDE9', '#92D3FB', '#8FD2ED', '#BFE3FB', '#D7EAF8', '#CFE0E7', '#F7FAF1', '#FAFBF5',
+            '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF',
+            '#FFFFFA', '#F3F6DB', '#FFFFD8', '#F0F2B1', '#FFFFB8', '#E9E85A', '#F9D67C', '#E9C46C', '#E0A465', '#DB8A5B'];
+        for (let i = 0; i < count; ++i) {
+            const x = Math.floor(Math.random() * size);
+            const y = Math.floor(Math.random() * size);
+            ctx.fillStyle = starColors[Math.floor(Math.random() * starColors.length)];
+            if (Math.random() < 0.1) {
+                ctx.fillRect(x, y, 2, 2);
+            } else {
+                ctx.fillRect(x, y, 1, 1);
+            }
+        }
+    }
+
+    createSkyBox(config) {
         const scene = this;
 
-        const dist = space_radius_max * 3;
+        const dist = config.radius_max * 3;
         const skybox = BABYLON.MeshBuilder.CreateBox('skyBox', { size: dist }, scene);
 
         const skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene);
         skyboxMaterial.backFaceCulling = false;
 
-        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('./assets/skybox/sky', scene);
-        skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+        // Create dynamic textures for the skybox
+        const size = config.skyboxTextureSize;
+        const arr = [];
+        for (let i = 0; i < 6; i++) {
+            const dynamicTexture = new BABYLON.DynamicTexture('dynamicTexture_' + i, { width: size, height: size }, scene);
 
-        skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-        skyboxMaterial.specularColor= new BABYLON.Color3(0, 0, 0);
+            const context = dynamicTexture.getContext();
+            context.fillStyle = '#112';
+            context.fillRect(0, 0, size, size);
+            dynamicTexture.update();
 
-        skybox.material = skyboxMaterial;
+            arr.push(dynamicTexture);
+        }
+        const img = new Image();
+        img.src = 'assets/images/cloud.png';
+        img.onload = async function() {
+            for (let i = 0; i < 6; i++) {
+                const dynamicTexture = arr[i];
+                const context = dynamicTexture.getContext();
 
-        skybox.infiniteDistance = true;
-        skyboxMaterial.disableLighting = true;
-        skyboxMaterial.freeze();
+                context.drawImage(this, 0, 0);
+                dynamicTexture.update();
+
+                scene.randomPoints(context, config.starsCount, size);
+                dynamicTexture.update();
+
+                const data = await dynamicTexture.readPixels();
+                arr[i] = data;
+            }
+            const cubeTexture = new BABYLON.RawCubeTexture(scene, arr, size);
+            skyboxMaterial.reflectionTexture = cubeTexture;
+            skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+
+            skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+            skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+
+            skybox.material = skyboxMaterial;
+
+            skybox.infiniteDistance = true;
+            skyboxMaterial.disableLighting = true;
+            skyboxMaterial.freeze();
+        };
 
         // skybox.isPickable = false;
         // skybox.renderingGroupId = 0; // behind any other objects

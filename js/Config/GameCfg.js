@@ -26,4 +26,7 @@ export default {
 
     missile_damage_radius: 50,
     missile_damage: 1000,
+
+    skyboxTextureSize: 2048,
+    starsCount: 3000,
 };
