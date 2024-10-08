@@ -9,6 +9,8 @@ const TIME_TO_ATTACH = 2000;
 const START_SPEED = 20;
 const MAX_SPEED = 100.5;
 const SPEED = 4.5;
+const ROT_SPEED = 5.0;
+const MIN_EXPLODE_DIST = 8;
 
 // const LIFE_TIME = 123434000;
 // const TIME_TO_ATTACH = 2234000;
@@ -96,7 +98,7 @@ export class Missile extends PlasmaShot {
             this.body.shape = this.shape;
             this.isShapeAttached = true;
         }
-        // check distance to the center, actually it's a length of a vector that is a position of mesh
+        // check distance to the center, actually it's a length of a vector which is a position of mesh
         const pos = this.mesh.position;
         if (this.battleArea.isPlasmaShotTooFar(pos) || this.getLifeTime() > LIFE_TIME) {
             this.battleArea.explodeMissile(this.mesh.position);
@@ -105,12 +107,21 @@ export class Missile extends PlasmaShot {
         if (this.target && !this.target.isDestroyed()) {
             const q1 = this.mesh.rotationQuaternion.clone();
             const fwd = {x: 0, y: 1, z: 0};
+
             const neededDir = this.target.getPosition().clone().subtract(pos);
             let q2 = utils.quaternionShortestArc(fwd, neededDir);
             q2 = new BABYLON.Quaternion(q2.x, q2.y, q2.z, q2.w);
-            const ROT_SPEED = 2.5;
+
             const q = BABYLON.Quaternion.Slerp(q1, q2, ROT_SPEED * dt);
             this.mesh.rotationQuaternion = q;
+
+            if (neededDir.length() < MIN_EXPLODE_DIST) {
+                this.battleArea.onMissileCollided(this.body.mfg, true);
+
+                if (!this.mesh) {
+                    return false; // return isAlive flag
+                }
+            }
         }
         let speed = this.speed + dt * SPEED;
         if (speed > MAX_SPEED) {
@@ -134,6 +145,9 @@ export class Missile extends PlasmaShot {
     }
 
     clear() {
+        if (!this.mesh) {
+            return;
+        }
         this.engineEffect.stop();
         this.engineEffect.dispose(true);
 

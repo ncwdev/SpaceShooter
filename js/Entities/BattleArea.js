@@ -274,12 +274,12 @@ export class BattleArea {
         });
     }
 
-    onMissileCollided(data) {
+    onMissileCollided(data, forceExplosion = false) {
         const shot_id = data.id;
         const missile = data.entity;
         const owner   = data.owner;
 
-        if (missile.getLifeTime() < this.config.time_missile_no_collision) {
+        if (missile.getLifeTime() < this.config.time_missile_no_collision && !forceExplosion) {
             return;
         }
         this.explodeMissile(missile.getPosition());

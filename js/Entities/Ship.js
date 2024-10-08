@@ -198,6 +198,7 @@ export class Ship {
         }
         this.setHealth(this.getHealth() - damage);
     }
+
     createMissile(pos, quaternion, entity_class, target) {
         const shot = new Missile(this.game, this.plasma_shots_count, this, target);
         shot.init(pos, quaternion, entity_class);
@@ -270,8 +271,8 @@ export class Ship {
     update(dt) {
         for (const id in this.plasma_shots) {
             const shot = this.plasma_shots[id];
-            const is_alive = shot.update(dt);
-            if (!is_alive) {
+            const isAlive = shot.update(dt);
+            if (!isAlive) {
                 delete this.plasma_shots[id];
                 shot.clear();
             }
