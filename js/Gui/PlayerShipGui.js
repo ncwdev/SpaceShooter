@@ -98,8 +98,8 @@ export class PlayerShipGui extends BaseGui {
 
         // draw reticle instead of mouse cursor
         const MARGIN = 0.01;
-        const tw = w / 2 - w * MARGIN;
-        const th = h / 2 - h * MARGIN;
+        const tw = w * 0.5 - w * MARGIN;
+        const th = h * 0.5 - h * MARGIN;
 
         let { x, y } = this.target_pos;
         x = utils.clamp(x + dx, -tw, tw);
@@ -126,7 +126,7 @@ export class PlayerShipGui extends BaseGui {
         const cursorPos = this.target_pos;
         const w = this.scene.getEngine().getRenderWidth();
         const h = this.scene.getEngine().getRenderHeight();
-        return { x: cursorPos.x + w / 2, y: cursorPos.y + h / 2};
+        return { x: cursorPos.x + w * 0.5, y: cursorPos.y + h * 0.5};
     }
 
     isCursorInTargetField() {
@@ -135,6 +135,13 @@ export class PlayerShipGui extends BaseGui {
             return false;
         }
         return true;
+    }
+
+    isCursorInBufferZone() {
+        const [dx, dy] = this.getCursorCenterDeflection();
+        const MIN_TARGET_RADIUS = 0.001;
+        const radius = dx*dx + dy*dy;
+        return radius < MIN_TARGET_RADIUS;
     }
 
     createInfoPanel(parent) {
@@ -306,6 +313,18 @@ export class PlayerShipGui extends BaseGui {
     }
 
     updateTarget(dt) {
+        // shift target pos to center (0, 0)
+        let { x, y } = this.target_pos;
+        if (!this.isCursorInBufferZone() && (x !== 0 || y !== 0)) {
+            const TINY = 1;
+            x = utils.decreaseValueToZero(x, TINY, 0.5);
+            y = utils.decreaseValueToZero(y, TINY, 0.5);
+            this.target_pos = { x, y };
+
+            this.target.left = `${x}px`;
+            this.target.top = `${y}px`;
+        }
+
         // picking meshes under target icon
         const cursorPos = this.getCursorPosition();
         const pick = this.scene.pick(cursorPos.x, cursorPos.y);
@@ -370,22 +389,22 @@ export class PlayerShipGui extends BaseGui {
         const icon = enemy.getRadarIcon();
 
         let screen_width = this.screen_width;
-        let screen_height= this.screen_height;
+        let screen_height = this.screen_height;
 
         // Convert the world position to screen coordinates
         const pos = mesh.getAbsolutePosition();
-        const screen_pos = BABYLON.Vector3.Project(
+        const screenPos = BABYLON.Vector3.Project(
             pos,
             BABYLON.Matrix.Identity(),
             this.scene.getTransformMatrix(),
             this.scene.activeCamera.viewport.toGlobal(screen_width, screen_height)
         );
 
-        const is_visible = this.scene.activeCamera.isInFrustum(mesh);
-        if (is_visible) {
+        const isVisible = this.scene.activeCamera.isInFrustum(mesh);
+        if (isVisible) {
             const HEIGHT_OFFSET = enemy.getConfig().hp_text_offset;
-            icon.top = screen_pos.y - screen_height * 0.5 - HEIGHT_OFFSET * screen_height;
-            icon.left= screen_pos.x - screen_width * 0.5;
+            icon.top = screenPos.y - screen_height * 0.5 - HEIGHT_OFFSET * screen_height;
+            icon.left = screenPos.x - screen_width * 0.5;
         } else {
             screen_width -= icon.width_numeric * screen_width;
             screen_height-= icon.width_numeric * screen_height;

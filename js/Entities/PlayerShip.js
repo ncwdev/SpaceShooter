@@ -29,8 +29,8 @@ export class PlayerShip extends Ship {
     energy_state = 0;
 
     // camera rotation
-    cam_roll_mult     = 0.25;
-    camera_yaw_mult   = 0.60;
+    cam_roll_mult = 0.25;
+    camera_yaw_mult = 0.60;
     camera_pitch_mult = 0.10;
 
     white_noise_effect = null;
@@ -186,17 +186,38 @@ export class PlayerShip extends Ship {
 
         this.mesh.computeWorldMatrix();
         const matrix = this.mesh.getWorldMatrix();
-        const left_pos = BABYLON.Vector3.TransformCoordinates(this.config.plasma_shot_left_pos,  matrix);
-        const right_pos= BABYLON.Vector3.TransformCoordinates(this.config.plasma_shot_right_pos, matrix);
+        const leftPos = BABYLON.Vector3.TransformCoordinates(this.config.plasma_shot_left_pos, matrix);
+        const rightPos = BABYLON.Vector3.TransformCoordinates(this.config.plasma_shot_right_pos, matrix);
 
         const target = this.hud.getTargetObj();
-        const dir = this.mesh.getDirection(BABYLON.Axis.X).clone();
 
-        const q1 = utils.quaternionShortestArc(fwd, dir);
-        this.createPlasmaShot(left_pos, q1, ENTITY_CLASS_MY_SHOT, target);
+        const engine = this.scene.getEngine();
+        const screenWidth = engine.getRenderWidth();
+        const screenHeight = engine.getRenderHeight();
 
-        const q2 = utils.quaternionShortestArc(fwd, dir);
-        this.createPlasmaShot(right_pos, q2, ENTITY_CLASS_MY_SHOT, target);
+        const targetPos = this.hud.target_pos;
+        const screenPosition = new BABYLON.Vector3(targetPos.x + screenWidth * 0.5, targetPos.y + screenHeight * 0.5, 0.99);
+        const dstPosUnprojected = BABYLON.Vector3.Unproject(
+            screenPosition,
+            screenWidth,
+            screenHeight,
+            BABYLON.Matrix.Identity(),
+            this.scene.getViewMatrix(),
+            this.scene.getProjectionMatrix()
+        );
+        const dir = dstPosUnprojected.subtract(this.mesh.position).normalize();
+        let dstPos = this.mesh.position.add(dir.scale(200));
+
+        const down = this.mesh.up.clone().negate();
+        dstPos = dstPos.add(down.scale(7.5));
+
+        const leftDir = dstPos.subtract(leftPos);
+        const q1 = utils.quaternionShortestArc(fwd, leftDir);
+        this.createPlasmaShot(leftPos, q1, ENTITY_CLASS_MY_SHOT, target);
+
+        const rightDir = dstPos.subtract(rightPos);
+        const q2 = utils.quaternionShortestArc(fwd, rightDir);
+        this.createPlasmaShot(rightPos , q2, ENTITY_CLASS_MY_SHOT, target);
     }
 
     fireMissile(pointerInfo) {
@@ -336,14 +357,12 @@ export class PlayerShip extends Ship {
         */
 
         if (this.hud) {
-            const [dx, dy] = this.hud.getCursorCenterDeflection();
-            const MIN_TARGET_RADIUS = 0.001;
-            const radius = dx*dx + dy*dy;
-            if (radius > MIN_TARGET_RADIUS) {
-                // change direction of ship when cursor goes out of freeze radius
-                this.yawPitch(-dx, dy, dt);
-            } else {
+            if (this.hud.isCursorInBufferZone()) {
                 this.stopYawAndPitch(dt);
+            } else {
+                // change direction of ship when cursor leaves the buffer zone
+                const [dx, dy] = this.hud.getCursorCenterDeflection();
+                this.yawPitch(-dx, dy, dt);
             }
             this.hud.update(dt);
         }

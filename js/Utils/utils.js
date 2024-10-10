@@ -17,15 +17,15 @@ export function addMultipleCoordinates(multiLine, coordinates, origin_point = {x
     });
 }
 
-export function decreaseValueToZero(value, tiny_value, change_value) {
-    if (Math.abs(value) > tiny_value) {
+export function decreaseValueToZero(value, tinyValue, changeValue) {
+    if (Math.abs(value) > tinyValue) {
         if (value > 0) {
-            value -= change_value;
+            value -= changeValue;
             if (value < 0) {
                 value = 0;
             }
         } else {
-            value += change_value;
+            value += changeValue;
             if (value > 0) {
                 value = 0;
             }

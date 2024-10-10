@@ -1,5 +1,5 @@
-const SHOT_VEL = 30.5;
-const LIFE_TIME= 2000;
+const SHOT_VEL = 120;
+const LIFE_TIME = 2000;
 
 export class PlasmaShot {
     id = null;

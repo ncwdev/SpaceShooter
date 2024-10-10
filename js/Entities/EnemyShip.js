@@ -12,10 +12,6 @@ import enemy_config from '../Config/EnemyShipCfg.js';
 export class EnemyShip extends Ship {
     radarIcon = null;
 
-    getRadarIcon() {
-        return this.radarIcon;
-    }
-
     aiInterval = null; // interval to update behavior tree
 
     constructor(game, mesh) {
@@ -64,6 +60,10 @@ export class EnemyShip extends Ship {
 
     isEnemy() {
         return true;
+    }
+
+    getRadarIcon() {
+        return this.radarIcon;
     }
 
     createHud() {
