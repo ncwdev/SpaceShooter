@@ -56,7 +56,10 @@ function runRenderLoop() {
     engine.runRenderLoop(function () {
         if (scene && scene.activeCamera) {
             // engine.resize();
-            engine.setSize(1920, 1080); // to optimize FPS on different resolutions
+            const w = engine.getRenderWidth();
+            const h = engine.getRenderHeight();
+            engine.setSize(Math.min(w, 1920), Math.min(h, 1080)); // to optimize FPS on different resolutions
+
             scene.render();
         }
     });
