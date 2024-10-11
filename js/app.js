@@ -55,7 +55,8 @@ const init = async function() {
 function runRenderLoop() {
     engine.runRenderLoop(function () {
         if (scene && scene.activeCamera) {
-            engine.resize();
+            // engine.resize();
+            engine.setSize(1920, 1080); // to optimize FPS on different resolutions
             scene.render();
         }
     });

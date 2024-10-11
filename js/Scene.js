@@ -130,9 +130,11 @@ export class Scene extends BABYLON.Scene {
         // BABYLON.SceneOptimizer.OptimizeAsync(this);
 
         const targetFPS = 60;
-        const updateRate = 250;
+        const updateRate = 500;
         const options = new BABYLON.SceneOptimizerOptions(targetFPS, updateRate);
-        this.optimizer = new BABYLON.SceneOptimizer(this, options);
+        // options.addOptimization(new BABYLON.HardwareScalingOptimization(0, 1));
+
+        this.optimizer = new BABYLON.SceneOptimizer(this, options, true, true);
         this.optimizer.targetFrameRate = targetFPS;
         this.optimizer.start();
     }

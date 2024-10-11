@@ -450,10 +450,10 @@ export class BattleArea {
     }
 
     update(dt) {
-        this.asteroids.forEach( ast => {
+        this.asteroids.forEach(ast => {
             ast.update(dt);
         });
-        this.enemies.forEach( enemy => {
+        this.enemies.forEach(enemy => {
             enemy.update(dt);
         });
     }
