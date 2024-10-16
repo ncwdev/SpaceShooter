@@ -46,9 +46,9 @@ export class LootBox {
         body.mfg = { name: 'LootBox', id: this.id, entity_class: ENTITY_CLASS_LOOTBOX, entity: this };
 
         const shape = new BABYLON.PhysicsShapeCylinder(
-            new BABYLON.Vector3(0, -1.5, 0),
-            new BABYLON.Vector3(0,  1.5, 0),
-            2,
+            new BABYLON.Vector3(0, -2.5, 0),
+            new BABYLON.Vector3(0,  2.5, 0),
+            3,
             this.scene
         );
         const material = {friction: 0.5, restitution: 0.9};

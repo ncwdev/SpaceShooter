@@ -317,8 +317,9 @@ export class PlayerShipGui extends BaseGui {
         let { x, y } = this.target_pos;
         if (!this.isCursorInBufferZone() && (x !== 0 || y !== 0)) {
             const TINY = 1;
-            x = utils.decreaseValueToZero(x, TINY, 0.5);
-            y = utils.decreaseValueToZero(y, TINY, 0.5);
+            const change = 30 * dt;
+            x = utils.decreaseValueToZero(x, TINY, change);
+            y = utils.decreaseValueToZero(y, TINY, change);
             this.target_pos = { x, y };
 
             this.target.left = `${x}px`;
