@@ -9,7 +9,8 @@ let game = null;
 async function createEngine() {
     const options = { preserveDrawingBuffer: false, stencil: true, disableWebGL2Support: false };
 
-    const webGPUSupported = await BABYLON.WebGPUEngine.IsSupportedAsync;
+    // const webGPUSupported = await BABYLON.WebGPUEngine.IsSupportedAsync;
+    const webGPUSupported = false; // last chrome update broke webGPU support
     if (webGPUSupported) {
         engine = new BABYLON.WebGPUEngine(canvas, options);
         await engine.initAsync();
