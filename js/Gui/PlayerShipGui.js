@@ -3,6 +3,7 @@ import { BaseGui } from './BaseGui.js';
 import { ProgressBar } from './ProgressBar.js';
 import * as utils from '../Utils/utils.js';
 import * as dbg from '../Utils/DebugPanel.js';
+import CONST from '../const.js';
 
 const RT_TOP = 0.25;
 const RT_HEIGHT = 0.50;
@@ -332,7 +333,7 @@ export class PlayerShipGui extends BaseGui {
 
         if (pick.hit && pick.pickedMesh && this.isCursorInTargetField()) {
             const mesh = pick.pickedMesh;
-            if (mesh.mfg && (mesh.mfg.entity_class === ENTITY_CLASS_ENEMY_SHIP)) {
+            if (mesh.mfg && (mesh.mfg.entity_class === CONST.ENTITY_CLASS_ENEMY_SHIP)) {
                 const enemy_ship = mesh.mfg.entity;
                 if (!enemy_ship.isDestroyed()) {
                     this.targetEnemy(enemy_ship);

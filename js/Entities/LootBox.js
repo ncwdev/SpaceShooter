@@ -1,5 +1,7 @@
 // LootBox drops from enemy ship after destroying.
 // Gives a one missile to player.
+import CONST from '../const.js';
+
 export class LootBox {
     game = null;
     scene = null;
@@ -43,7 +45,7 @@ export class LootBox {
         body.setCollisionCallbackEnabled(true);
         this.body = body;
 
-        body.mfg = { name: 'LootBox', id: this.id, entity_class: ENTITY_CLASS_LOOTBOX, entity: this };
+        body.mfg = { name: 'LootBox', id: this.id, entity_class: CONST.ENTITY_CLASS_LOOTBOX, entity: this };
 
         const shape = new BABYLON.PhysicsShapeCylinder(
             new BABYLON.Vector3(0, -2.5, 0),

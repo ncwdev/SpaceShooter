@@ -1,4 +1,5 @@
 import * as utils from '../Utils/utils.js';
+import CONST from '../const.js';
 
 const ROT_SPEED_MIN =  10;
 const ROT_SPEED_MAX =  40;
@@ -27,7 +28,7 @@ export class Asteroid {
         mesh.isVisible = true;
         mesh.setEnabled(true);
 
-        mesh.mfg = { entity_class: ENTITY_CLASS_ASTEROID, entity: this };
+        mesh.mfg = { entity_class: CONST.ENTITY_CLASS_ASTEROID, entity: this };
 
         this.mesh = mesh;
 
@@ -49,7 +50,7 @@ export class Asteroid {
         body.setCollisionCallbackEnabled(true);
         body.disablePreStep = false;    // to rotate with mesh.rotate()
 
-        body.mfg = { name: 'Asteroid', entity_class: ENTITY_CLASS_ASTEROID };
+        body.mfg = { name: 'Asteroid', entity_class: CONST.ENTITY_CLASS_ASTEROID };
 
         const shape = new BABYLON.PhysicsShapeConvexHull(mesh, scene);
         const material = {friction: 0.2, restitution: 0.3};

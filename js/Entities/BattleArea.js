@@ -16,6 +16,8 @@ import * as ExplosionEffect from '../Effects/ExplosionEffect.js';
 import { enemy_bt } from '../AI/EnemyBehavior.js';
 import { TreeBuilder } from '../BehaviorTree/TreeBuilder.js';
 
+import CONST from '../const.js';
+
 // contains player's ship, enemy ships, asteroids, space dust
 // uses physics engine to detect collisions between plasma shots and ships
 export class BattleArea {
@@ -196,7 +198,7 @@ export class BattleArea {
                     mesh.position = new BABYLON.Vector3(pos.x, pos.y, pos.z);
 
                     const ship = new EnemyShip(this.game, mesh);
-                    mesh.mfg = {entity_class: ENTITY_CLASS_ENEMY_SHIP, entity: ship};
+                    mesh.mfg = {entity_class: CONST.ENTITY_CLASS_ENEMY_SHIP, entity: ship};
                     this.enemies.push(ship);
 
                     this.octree.addMesh(mesh);
@@ -298,24 +300,24 @@ export class BattleArea {
         if (!event.collider.mfg || !event.collidedAgainst.mfg) {
             return;
         }
-        if (event.collider.mfg.entity_class === ENTITY_CLASS_MISSILE) {
+        if (event.collider.mfg.entity_class === CONST.ENTITY_CLASS_MISSILE) {
             this.onMissileCollided(event.collider.mfg);
             return;
         }
-        if (event.collidedAgainst.mfg.entity_class === ENTITY_CLASS_MISSILE) {
+        if (event.collidedAgainst.mfg.entity_class === CONST.ENTITY_CLASS_MISSILE) {
             this.onMissileCollided(event.collidedAgainst.mfg);
             return;
         }
-        if (event.collider.mfg.entity_class === ENTITY_CLASS_ASTEROID &&
-            event.collidedAgainst.mfg.entity_class == ENTITY_CLASS_MY_SHOT)
+        if (event.collider.mfg.entity_class === CONST.ENTITY_CLASS_ASTEROID &&
+            event.collidedAgainst.mfg.entity_class == CONST.ENTITY_CLASS_MY_SHOT)
         {
             const shot_id = event.collidedAgainst.mfg.id;
             this.player_ship.deletePlasmaShot(shot_id);
             return;
         }
         // enemy hit
-        if (event.collider.mfg.entity_class === ENTITY_CLASS_ENEMY_SHIP &&
-            event.collidedAgainst.mfg.entity_class == ENTITY_CLASS_MY_SHOT)
+        if (event.collider.mfg.entity_class === CONST.ENTITY_CLASS_ENEMY_SHIP &&
+            event.collidedAgainst.mfg.entity_class == CONST.ENTITY_CLASS_MY_SHOT)
         {
             const shot_id = event.collidedAgainst.mfg.id;
             this.player_ship.deletePlasmaShot(shot_id);
@@ -331,8 +333,8 @@ export class BattleArea {
             return;
         }
         // enemy hits player's ship
-        if (event.collider.mfg.entity_class === ENTITY_CLASS_MY_SHIP &&
-            event.collidedAgainst.mfg.entity_class == ENTITY_CLASS_ENEMY_SHOT)
+        if (event.collider.mfg.entity_class === CONST.ENTITY_CLASS_MY_SHIP &&
+            event.collidedAgainst.mfg.entity_class == CONST.ENTITY_CLASS_ENEMY_SHOT)
         {
             const shot_id = event.collidedAgainst.mfg.id;
             const shot = event.collidedAgainst.mfg.entity;
@@ -349,15 +351,15 @@ export class BattleArea {
             return;
         }
         // player's ship hit loot box
-        if (event.collider.mfg.entity_class === ENTITY_CLASS_MY_SHIP &&
-            event.collidedAgainst.mfg.entity_class === ENTITY_CLASS_LOOTBOX)
+        if (event.collider.mfg.entity_class === CONST.ENTITY_CLASS_MY_SHIP &&
+            event.collidedAgainst.mfg.entity_class === CONST.ENTITY_CLASS_LOOTBOX)
         {
             const loot_box = event.collidedAgainst.mfg.entity;
             this.onPlayerHitLootBox(loot_box);
             return;
         }
-        if (event.collider.mfg.entity_class === ENTITY_CLASS_LOOTBOX &&
-            event.collidedAgainst.mfg.entity_class === ENTITY_CLASS_MY_SHIP)
+        if (event.collider.mfg.entity_class === CONST.ENTITY_CLASS_LOOTBOX &&
+            event.collidedAgainst.mfg.entity_class === CONST.ENTITY_CLASS_MY_SHIP)
         {
             const loot_box = event.collider.mfg.entity;
             this.onPlayerHitLootBox(loot_box);

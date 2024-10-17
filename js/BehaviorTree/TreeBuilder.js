@@ -1,7 +1,7 @@
-import {Selector} from './Selector.js';
-import {Sequence} from './Sequence.js';
-import {IfThenElse} from './IfThenElse.js';
-import {Leaf} from './Leaf.js';
+import { Selector } from './Selector.js';
+import { Sequence } from './Sequence.js';
+import { IfThenElse } from './IfThenElse.js';
+import { Leaf } from './Leaf.js';
 
 export class TreeBuilder {
     static NT_LEAF = 0;
@@ -13,7 +13,7 @@ export class TreeBuilder {
     static createTree(tree_declaration) {
         // Create a map to store the node instances
         const nodeMap = {};
-        
+
         // Create the appropriate node for each node declaration
         Object.keys(tree_declaration).forEach( nodeId => {
             const nodeDecl = tree_declaration[nodeId];
@@ -38,7 +38,7 @@ export class TreeBuilder {
             // Store the node instance in the map
             nodeMap[nodeId] = node;
         });
-        
+
         // Recursively build the tree by creating the children nodes
         Object.keys(tree_declaration).forEach( nodeId => {
             const nodeDecl = tree_declaration[nodeId];
@@ -55,6 +55,6 @@ export class TreeBuilder {
             }
         });
         // Return the root node of the tree
-        return nodeMap["root"];
+        return nodeMap['root'];
     }
 }

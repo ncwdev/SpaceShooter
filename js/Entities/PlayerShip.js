@@ -18,6 +18,8 @@ const ENERGY_RED_INC = 3; // restoring in red zone
 
 import player_config from '../Config/PlayerShipCfg.js';
 
+import CONST from '../const.js';
+
 export class PlayerShip extends Ship {
     camera = null;
     cam_offset = null;
@@ -65,7 +67,7 @@ export class PlayerShip extends Ship {
         body.setAngularDamping(player_config.angular_damping);  // 0.59
         body.setCollisionCallbackEnabled(true);
 
-        body.mfg = { name: 'PlayerShip', entity_class: ENTITY_CLASS_MY_SHIP };
+        body.mfg = { name: 'PlayerShip', entity_class: CONST.ENTITY_CLASS_MY_SHIP };
 
         const shape = new BABYLON.PhysicsShapeCapsule(
             new BABYLON.Vector3(0.5, 0, 0), // starting point of the cylinder segment
@@ -213,11 +215,11 @@ export class PlayerShip extends Ship {
 
         const leftDir = dstPos.subtract(leftPos);
         const q1 = utils.quaternionShortestArc(fwd, leftDir);
-        this.createPlasmaShot(leftPos, q1, ENTITY_CLASS_MY_SHOT, target);
+        this.createPlasmaShot(leftPos, q1, CONST.ENTITY_CLASS_MY_SHOT, target);
 
         const rightDir = dstPos.subtract(rightPos);
         const q2 = utils.quaternionShortestArc(fwd, rightDir);
-        this.createPlasmaShot(rightPos , q2, ENTITY_CLASS_MY_SHOT, target);
+        this.createPlasmaShot(rightPos , q2, CONST.ENTITY_CLASS_MY_SHOT, target);
     }
 
     fireMissile(pointerInfo) {
@@ -237,7 +239,7 @@ export class PlayerShip extends Ship {
         const q = utils.quaternionShortestArc(fwd, dir);
         const target = this.hud.getTargetObj();
 
-        this.createMissile(pos, q, ENTITY_CLASS_MISSILE, target);
+        this.createMissile(pos, q, CONST.ENTITY_CLASS_MISSILE, target);
     }
 
     moveForward(dt, isShiftPressed) {

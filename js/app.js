@@ -6,14 +6,6 @@ let havokInstance = null;
 
 let game = null;
 
-const ENTITY_CLASS_MY_SHIP    = 1;
-const ENTITY_CLASS_ENEMY_SHIP = 2;
-const ENTITY_CLASS_ASTEROID   = 3;
-const ENTITY_CLASS_MY_SHOT    = 4;
-const ENTITY_CLASS_ENEMY_SHOT = 5;
-const ENTITY_CLASS_MISSILE    = 6;
-const ENTITY_CLASS_LOOTBOX    = 7;
-
 async function createEngine() {
     const options = { preserveDrawingBuffer: false, stencil: true, disableWebGL2Support: false };
 
@@ -58,7 +50,7 @@ function runRenderLoop() {
             // engine.resize();
             const w = engine.getRenderWidth();
             const h = engine.getRenderHeight();
-            engine.setSize(Math.min(w, 1920), Math.min(h, 1080)); // to optimize FPS on different resolutions
+            engine.setSize(Math.min(w, 1920), Math.min(h, 1080)); // to optimize FPS on high resolutions
 
             scene.render();
         }

@@ -9,6 +9,8 @@ const EFM_SIZES = [ 1.4, 1.5 ];
 
 import enemy_config from '../Config/EnemyShipCfg.js';
 
+import CONST from '../const.js';
+
 export class EnemyShip extends Ship {
     radarIcon = null;
 
@@ -34,7 +36,7 @@ export class EnemyShip extends Ship {
         body.setCollisionCallbackEnabled(true);
         body.disablePreStep = false;
 
-        body.mfg = { name: 'EnemyShip', entity_class: ENTITY_CLASS_ENEMY_SHIP, entity: this };
+        body.mfg = { name: 'EnemyShip', entity_class: CONST.ENTITY_CLASS_ENEMY_SHIP, entity: this };
 
         const shape = new BABYLON.PhysicsShapeCapsule(
             new BABYLON.Vector3(3, 0, 0),   // starting point of the cylinder segment
@@ -211,11 +213,11 @@ export class EnemyShip extends Ship {
         }
         const dir1 = targetPos.subtract(leftPos);
         const q1 = utils.quaternionShortestArc(fwd, dir1);
-        this.createPlasmaShot(leftPos, q1, ENTITY_CLASS_ENEMY_SHOT, target);
+        this.createPlasmaShot(leftPos, q1, CONST.ENTITY_CLASS_ENEMY_SHOT, target);
 
         const dir2 = targetPos.subtract(rightPos);
         const q2 = utils.quaternionShortestArc(fwd, dir2);
-        this.createPlasmaShot(rightPos, q2, ENTITY_CLASS_ENEMY_SHOT, target);
+        this.createPlasmaShot(rightPos, q2, CONST.ENTITY_CLASS_ENEMY_SHOT, target);
     }
 
     getPlasmaShotDamage() {
