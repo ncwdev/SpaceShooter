@@ -24,7 +24,6 @@ export class LoadingLevelState extends BaseState {
 
                 hud.blackScreen.isVisible = false;
                 hud.loadingText.isVisible = false;
-                hud.infoPanel.isVisible = true;
 
                 FadeEffect.fadeSceneOut(scene, FADE_OUT_TIME, () => {
                     this.game.changeState(new ShowGoalState(this.game));

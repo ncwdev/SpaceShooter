@@ -49,6 +49,7 @@ html, body {
     background-image: url("../assets/images/menu_back.webp");
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    z-index: 2;
 }
 #MenuPanel {
     position: fixed;
@@ -65,4 +66,38 @@ html, body {
     text-shadow: 1px 1px 0 rgb(0, 0, 0), -1px -1px 0 rgb(0, 0, 0), 1px -1px 0 rgb(0, 0, 0), -1px 1px 0 rgb(0, 0, 0);
     font-size: 2.5vh;
     color: blanchedalmond;
+}
+#GameGUI {
+    position: fixed;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    color: blanchedalmond;
+    text-shadow: 1px 1px 0 rgb(0, 0, 0), -1px -1px 0 rgb(0, 0, 0), 1px -1px 0 rgb(0, 0, 0), -1px 1px 0 rgb(0, 0, 0);
+}
+#HelpPanel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 12vw;
+    height: 8vh;
+    background-color: #8F644933;
+    font-size: 1.0vw;
+    line-height: 2.5vh;
+    padding: 0.5vh 0.5vw;
+    display: none;
+}
+#InfoPanel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 8vw;
+    height: 6vh;
+    background-color: #8F644933;
+    font-size: 1.2vw;
+    line-height: 2.8vh;
+    padding: 1.0vh 1.0vw;
+    display: none;
 }

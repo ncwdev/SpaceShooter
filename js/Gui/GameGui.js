@@ -2,6 +2,8 @@ import { BaseGui } from './BaseGui.js';
 import { InOutMoveEffect } from '../Effects/InOutMoveEffect.js';
 import { GradientBoardText } from './GradientBoardText.js';
 
+// const divHelpPanel = document.getElementById('HelpPanel');
+
 export class GameGui extends BaseGui {
     parent = null;
 
@@ -42,34 +44,13 @@ export class GameGui extends BaseGui {
 
         this.gameOverText = new GradientBoardText(game, parent, getLocText('TXT_WIN'), '#128F12');
 
-        this.createInfoPanel(parent);
+        this.infoPanel = document.getElementById('HelpPanel');
+
         this.createTutorPanel(parent);
     }
 
-    createInfoPanel(parent) {
-        // info panel contains help about controls
-        const info = new BABYLON.GUI.Rectangle();
-        info.width = 0.14;
-        info.height= 0.08;
-        parent.addControl(info);
-        this.infoPanel = info;
-        this.infoPanel.isVisible = false;
-        info.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        info.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-        info.background = '#8F644933';
-        info.color = '#8F644933';
-
-        const h = this.screen_height;
-
-        let txt = this.createTextBlock(info);
-        txt.text = getLocText('TXT_ESCAPE_INFO');
-        txt.paddingTop = h * 0.010;
-        txt.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
-
-        txt = this.createTextBlock(info);
-        txt.text = getLocText('TXT_CONTROLS');
-        txt.paddingTop = h * 0.040;
-        txt.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
+    setInfoPanelVisible(flag) {
+        this.infoPanel.style.display = flag ? 'block' : 'none';
     }
 
     createTutorPanel(parent) {

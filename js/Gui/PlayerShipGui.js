@@ -36,16 +36,9 @@ export class PlayerShipGui extends BaseGui {
     health_bar= null;
     armor_bar = null;
 
-    missels_counter = null;
-    enemies_counter = null;
-
-    getArmorBar() {
-        return this.armor_bar;
-    }
-
-    getHealthBar() {
-        return this.health_bar;
-    }
+    infoPanel = null;
+    misselsCounter = null;
+    enemiesCounter = null;
 
     constructor(game, ship) {
         super(game);
@@ -78,9 +71,23 @@ export class PlayerShipGui extends BaseGui {
         this.target.top = '0px';
         this.target_pos = { x: 0, y: 0 };
 
-        this.createInfoPanel(target_field);
+        this.infoPanel = document.getElementById('InfoPanel');
+        this.enemiesCounter = document.getElementById('EnemiesCount');
+        this.misselsCounter = document.getElementById('MissileCount');
 
         this.pointerObserver = this.scene.onPointerObservable.add(this.onPointerHandler.bind(this));
+    }
+
+    setInfoPanelVisible(flag) {
+        this.infoPanel.style.display = flag ? 'block' : 'none';
+    }
+
+    getArmorBar() {
+        return this.armor_bar;
+    }
+
+    getHealthBar() {
+        return this.health_bar;
     }
 
     onPointerHandler(e) {
@@ -145,36 +152,12 @@ export class PlayerShipGui extends BaseGui {
         return radius < MIN_TARGET_RADIUS;
     }
 
-    createInfoPanel(parent) {
-        //const info = new BABYLON.GUI.Container();
-        const info = new BABYLON.GUI.Rectangle();
-        info.width = 0.14;
-        info.height= 0.08;
-        info.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        info.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        info.background = '#8F644933';
-        info.color = '#8F644933';
-        parent.addControl(info);
-
-        let txt = this.createTextBlock(info);
-        txt.text = getLocText('TXT_ENEMIES') + '0';
-        txt.verticalAlignment  = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
-        txt.paddingBottom = this.screen_height * 0.01;
-        this.enemies_counter = txt;
-
-        txt = this.createTextBlock(info);
-        txt.text = getLocText('TXT_MISSELES') + '0';
-        txt.verticalAlignment  = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
-        txt.paddingBottom = this.screen_height * 0.045;
-        this.missels_counter = txt;
-    }
-
     setEnemiesCount(value) {
-        this.enemies_counter.text = getLocText('TXT_ENEMIES') + value;
+        this.enemiesCounter.innerText = getLocText('TXT_ENEMIES') + value;
     }
 
     setMisselesCount(value) {
-        this.missels_counter.text = getLocText('TXT_MISSELES') + value;
+        this.misselsCounter.innerText = getLocText('TXT_MISSELES') + value;
     }
 
     createTargetField() {
@@ -433,6 +416,8 @@ export class PlayerShipGui extends BaseGui {
         this.energy_bar.setVisible(false);
         this.speed_bar_pos.setVisible(false);
         this.speed_bar_neg.setVisible(false);
+
+        this.setInfoPanelVisible(false);
     }
 
     clear() {

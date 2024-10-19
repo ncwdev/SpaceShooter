@@ -9,7 +9,8 @@ const en = {
     TXT_EXIT_CONFIRM: 'Are you sure you want to quit?',
     TXT_WIN: 'WIN!',
     TXT_LOST: 'GAME OVER',
-    TXT_CONTROLS: 'WASD + QE + mouse',
+    TXT_CONTROLS: 'WASD + QE to move',
+    TXT_CONTROLS2: 'SHIFT to accelerate',
     TXT_GOAL: 'Defeat all enemies',
     TXT_MISSILE_INFO: 'Collect loot from enemies to get missiles',
 };
@@ -24,7 +25,8 @@ const ru = {
     TXT_EXIT_CONFIRM: 'Выйти в меню?',
     TXT_WIN: 'Победа!',
     TXT_LOST: 'Вы проиграли...',
-    TXT_CONTROLS: 'WASD + QE + мышка',
+    TXT_CONTROLS: 'WASD + QE полет',
+    TXT_CONTROLS2: 'SHIFT для ускорения',
     TXT_GOAL: 'Победи всех врагов',
     TXT_MISSILE_INFO: 'Собирай лут с врагов, чтобы получить ракеты',
 };
@@ -44,3 +46,12 @@ elem.innerText = getLocText('TXT_ENEMIES_NUM');
 
 elem = document.getElementById('PlayTxt');
 elem.innerText = getLocText('TXT_PLAY');
+
+elem = document.getElementById('HelpText1');
+elem.innerText = getLocText('TXT_ESCAPE_INFO');
+
+elem = document.getElementById('HelpText2');
+elem.innerText = getLocText('TXT_CONTROLS');
+
+elem = document.getElementById('HelpText3');
+elem.innerText = getLocText('TXT_CONTROLS2');

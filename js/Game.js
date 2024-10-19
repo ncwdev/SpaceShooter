@@ -105,6 +105,8 @@ export class MyGame {
         this.keyboardManager = new KeyboardManager(this.scene);
         this.controller = new PlayerShipController(this, this.keyboardManager);
 
+        this.hud.setInfoPanelVisible(true);
+
         this.changeState(new PlayState(this));
     }
 
@@ -127,7 +129,6 @@ export class MyGame {
         this.hud.gameOverText.setText(getLocText('TXT_WIN'));
         this.hud.gameOverText.setBackColor(this.config.game_win_backcolor);
         this.hud.gameOverText.show(...this.config.game_over_text_times);
-        this.hud.infoPanel.isVisible = false;
 
         this.returnToMenu();
     }
@@ -136,12 +137,14 @@ export class MyGame {
         this.hud.gameOverText.setText(getLocText('TXT_LOST'));
         this.hud.gameOverText.setBackColor(this.config.game_lost_backcolor);
         this.hud.gameOverText.show(...this.config.game_over_text_times);
-        this.hud.infoPanel.isVisible = false;
 
         this.returnToMenu();
     }
 
     returnToMenu() {
+        this.hud.setInfoPanelVisible(false);
+        this.battleArea.getPlayerShip().hideHud();
+
         this.changeState(new ShowResultState(this));
     }
 

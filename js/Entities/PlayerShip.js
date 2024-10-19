@@ -313,6 +313,7 @@ export class PlayerShip extends Ship {
         this.hud = new PlayerShipGui(this.game, this);
         this.armor_bar = this.hud.getArmorBar();
         this.health_bar= this.hud.getHealthBar();
+        this.hud.setInfoPanelVisible(true);
     }
 
     hideHud() {
