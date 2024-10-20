@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     max_enemies_num: 12,
 
     radius_min: 1100,
@@ -29,4 +29,4 @@ export default {
 
     skyboxTextureSize: 2048,
     starsCount: 3000,
-};
+});

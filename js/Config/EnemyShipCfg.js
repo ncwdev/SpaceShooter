@@ -1,4 +1,4 @@
-const config = {
+const config = Object.freeze({
     health: 1000,
     armor:  0,
     armor_restore: 0,
@@ -73,5 +73,5 @@ const config = {
 
     max_angle_to_fire: 0.85,
     stop_fire_distance: 100,    // if target is too close, don't fire
-};
+});
 export default config;

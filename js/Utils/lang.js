@@ -1,4 +1,4 @@
-const en = {
+const en = Object.freeze({
     TXT_TITLE: 'Space shooter',
     TXT_ENEMIES_NUM: 'Number of enemies:',
     TXT_PLAY: 'Play',
@@ -13,8 +13,9 @@ const en = {
     TXT_CONTROLS2: 'SHIFT to accelerate',
     TXT_GOAL: 'Defeat all enemies',
     TXT_MISSILE_INFO: 'Collect loot from enemies to get missiles',
-};
-const ru = {
+});
+
+const ru = Object.freeze({
     TXT_TITLE: 'Space shooter',
     TXT_ENEMIES_NUM: 'Число врагов:',
     TXT_PLAY: 'В бой',
@@ -29,10 +30,10 @@ const ru = {
     TXT_CONTROLS2: 'SHIFT для ускорения',
     TXT_GOAL: 'Победи всех врагов',
     TXT_MISSILE_INFO: 'Собирай лут с врагов, чтобы получить ракеты',
-};
+});
 
 // too lazy to make selector...
-let curLanguage = en;
+const curLanguage = en;
 
 function getLocText(id) {
     return curLanguage[id];

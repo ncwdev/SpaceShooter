@@ -1,4 +1,4 @@
-const config = {
+const config = Object.freeze({
     health: 1000,
     armor:  1000,
     armor_restore: 10,
@@ -59,5 +59,5 @@ const config = {
 
     missile_pos: new BABYLON.Vector3(1, -2.5, 0.0),
     missiles_num: 3,
-};
+});
 export default config;
