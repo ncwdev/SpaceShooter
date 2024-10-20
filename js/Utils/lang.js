@@ -55,3 +55,6 @@ elem.innerText = getLocText('TXT_CONTROLS');
 
 elem = document.getElementById('HelpText3');
 elem.innerText = getLocText('TXT_CONTROLS2');
+
+elem = document.getElementById('TutorPanel');
+elem.innerText = getLocText('TXT_MISSILE_INFO');

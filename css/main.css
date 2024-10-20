@@ -101,3 +101,15 @@ html, body {
     padding: 1.0vh 1.0vw;
     display: none;
 }
+#TutorPanel {
+    position: fixed;
+    top: 12vh;
+    left: 0;
+    width: 14vw;
+    height: 5vh;
+    background-color: #8F644933;
+    font-size: 1.0vw;
+    line-height: 2.4vh;
+    padding: 0.5vh 0.5vw;
+    display: none;
+}

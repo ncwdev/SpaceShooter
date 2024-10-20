@@ -2,8 +2,6 @@ import { BaseGui } from './BaseGui.js';
 import { InOutMoveEffect } from '../Effects/InOutMoveEffect.js';
 import { GradientBoardText } from './GradientBoardText.js';
 
-// const divHelpPanel = document.getElementById('HelpPanel');
-
 export class GameGui extends BaseGui {
     parent = null;
 
@@ -12,6 +10,7 @@ export class GameGui extends BaseGui {
 
     infoPanel = null;
     tutorPanel = null;
+    tutorStartPos = 0;
 
     moveTutorEffect = null;
 
@@ -46,44 +45,14 @@ export class GameGui extends BaseGui {
 
         this.infoPanel = document.getElementById('HelpPanel');
 
-        this.createTutorPanel(parent);
+        this.tutorPanel = document.getElementById('TutorPanel');
+        const style = window.getComputedStyle(this.tutorPanel);
+        this.tutorStartPos = -parseFloat(style.width);
+        this.tutorPanel.style.left = this.tutorStartPos + 'px';
     }
 
     setInfoPanelVisible(flag) {
         this.infoPanel.style.display = flag ? 'block' : 'none';
-    }
-
-    createTutorPanel(parent) {
-        // message about missiles in loot boxes
-        const h = this.screen_height;
-        const w = this.screen_width;
-
-        const info = new BABYLON.GUI.Rectangle();
-        info.height = 0.06;
-
-        info.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        info.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-
-        info.background = '#8F644933';
-        info.color = '#8F644933';
-
-        parent.addControl(info);
-        this.tutorPanel = info;
-        this.tutorPanel.isVisible = false;
-
-        const txt = this.createTextBlock(info);
-        txt.text = getLocText('TXT_MISSILE_INFO');
-        txt.paddingTop = h * 0.010;
-        txt.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_CENTER;
-
-        let width = this.parent.getContext().measureText(txt.text).width;
-        width = width / w + 0.08;
-        info.width = width;
-
-        info.top = 0.12 * h;
-
-        this.tutor_start_pos = -width * w;
-        info.left = -width * w + 'px';
     }
 
     showTutor() {
@@ -91,8 +60,13 @@ export class GameGui extends BaseGui {
             return;
         }
         this.tutorPanel.isVisible = true;
+        this.tutorPanel.style.display = 'block';
 
-        this.moveTutorEffect = new InOutMoveEffect(this.tutor_start_pos, 0, 0.7, 4.0, 0.7);
+        const endPos = 0;
+        const inTime = 0.7;
+        const waitTime = 4.0;
+        const outTime = 0.7;
+        this.moveTutorEffect = new InOutMoveEffect(this.tutorStartPos, endPos, inTime, waitTime, outTime);
     }
 
     showGoal() {
@@ -110,11 +84,11 @@ export class GameGui extends BaseGui {
     update(dt) {
         if (this.moveTutorEffect) {
             const x = this.moveTutorEffect.update(dt);
-            this.tutorPanel.left = x + 'px';
+            this.tutorPanel.style.left = x + 'px';
 
             if (this.moveTutorEffect.isFinished()) {
                 this.moveTutorEffect = null;
-                this.tutorPanel.isVisible = false;
+                this.tutorPanel.style.display = 'none';
             }
         }
         if (this.goalBoardText) {
