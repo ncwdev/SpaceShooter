@@ -10,7 +10,7 @@ export class LoadingLevelState extends BaseState {
         scene.hideSceneEffect.dispose();
 
         const hud = this.game.getHud();
-        hud.loadingText.isVisible = true;
+        hud.setLoadingTextVisible(true);
 
         // init battle area
         const battleArea = this.game.getBattleArea();
@@ -23,7 +23,7 @@ export class LoadingLevelState extends BaseState {
                 clearInterval(checkIsReadyInt);
 
                 hud.blackScreen.isVisible = false;
-                hud.loadingText.isVisible = false;
+                hud.setLoadingTextVisible(false);
 
                 FadeEffect.fadeSceneOut(scene, FADE_OUT_TIME, () => {
                     this.game.changeState(new ShowGoalState(this.game));

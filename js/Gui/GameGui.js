@@ -31,15 +31,8 @@ export class GameGui extends BaseGui {
         this.blackScreen = back;
         this.blackScreen.isVisible = false;
 
-        const txt = new BABYLON.GUI.TextBlock();
-        txt.text = getLocText('TXT_LOADING');
-        txt.color = '#ddd';
-        txt.fontSize = this.font_size;
-        parent.addControl(txt);
-        txt.horizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
-        txt.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_CENTER;
-        this.loadingText = txt;
-        this.loadingText.isVisible = false;
+        this.loadingText = document.getElementById('LoadingText');
+        this.loadingText.innerText = getLocText('TXT_LOADING');
 
         this.gameOverText = new GradientBoardText(game, parent, getLocText('TXT_WIN'), '#128F12');
 
@@ -53,6 +46,10 @@ export class GameGui extends BaseGui {
 
     setInfoPanelVisible(flag) {
         this.infoPanel.style.display = flag ? 'block' : 'none';
+    }
+
+    setLoadingTextVisible(flag) {
+        this.loadingText.style.display = flag ? 'grid' : 'none';
     }
 
     showTutor() {
