@@ -165,9 +165,9 @@ export class Ship {
         this.right_flare_particles.maxSize = sizes[1];
     }
 
-    createPlasmaShot(pos, quaternion, entity_class, target) {
+    createPlasmaShot(pos, quaternion, entityClass, target) {
         const shot = new PlasmaShot(this.game, this.plasma_shots_count, this, target);
-        shot.init(pos, quaternion, entity_class);
+        shot.init(pos, quaternion, entityClass);
 
         const id = shot.getId();
         this.plasma_shots[id] = shot;
@@ -199,9 +199,9 @@ export class Ship {
         this.setHealth(this.getHealth() - damage);
     }
 
-    createMissile(pos, quaternion, entity_class, target) {
+    createMissile(pos, quaternion, entityClass, target) {
         const shot = new Missile(this.game, this.plasma_shots_count, this, target);
-        shot.init(pos, quaternion, entity_class);
+        shot.init(pos, quaternion, entityClass);
         const id = shot.getId();
 
         this.plasma_shots[id] = shot;

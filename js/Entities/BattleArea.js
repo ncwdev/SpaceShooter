@@ -308,11 +308,11 @@ export class BattleArea {
             this.onMissileCollided(event.collidedAgainst.mfg);
             return;
         }
-        if (event.collider.mfg.entity_class === CONST.ENTITY_CLASS_ASTEROID &&
-            event.collidedAgainst.mfg.entity_class == CONST.ENTITY_CLASS_MY_SHOT)
+        if (event.collidedAgainst.mfg.entity_class === CONST.ENTITY_CLASS_ASTEROID &&
+            event.collider.mfg.entity_class == CONST.ENTITY_CLASS_MY_SHOT)
         {
-            const shot_id = event.collidedAgainst.mfg.id;
-            this.player_ship.deletePlasmaShot(shot_id);
+            const shotId = event.collider.mfg.id;
+            this.player_ship.deletePlasmaShot(shotId);
             return;
         }
         // enemy hit
