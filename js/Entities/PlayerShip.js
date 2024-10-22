@@ -136,39 +136,41 @@ export class PlayerShip extends Ship {
 
     updateCamera(dt) {
         // softly rotate camera with full control of forward and up vectors
-        const target_dist = this.config.cam_target_dist; // distance to target in front of ship
+        const targetDist = this.config.cam_target_dist; // distance to target in front of ship
 
         const offset = this.cam_effect.update(dt);
         this.cam_offset.z = this.config.cam_offset.z + offset.x;
         this.cam_offset.y = this.config.cam_offset.y + offset.y;
 
         this.mesh.computeWorldMatrix();
-        const global_cam_pos = BABYLON.Vector3.TransformCoordinates(this.cam_offset, this.mesh.getWorldMatrix());
-        this.camera.position = BABYLON.Vector3.Lerp(this.camera.position, global_cam_pos, this.config.cam_lerp_factor);
+        const globalCameraPos = BABYLON.Vector3.TransformCoordinates(this.cam_offset, this.mesh.getWorldMatrix());
+
+        const intFactor = 1 - Math.pow(2, -dt * this.config.cam_lerp_factor);
+        this.camera.position.x += (globalCameraPos.x - this.camera.position.x) * intFactor;
+        this.camera.position.y += (globalCameraPos.y - this.camera.position.y) * intFactor;
+        this.camera.position.z += (globalCameraPos.z - this.camera.position.z) * intFactor;
 
         // change target dist based on ship's pitch
         const dx = this.pitch_speed * this.camera_pitch_mult;
-        const target_pos = new BABYLON.Vector3(target_dist + dx, 0, 0); // in ship's local coordinates
+        const targetPos = new BABYLON.Vector3(targetDist + dx, 0, 0); // in ship's local coordinates
 
-        let global_target_pos = BABYLON.Vector3.TransformCoordinates(target_pos, this.mesh.getWorldMatrix());
-        global_target_pos = BABYLON.Vector3.Lerp(global_target_pos, this.camera.getTarget(), this.config.cam_lerp_factor);
+        const cameraRollAngle = this.yaw_speed * this.camera_yaw_mult - this.roll_speed * this.cam_roll_mult;
+        const z = Math.sin(cameraRollAngle);
 
-        const cam_roll_angle = this.yaw_speed * this.camera_yaw_mult - this.roll_speed * this.cam_roll_mult;
-        const z = Math.sin(cam_roll_angle);
-
-        const forward = global_target_pos.subtract(global_cam_pos);
+        const globalTargetPos = BABYLON.Vector3.TransformCoordinates(targetPos, this.mesh.getWorldMatrix());
+        const forward = globalTargetPos.subtract(globalCameraPos);
         const right = BABYLON.Vector3.Zero();
         let up = BABYLON.Vector3.Zero();
 
-        const local_fwd = { x: target_pos.x - this.cam_offset.x, y: target_pos.y - this.cam_offset.y };
-        const local_up  = utils.rotateVector2d(local_fwd, -Math.PI / 2);
-        const local_up_3d = new BABYLON.Vector3(local_up.x, local_up.y, 0).normalize();
-        local_up_3d.z = z;
+        const localForward = { x: targetPos.x - this.cam_offset.x, y: targetPos.y - this.cam_offset.y };
+        const localUp  = utils.rotateVector2d(localForward, -Math.PI / 2);
+        const localUp3d = new BABYLON.Vector3(localUp.x, localUp.y, 0).normalize();
+        localUp3d.z = z;
 
-        const up_pos = this.cam_offset.add(local_up_3d);
-        const global_up_pos = BABYLON.Vector3.TransformCoordinates(up_pos, this.mesh.getWorldMatrix());
+        const upPos = this.cam_offset.add(localUp3d);
+        const globalUpPos = BABYLON.Vector3.TransformCoordinates(upPos, this.mesh.getWorldMatrix());
 
-        up = global_up_pos.subtract(global_cam_pos);
+        up = globalUpPos.subtract(globalCameraPos);
         BABYLON.Vector3.CrossToRef(up, forward, right);
 
         // Create the new world-space rotation matrix from the computed forward, right, and up vectors.

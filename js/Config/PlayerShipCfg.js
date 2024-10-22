@@ -44,8 +44,8 @@ const config = Object.freeze({
     },
 
     cam_offset: new BABYLON.Vector3(-19, 5.5, 0),
-    cam_target_dist: 80,    // distance to target in front of ship
-    cam_lerp_factor: 0.12,  // greater value leads to camera jitting
+    cam_target_dist: 80, // distance to target in front of ship
+    cam_lerp_factor: 12,
     camera_to_ship_initial_dist: 3,
 
     idle_move_radius: 0.12,
