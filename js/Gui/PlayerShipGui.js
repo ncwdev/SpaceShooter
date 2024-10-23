@@ -296,6 +296,40 @@ export class PlayerShipGui extends BaseGui {
         }
     }
 
+    pickEnemy() {
+        const cursorPos = this.getCursorPosition();
+
+        const positions = [5];
+        positions[0] = [ cursorPos.x, cursorPos.y ];
+
+        positions[1] = [ cursorPos.x + 2, cursorPos.y ];
+        positions[2] = [ cursorPos.x, cursorPos.y + 2 ];
+        positions[3] = [ cursorPos.x - 2, cursorPos.y ];
+        positions[4] = [ cursorPos.x, cursorPos.y - 2 ];
+
+        positions[5] = [ cursorPos.x + 4, cursorPos.y ];
+        positions[6] = [ cursorPos.x, cursorPos.y + 4 ];
+        positions[7] = [ cursorPos.x - 4, cursorPos.y ];
+        positions[8] = [ cursorPos.x, cursorPos.y - 4 ];
+
+        for (let i = 0; i < positions.length; i++) {
+            const pos = positions[i];
+            const pick = this.scene.pick(pos[0], pos[1]);
+
+            if (pick.hit && pick.pickedMesh && this.isCursorInTargetField()) {
+                const mesh = pick.pickedMesh;
+                if (mesh.mfg && (mesh.mfg.entity_class === CONST.ENTITY_CLASS_ENEMY_SHIP)) {
+                    const enemy_ship = mesh.mfg.entity;
+                    if (!enemy_ship.isDestroyed()) {
+                        this.targetEnemy(enemy_ship);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     updateTarget(dt) {
         // shift target pos to center (0, 0)
         let { x, y } = this.target_pos;
@@ -311,20 +345,9 @@ export class PlayerShipGui extends BaseGui {
         }
 
         // picking meshes under target icon
-        const cursorPos = this.getCursorPosition();
-        const pick = this.scene.pick(cursorPos.x, cursorPos.y);
-
-        if (pick.hit && pick.pickedMesh && this.isCursorInTargetField()) {
-            const mesh = pick.pickedMesh;
-            if (mesh.mfg && (mesh.mfg.entity_class === CONST.ENTITY_CLASS_ENEMY_SHIP)) {
-                const enemy_ship = mesh.mfg.entity;
-                if (!enemy_ship.isDestroyed()) {
-                    this.targetEnemy(enemy_ship);
-                    return;
-                }
-            }
+        if (!this.pickEnemy()) {
+            this.resetTarget();
         }
-        this.resetTarget();
     }
 
     update(dt) {
