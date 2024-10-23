@@ -4,13 +4,16 @@ let scene  = null;
 
 let havokInstance = null;
 
+const MAX_WIDHT = 1920;
+const MAX_HEIGHT = 1080;
+
 let game = null;
 
 async function createEngine() {
     const options = { preserveDrawingBuffer: false, stencil: true, disableWebGL2Support: false };
 
     // const webGPUSupported = await BABYLON.WebGPUEngine.IsSupportedAsync;
-    const webGPUSupported = false; // last chrome update broke webGPU support
+    const webGPUSupported = false; // last chrome update broke webGPU performance
     if (webGPUSupported) {
         engine = new BABYLON.WebGPUEngine(canvas, options);
         await engine.initAsync();
@@ -48,11 +51,6 @@ const init = async function() {
 function runRenderLoop() {
     engine.runRenderLoop(function () {
         if (scene && scene.activeCamera) {
-            // engine.resize();
-            const w = engine.getRenderWidth();
-            const h = engine.getRenderHeight();
-            engine.setSize(Math.min(w, 1920), Math.min(h, 1080)); // to optimize FPS on high resolutions
-
             scene.render();
         }
     });
@@ -64,6 +62,8 @@ function startGame() {
         console.error('startGame(): game should not be null');
         return;
     }
+    resize();
+
     engine.enterPointerlock();
 
     game.hideMenu();
@@ -96,6 +96,22 @@ document.addEventListener('pointerlockchange', () => {
         }
     }
 });
+
+function resize() {
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+
+    // limit resolution to optimize performance
+    w = Math.min(w, MAX_WIDHT);
+    h = Math.min(h, MAX_HEIGHT);
+
+    const resizableContainer = document.getElementById('resizableContainer');
+    resizableContainer.style.width = w + 'px';
+    resizableContainer.style.height = h + 'px';
+
+    engine.setSize(w, h);
+}
+window.addEventListener('resize', resize);
 
 // Entry point
 init();

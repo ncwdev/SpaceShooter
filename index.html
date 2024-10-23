@@ -10,7 +10,24 @@
     <script src="js/Lib/HavokPhysics_umd.js" defer></script>
 </head>
 <body>
-    <canvas id="renderCanvas" tabindex="0"></canvas>
+    <div id="gameContainer">
+        <div id="resizableContainer">
+            <canvas id="renderCanvas" tabindex="0"></canvas>
+            <div id="GameGUI">
+                <div id="HelpPanel">
+                    <div id="HelpText1">Actual localized texts</div>
+                    <div id="HelpText2">you can find in</div>
+                    <div id="HelpText3">js/Utils/lang.js</div>
+                </div>
+                <div id="TutorPanel">TXT_MISSILE_INFO</div>
+                <div id="InfoPanel">
+                    <div id="MissileCount"></div>
+                    <div id="EnemiesCount"></div>
+                </div>
+                <div id="LoadingText"><div>TXT_LOADING</div></div>
+            </div>
+        </div>
+    </div>
     <div id="DebugPanel">
         <div id="game_fps" class="dbg_txt">0</div>
         <div id="dist" class="dbg_txt">0</div>
@@ -26,19 +43,6 @@
             </div>
             <div id="PlayTxt" class="ncw_btn" style="top: 46vh; left: 46vw;font-size: 2.5vh;z-index: 9;width: 5vw; pointer-events: none;" onmousedown="startGame()">Play</div>
         </div>
-    </div>
-    <div id="GameGUI">
-        <div id="HelpPanel">
-            <div id="HelpText1">Actual localized texts</div>
-            <div id="HelpText2">you can find in</div>
-            <div id="HelpText3">js/Utils/lang.js</div>
-        </div>
-        <div id="TutorPanel">TXT_MISSILE_INFO</div>
-        <div id="InfoPanel">
-            <div id="MissileCount"></div>
-            <div id="EnemiesCount"></div>
-        </div>
-        <div id="LoadingText"><div>TXT_LOADING</div></div>
     </div>
     <script src="js/Config/meshes_list.js" defer></script>
     <script src="js/Utils/lang.js" defer></script>

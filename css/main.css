@@ -6,11 +6,28 @@ html, body {
     padding:0;
     user-select: none;
     font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
+}
+#gameContainer {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+#resizableContainer {
+    width: 800px;
+    height: 600px;
+    position: relative;
 }
 #renderCanvas {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     height:100%;
     touch-action: none;
+    align-content: center;
 }
 .ncw_btn {
     width: fit-content;
@@ -41,8 +58,8 @@ html, body {
 }
 #MainMenu {
     position: fixed;
-    top: 0vh;
-    left:0vw;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background-color: black;
@@ -68,17 +85,19 @@ html, body {
     color: blanchedalmond;
 }
 #GameGUI {
-    position: fixed;
+    position: absolute;
     top: 0;
-    left:0;
+    left: 0;
     width: 100%;
     height: 100%;
     z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
     color: blanchedalmond;
     text-shadow: 1px 1px 0 rgb(0, 0, 0), -1px -1px 0 rgb(0, 0, 0), 1px -1px 0 rgb(0, 0, 0), -1px 1px 0 rgb(0, 0, 0);
 }
 #HelpPanel {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 12vw;
@@ -90,9 +109,9 @@ html, body {
     display: none;
 }
 #InfoPanel {
-    position: fixed;
-    bottom: 0;
+    position: absolute;
     left: 0;
+    bottom: 0;
     width: 8vw;
     height: 6vh;
     background-color: #8F644933;
@@ -102,7 +121,7 @@ html, body {
     display: none;
 }
 #TutorPanel {
-    position: fixed;
+    position: absolute;
     top: 12vh;
     left: 0;
     width: 14vw;
