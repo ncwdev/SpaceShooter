@@ -1,9 +1,9 @@
 import * as utils from '../Utils/utils.js';
 import CONST from '../const.js';
 
-const ROT_SPEED_MIN =  10;
-const ROT_SPEED_MAX =  40;
-const ROT_SPEED_K   =  120;
+const ROT_SPEED_MIN = 10;
+const ROT_SPEED_MAX = 40;
+const ROT_SPEED_K   = 120;
 
 export class Asteroid {
     scene= null;
@@ -27,6 +27,9 @@ export class Asteroid {
         mesh.isPickable = true; // enemy AI uses it to avoid collisions
         mesh.isVisible = true;
         mesh.setEnabled(true);
+
+        mesh.material.freeze();
+        // mesh.freezeWorldMatrix();
 
         mesh.mfg = { entity_class: CONST.ENTITY_CLASS_ASTEROID, entity: this };
 
@@ -69,15 +72,19 @@ export class Asteroid {
             this.mesh.rotate(this.rotationAxis, angle, BABYLON.Space.WORLD);
         }
     }
+
     isDestroyed() {
         return false;
     }
+
     getPosition() {
         return this.mesh.position;
     }
+
     getMesh() {
         return this.mesh;
     }
+
     clear() {
         this.body.dispose();
         this.body = null;

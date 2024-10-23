@@ -130,8 +130,8 @@ export class BattleArea {
 
         // create a bunch of asteroids - use all 6 models
         const asteroids = meshes_list.Asteroids;
-        asteroids.forEach( ast_data => {
-            BABYLON.SceneLoader.ImportMesh('', ast_data.path, ast_data.file, this.scene, this.instanceAsteroids.bind(this));
+        asteroids.forEach(data => {
+            BABYLON.SceneLoader.ImportMesh('', data.path, data.file, this.scene, this.instanceAsteroids.bind(this));
         });
 
         mesh_data = meshes_list.LootBox;
@@ -211,7 +211,8 @@ export class BattleArea {
     instanceAsteroids(newMeshes) {
         const parentMesh = newMeshes[0];
         parentMesh.receiveShadows = true;
-        parentMesh.checkCollisions= true;
+        parentMesh.checkCollisions = true;
+        parentMesh.material.freeze();
         parentMesh.isVisible = false;
         this.parent_meshes.push(parentMesh);
 
@@ -241,7 +242,7 @@ export class BattleArea {
 
     isReady() {
         // check if all asteroids is ready
-        return this.asteroids.every( ast => ast.getMesh().isReady(true, true) );
+        return this.asteroids.every(ast => ast.getMesh().isReady(true, true));
     }
 
     warpShipToRadius(mesh, dist_from_center) {
