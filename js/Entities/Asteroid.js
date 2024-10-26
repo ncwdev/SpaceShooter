@@ -42,7 +42,6 @@ export class Asteroid {
 
         // Create a shape and the static body. Size will be determined automatically.
         const body = new BABYLON.PhysicsBody(mesh, BABYLON.PhysicsMotionType.STATIC, false, this.scene);
-        //const body = new BABYLON.PhysicsBody(mesh, BABYLON.PhysicsMotionType.ANIMATED, false, scene);
         body.setMassProperties({
             mass: 1000000,
             inertia: new BABYLON.Vector3(10, 10, 10),
@@ -51,7 +50,7 @@ export class Asteroid {
         body.setLinearDamping(1.0);
         body.setAngularDamping(0.0);
         body.setCollisionCallbackEnabled(true);
-        body.disablePreStep = false;    // to rotate with mesh.rotate()
+        body.disablePreStep = false; // to rotate with mesh.rotate()
 
         body.mfg = { name: 'Asteroid', entity_class: CONST.ENTITY_CLASS_ASTEROID };
 

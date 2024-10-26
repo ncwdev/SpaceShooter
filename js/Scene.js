@@ -1,10 +1,6 @@
 export class Scene extends BABYLON.Scene {
     plasmaShotLayer = null;
 
-    getPlasmaShotLayer() {
-        return this.plasmaShotLayer;
-    }
-
     constructor(engine) {
         // scene contains skybox, light, camera and some effects (glow, fog, ...)
         super(engine);
@@ -17,22 +13,25 @@ export class Scene extends BABYLON.Scene {
         //     embedMode: false,
         // });
 
-        const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0));
-        light.intensity = 0.001;
-        light.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
-
         scene.createDefaultEnvironment({
             createGround: false,
             createSkybox: false,
         });
         scene.clearColor = new BABYLON.Color3(0, 0, 0);
+        scene.environmentIntensity = 1.5;
 
-        // fog creates a strange artifacts on the skybox
+        const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0));
+        light.intensity = 1.0;
+        light.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
+
+        const light2 = new BABYLON.DirectionalLight('dirLight', new BABYLON.Vector3(0, 2, 1), scene);
+        light2.position = new BABYLON.Vector3(0, 0, 0);
+        light2.intensity = 1.0;
+        light2.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
+
         // scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-        // // scene.fogColor = new BABYLON.Color3(0.2, 0.2, 0.4);
         // scene.fogColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-        // // scene.fogDensity = 0.00025;
-        // scene.fogDensity = 0.00046;
+        // scene.fogDensity = 0.00006;
 
         const glow_layer = new BABYLON.GlowLayer('PlasmaShotGlow', scene);
         glow_layer.intensity = 0.95;
@@ -48,6 +47,16 @@ export class Scene extends BABYLON.Scene {
             effect.setFloat('fadeLevel', postProcess.fadeLevel);
         };
         this.hideSceneEffect = postProcess;
+
+        const postprocess = scene.imageProcessingConfiguration;
+        postprocess.toneMappingEnabled = true;
+        postprocess.toneMappingType = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES;
+
+        // const postProcessFXAA = new BABYLON.FxaaPostProcess('fxaa', 1.0, camera);
+    }
+
+    getPlasmaShotLayer() {
+        return this.plasmaShotLayer;
     }
 
     randomPoints(ctx, count, size) {

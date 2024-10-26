@@ -212,6 +212,7 @@ export class BattleArea {
         const parentMesh = newMeshes[0];
         parentMesh.receiveShadows = true;
         parentMesh.checkCollisions = true;
+        parentMesh.material.roughness = 0.5;
         parentMesh.material.freeze();
         parentMesh.isVisible = false;
         this.parent_meshes.push(parentMesh);
