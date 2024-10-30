@@ -100,11 +100,11 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 12vw;
+    width: 10vw;
     height: 8vh;
     background-color: #8F644933;
-    font-size: 1.0vw;
-    line-height: 2.5vh;
+    font-size: 0.8vw;
+    line-height: 2.0vh;
     padding: 0.5vh 0.5vw;
     display: none;
 }

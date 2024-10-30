@@ -9,6 +9,7 @@ const en = Object.freeze({
     TXT_EXIT_CONFIRM: 'Are you sure you want to quit?',
     TXT_WIN: 'WIN!',
     TXT_LOST: 'GAME OVER',
+    TXT_ATTACK: 'LMB/RMB to shoot',
     TXT_CONTROLS: 'WASD + QE to move',
     TXT_CONTROLS2: 'SHIFT to accelerate',
     TXT_GOAL: 'Defeat all enemies',
@@ -26,6 +27,7 @@ const ru = Object.freeze({
     TXT_EXIT_CONFIRM: 'Выйти в меню?',
     TXT_WIN: 'Победа!',
     TXT_LOST: 'Вы проиграли...',
+    TXT_ATTACK: 'ЛКМ/ПКМ для стрельбы',
     TXT_CONTROLS: 'WASD + QE полет',
     TXT_CONTROLS2: 'SHIFT для ускорения',
     TXT_GOAL: 'Победи всех врагов',
@@ -48,8 +50,11 @@ elem.innerText = getLocText('TXT_ENEMIES_NUM');
 elem = document.getElementById('PlayTxt');
 elem.innerText = getLocText('TXT_PLAY');
 
+elem = document.getElementById('TutorPanel');
+elem.innerText = getLocText('TXT_MISSILE_INFO');
+
 elem = document.getElementById('HelpText1');
-elem.innerText = getLocText('TXT_ESCAPE_INFO');
+elem.innerText = getLocText('TXT_ATTACK');
 
 elem = document.getElementById('HelpText2');
 elem.innerText = getLocText('TXT_CONTROLS');
@@ -57,5 +62,5 @@ elem.innerText = getLocText('TXT_CONTROLS');
 elem = document.getElementById('HelpText3');
 elem.innerText = getLocText('TXT_CONTROLS2');
 
-elem = document.getElementById('TutorPanel');
-elem.innerText = getLocText('TXT_MISSILE_INFO');
+elem = document.getElementById('HelpText4');
+elem.innerText = getLocText('TXT_ESCAPE_INFO');
