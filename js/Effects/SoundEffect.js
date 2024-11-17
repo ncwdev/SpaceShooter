@@ -22,7 +22,7 @@ export class SoundEffect {
     }
 
     async waitSound() {
-        for (let i = 0; i < 20; ++i) {
+        for (let i = 0; i < 100; ++i) {
             if (this.isLoaded) {
                 return;
             } else {
