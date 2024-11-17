@@ -14,6 +14,8 @@ const en = Object.freeze({
     TXT_CONTROLS2: 'SHIFT to accelerate',
     TXT_GOAL: 'Defeat all enemies',
     TXT_MISSILE_INFO: 'Collect loot from enemies to get missiles',
+    TXT_SOUNDS: 'Sounds',
+    TXT_SOUNDS_VOL: 'Volume:',
 });
 
 const ru = Object.freeze({
@@ -32,6 +34,8 @@ const ru = Object.freeze({
     TXT_CONTROLS2: 'SHIFT для ускорения',
     TXT_GOAL: 'Победи всех врагов',
     TXT_MISSILE_INFO: 'Собирай лут с врагов, чтобы получить ракеты',
+    TXT_SOUNDS: 'Звуки',
+    TXT_SOUNDS_VOL: 'Громкость:',
 });
 
 // too lazy to make selector...
@@ -64,3 +68,9 @@ elem.innerText = getLocText('TXT_CONTROLS2');
 
 elem = document.getElementById('HelpText4');
 elem.innerText = getLocText('TXT_ESCAPE_INFO');
+
+elem = document.getElementById('SoundsLabel');
+elem.innerText = getLocText('TXT_SOUNDS');
+
+// elem = document.getElementById('VolumeTxt');
+// elem.innerText = getLocText('TXT_SOUNDS_VOL');

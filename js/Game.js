@@ -14,6 +14,8 @@ import { PlayState } from './GameStates/PlayState.js';
 import { ShowResultState } from './GameStates/ShowResultState.js';
 import { ShowMenuState } from './GameStates/ShowMenuState.js';
 
+import { SoundManager } from './Utils/SoundManager.js';
+
 // manages transition from menu to game and back
 export class MyGame {
     engine = null;
@@ -31,9 +33,6 @@ export class MyGame {
     battleArea = null;
     hud = null;
 
-    // TODO: add sounds manager
-    music = null;
-
     constructor(engine, config) {
         this.engine = engine;
         this.config = config;
@@ -43,12 +42,6 @@ export class MyGame {
         this.scene.applyOptimizations();
 
         this.changeState(new MenuState(this));
-
-        // this.music = new BABYLON.Sound('music', './assets/sounds/back.wav', this.scene, null, {
-        //     loop: true,
-        //     autoplay: true,
-        // });
-        // this.music.setVolume(0.01);
 
         dbg.setVisible(false);
     }
@@ -81,6 +74,10 @@ export class MyGame {
     }
 
     hideMenu() {
+        SoundManager.playSound(SoundManager.SND_CLICK);
+        SoundManager.stopMenuMusic();
+        SoundManager.playGameMusic();
+
         // MenuState is watching for this.hud to be not null in order to hide menu
         this.hud = new GameGui(this);
         this.prerenderObserver = this.scene.onBeforeRenderObservable.add(this.onPrerenderHandler.bind(this));
@@ -91,12 +88,7 @@ export class MyGame {
 
         this.changeState(new LoadingLevelState(this));
 
-        // let music = new BABYLON.Sound('Music', './assets/sounds/saintro.mp3', this.scene, null, {
-        //     loop: true,
-        //     autoplay: true
-        // });
-
-        //dbg.createAxises(10, 10, 10);
+        // dbg.createAxises(10, 10, 10);
         dbg.setVisible(true);
     }
 
@@ -145,6 +137,8 @@ export class MyGame {
         this.hud.setInfoPanelVisible(false);
         this.battleArea.getPlayerShip().hideHud();
 
+        SoundManager.stopGameMusic();
+
         this.changeState(new ShowResultState(this));
     }
 
@@ -153,6 +147,8 @@ export class MyGame {
 
         this.engine.exitPointerlock();
         this.changeState(new MenuState(this));
+
+        SoundManager.playMenuMusic();
     }
 
     clear() {
@@ -166,11 +162,6 @@ export class MyGame {
 
         this.hud.clear();
         this.hud = null;
-
-        // TODO:
-        // if (this.music) {
-        //     this.music.dispose();
-        // }
 
         dbg.setVisible(false);
 

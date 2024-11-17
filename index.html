@@ -5,6 +5,7 @@
     <title>SpaceShooter</title>
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/range.css">
+    <link rel="stylesheet" href="./css/checkbox.css">
     <script src="js/Lib/babylon.js" defer></script>
     <script src="js/Lib/babylon.gui.min.js" defer></script>
     <script src="js/Lib/HavokPhysics_umd.js" defer></script>
@@ -12,7 +13,7 @@
 <body>
     <div id="gameContainer">
         <div id="resizableContainer">
-            <canvas id="renderCanvas" tabindex="0"></canvas>
+            <canvas id="renderCanvas"></canvas>
             <div id="GameGUI">
                 <div id="HelpPanel">
                     <div id="HelpText1">Actual localized texts</div>
@@ -41,6 +42,14 @@
                 <div id="EnemyNumberTxt" style="font-size: 2.5vh;">Number of enemies:</div>
                 <div style="font-size: 4vh;" id="EnemyNumber">3</div>
                 <div><input type="range" id="EnemyNumberSlider" min="1" max="9" step="1" value="3"></div>
+            </div>
+            <div style="display: grid; justify-items: center;">
+                <div style="display: grid; grid-template-columns: 1fr 3vw; justify-items: center; margin-bottom: 2vh;">
+                    <label for="Sounds" id="SoundsLabel">Sounds</label>
+                    <input type="checkbox" id="SoundsCheckbox" onchange="setSoundsOnOff()">
+                </div>
+                <!--div id="VolumeTxt" style="font-size: 2.0vh;">Volume</div>
+                <div><input type="range" id="VolumeSlider" min="0" max="100" step="1" value="25"></div-->
             </div>
             <div id="PlayTxt" class="ncw_btn" style="top: 46vh; left: 46vw;font-size: 2.5vh;z-index: 9;width: 5vw; pointer-events: none;" onmousedown="startGame()">Play</div>
         </div>

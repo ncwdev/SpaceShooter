@@ -17,6 +17,7 @@ import { enemy_bt } from '../AI/EnemyBehavior.js';
 import { TreeBuilder } from '../BehaviorTree/TreeBuilder.js';
 
 import CONST from '../const.js';
+import { SoundManager } from '../Utils/SoundManager.js';
 
 // contains player's ship, enemy ships, asteroids, space dust
 // uses physics engine to detect collisions between plasma shots and ships
@@ -296,6 +297,8 @@ export class BattleArea {
 
         this.loot_boxes.delete(id);
         this.player_ship.addMissile(1);
+
+        SoundManager.playSound(SoundManager.SND_LOOTBOX);
     }
 
     onCollisionHandler(event) {

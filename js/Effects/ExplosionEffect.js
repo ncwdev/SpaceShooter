@@ -1,3 +1,5 @@
+import { SoundManager } from '../Utils/SoundManager.js';
+
 export async function create(pos, scene) {
     BABYLON.ParticleHelper.BaseAssetsUrl = 'assets/particles/';
 
@@ -7,4 +9,6 @@ export async function create(pos, scene) {
         s.worldOffset = pos;
     });
     effect.start();
+
+    SoundManager.playExplosionSound(pos);
 }

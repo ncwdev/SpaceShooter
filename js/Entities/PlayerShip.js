@@ -1,6 +1,7 @@
 import * as utils from '../Utils/utils.js';
 
-// import { SoundEffect } from './Effects/SoundEffect.js';
+import { SoundEffect } from '../Effects/SoundEffect.js';
+import { SoundManager } from '../Utils/SoundManager.js';
 
 import { Ship } from './Ship.js';
 import { PlayerShipGui } from '../Gui/PlayerShipGui.js';
@@ -80,14 +81,17 @@ export class PlayerShip extends Ship {
         body.shape = shape;
         this.aggregate = { body: body, shape: shape };
 
-        // this.sounds.engine_idle = new SoundEffect("engine_idle", "./assets/sounds/engine_idle.ogg", this.scene, {
-        //     loop: true,
-        //     autoplay: false,
-        // });
-        // this.sounds.engine_main = new SoundEffect("engine_main", "./assets/sounds/engine_main.ogg", this.scene, {
-        //     loop: true,
-        //     autoplay: false,
-        // });
+        this.sounds.engineIdle = new SoundEffect('engineIdle', './assets/sounds/engineIdle.ogg', this.scene, {
+            loop: true,
+            autoplay: false,
+        });
+        this.sounds.engineIdle.sound.attachToMesh(mesh);
+
+        this.sounds.engineMain = new SoundEffect('engineMain', './assets/sounds/engineMain.ogg', this.scene, {
+            loop: true,
+            autoplay: false,
+        });
+        this.sounds.engineMain.sound.attachToMesh(mesh);
 
         // engine flares
         this.left_flare_particles = this.createEngineFlares(mesh, player_config.left_flare_pos);
@@ -222,6 +226,8 @@ export class PlayerShip extends Ship {
         const rightDir = dstPos.subtract(rightPos);
         const q2 = utils.quaternionShortestArc(fwd, rightDir);
         this.createPlasmaShot(rightPos , q2, CONST.ENTITY_CLASS_MY_SHOT, target);
+
+        SoundManager.playSound(SoundManager.SND_PLASMA, this.mesh);
     }
 
     fireMissile(pointerInfo) {
@@ -241,7 +247,9 @@ export class PlayerShip extends Ship {
         const q = utils.quaternionShortestArc(fwd, dir);
         const target = this.hud.getTargetObj();
 
-        this.createMissile(pos, q, CONST.ENTITY_CLASS_MISSILE, target);
+        const missile = this.createMissile(pos, q, CONST.ENTITY_CLASS_MISSILE, target);
+        const sound = SoundManager.playSound(SoundManager.SND_MISSILE, missile.mesh);
+        sound.setVolume(1.0);
     }
 
     moveForward(dt, isShiftPressed) {
@@ -276,6 +284,7 @@ export class PlayerShip extends Ship {
         if (this.energy_value <= this.config.energy.red_zone_value) {
             this.energy_state = ENERGY_RED_DEC;
         }
+        this.playMainEngineSound();
     }
 
     moveInertial(dt) {
@@ -291,6 +300,7 @@ export class PlayerShip extends Ship {
         } else {
             this.energy_state = ENERGY_RED_INC;
         }
+        this.playIdleEngineSound();
     }
 
     restoreArmor(dt) {
@@ -344,23 +354,6 @@ export class PlayerShip extends Ship {
         if (this.isDestroyed()) {
             return;
         }
-        /*
-        // TODO: restore engine sounds
-        if (this.keys_map['KeyW'] || this.keys_map['KeyS']) {
-            let engine_main = this.sounds.engine_main;
-            if (engine_main && !engine_main.is_playing) {
-                engine_main.play(2000, 0, 0.3);
-                engine_main.is_playing = true;
-            }
-        } else {
-            let engine_main = this.sounds.engine_main;
-            if (engine_main && engine_main.is_playing) {
-                engine_main.stop(1000, 0.3, 0);
-                engine_main.is_playing = false;
-            }
-        }
-        */
-
         if (this.hud) {
             if (this.hud.isCursorInBufferZone()) {
                 this.stopYawAndPitch(dt);
@@ -373,12 +366,34 @@ export class PlayerShip extends Ship {
         }
         this.updateCamera(dt);
 
-        // if (this.sounds.engine_idle && !this.sounds.engine_idle.is_playing) {
-        //     this.sounds.engine_idle.play(2000, 0, 0.2);
-        //     this.sounds.engine_idle.is_playing = true;
-        // }
         this.restoreArmor(dt);
         this.decreaseVelocities(dt);
+    }
+
+    playIdleEngineSound() {
+        const engineIdle = this.sounds.engineIdle;
+        if (engineIdle && !engineIdle.is_playing) {
+            engineIdle.play(0, 0.25, 2000);
+            engineIdle.is_playing = true;
+        }
+        const engineMain = this.sounds.engineMain;
+        if (engineMain && engineMain.is_playing) {
+            engineMain.stop(0.1, 0, 1000);
+            engineMain.is_playing = false;
+        }
+    }
+
+    playMainEngineSound() {
+        const engineIdle = this.sounds.engineIdle;
+        if (engineIdle && engineIdle.is_playing) {
+            engineIdle.stop(0, 0.25, 1000);
+            engineIdle.is_playing = false;
+        }
+        const engineMain = this.sounds.engineMain;
+        if (engineMain && !engineMain.is_playing) {
+            engineMain.play(0.1, 0, 2000);
+            engineMain.is_playing = true;
+        }
     }
 
     clear() {

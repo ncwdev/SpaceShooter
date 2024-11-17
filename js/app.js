@@ -45,6 +45,12 @@ const init = async function() {
     }
     runRenderLoop();
 
+    const tempStartSound = new BABYLON.Sound('welcome', './assets/sounds/welcome.wav', scene, null, {
+        loop: false,
+        autoplay: true,
+    });
+    tempStartSound.setVolume(0.001);
+
     canvas.focus();
 };
 
@@ -112,6 +118,23 @@ function resize() {
     engine.setSize(w, h);
 }
 window.addEventListener('resize', resize);
+
+async function setSoundsOnOff() {
+    const elem = document.getElementById('SoundsCheckbox');
+    const isSoundsOn = elem.checked;
+
+    const { SoundManager } = await import('./Utils/SoundManager.js');
+
+    if (isSoundsOn) {
+        if (!BABYLON.Engine.audioEngine.unlocked) {
+            BABYLON.Engine.audioEngine.unlock();
+        }
+        SoundManager.playMenuMusic();
+    } else {
+        SoundManager.stopMenuMusic();
+        BABYLON.Engine.audioEngine.lock();
+    }
+}
 
 // Entry point
 init();

@@ -1,7 +1,7 @@
 import * as utils from '../Utils/utils.js';
 
-//import {SoundEffect} from './Effects/SoundEffect.js';
 import { ProgressBar3d } from '../Gui/ProgressBar3d.js';
+import { SoundManager } from '../Utils/SoundManager.js';
 
 import { Ship } from './Ship.js';
 
@@ -218,6 +218,13 @@ export class EnemyShip extends Ship {
         const dir2 = targetPos.subtract(rightPos);
         const q2 = utils.quaternionShortestArc(fwd, dir2);
         this.createPlasmaShot(rightPos, q2, CONST.ENTITY_CLASS_ENEMY_SHOT, target);
+
+        const clone = SoundManager.cloneSound(SoundManager.SND_PLASMA_ENEMY);
+        if (clone) {
+            clone.attachToMesh(this.mesh);
+            clone.play();
+            setTimeout(() => clone.dispose(), 1000);
+        }
     }
 
     getPlasmaShotDamage() {
