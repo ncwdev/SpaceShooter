@@ -98,7 +98,7 @@ class SoundManagerSingleton {
 
     playMenuMusic() {
         if (!this.menuMusic) {
-            this.menuMusic = new SoundEffect('menuMusic', './assets/sounds/menuMusic.mp3', this.scene, {
+            this.menuMusic = new SoundEffect('menuMusic', './assets/sounds/menuMusic.ogg', this.scene, {
                 loop: true,
                 autoplay: false,
                 // preload: 'true',
