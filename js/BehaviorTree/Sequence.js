@@ -1,4 +1,4 @@
-import {Node} from './Node.js';
+import { Node } from './Node.js';
 
 // This node stores an index of currently running node in the incoming context.
 export class Sequence extends Node {
@@ -9,15 +9,15 @@ export class Sequence extends Node {
     }
 
     process(entity, context) {
-        let index = context[this.id] ?? 0;
+        const index = context[this.id] ?? 0;
         for (let i = index; i < this.nodes.length; ++i) {
-            context[this.id] = i;   // update index of currently running node
-            
+            context[this.id] = i; // update index of currently running node
+
             const node = this.nodes[i];
             const result = node.process(entity, context);
-            
+
             if (result === Node.RES_FAIL) {
-                context[this.id] = 0;   // reset index to start from the beginning
+                context[this.id] = 0; // reset index to start from the beginning
                 return Node.RES_FAIL;
             }
             if (result === Node.RES_RUNNING) {

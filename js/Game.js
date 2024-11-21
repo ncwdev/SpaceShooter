@@ -119,16 +119,16 @@ export class MyGame {
 
     onPlayerWin() {
         this.hud.gameOverText.setText(getLocText('TXT_WIN'));
-        this.hud.gameOverText.setBackColor(this.config.game_win_backcolor);
-        this.hud.gameOverText.show(...this.config.game_over_text_times);
+        this.hud.gameOverText.setBackColor(this.config.gameWinBackColor);
+        this.hud.gameOverText.show(...this.config.gameOverTextTimes);
 
         this.returnToMenu();
     }
 
     onPlayerLost() {
         this.hud.gameOverText.setText(getLocText('TXT_LOST'));
-        this.hud.gameOverText.setBackColor(this.config.game_lost_backcolor);
-        this.hud.gameOverText.show(...this.config.game_over_text_times);
+        this.hud.gameOverText.setBackColor(this.config.gameLostBackColor);
+        this.hud.gameOverText.show(...this.config.gameOverTextTimes);
 
         this.returnToMenu();
     }

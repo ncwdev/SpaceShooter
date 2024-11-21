@@ -17,7 +17,7 @@ export class SpaceDustEffect {
         ps.emitRate = 500;
         ps.minEmitPower = 1;
         ps.maxEmitPower = 3;
-        ps.updateSpeed  = 1/60;
+        ps.updateSpeed = 1 / 60;
 
         ps.emitter = mesh;
         ps.minEmitBox = new BABYLON.Vector3(-size, -size, -size);
@@ -26,8 +26,8 @@ export class SpaceDustEffect {
         ps.direction1 = new BABYLON.Vector3(0, 0, 0);
         ps.direction2 = new BABYLON.Vector3(0, 0, 0);
 
-        ps.color1    = new BABYLON.Color4(1, 1, 1, 1);
-        ps.color2    = new BABYLON.Color4(1, 1, 1, 1);
+        ps.color1 = new BABYLON.Color4(1, 1, 1, 1);
+        ps.color2 = new BABYLON.Color4(1, 1, 1, 1);
         ps.colorDead = new BABYLON.Color4(0, 0, 0, 0.1);
 
         this.effect = ps;

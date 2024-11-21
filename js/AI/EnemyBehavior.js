@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Node } from '../BehaviorTree/Node.js';
 import { TreeBuilder } from '../BehaviorTree/TreeBuilder.js';
 
@@ -8,7 +9,7 @@ import { TreeBuilder } from '../BehaviorTree/TreeBuilder.js';
 //  func - name of function OR anonymous function (for leaf nodes)
 //  children ids
 
-const enemy_bt = {
+const enemyBT = {
     root: {
         id: 'root',
         type: TreeBuilder.NT_IF_THEN_ELSE,
@@ -117,7 +118,7 @@ const enemy_bt = {
 
 function N1_if_has_obstacle(entity, context) {
     const mesh = entity.getMesh();
-    const src_pos = entity.getPosition();
+    const srcPos = entity.getPosition();
     const dir = mesh.getDirection(BABYLON.Axis.X).clone();
 
     function predicate(_mesh) {
@@ -126,28 +127,28 @@ function N1_if_has_obstacle(entity, context) {
         }
         return true;
     }
-    const ray = new BABYLON.Ray(src_pos, dir, context.AI_RAY_DIST);
+    const ray = new BABYLON.Ray(srcPos, dir, context.AI_RAY_DIST);
     const result = context.scene.pickWithRay(ray, predicate);
 
     if (result.hit) {
         return Node.RES_SUCCESS;
     }
-    const dt = context.AI_dt;
+    const dt = context.AI_DT;
     entity.yawPitch(0, 0, dt);
 
     return Node.RES_FAIL;
 }
 
 function N1_escape_obstacle(entity, context) {
-    entity.yawPitch(0, context.AI_EVASION_SPEED, context.AI_dt);
+    entity.yawPitch(0, context.AI_EVASION_SPEED, context.AI_DT);
 
     return Node.RES_RUNNING;
 }
 
 function N3_is_too_far(entity, context) {
-    const pl_pos = context.player_ship.getPosition();
+    const plPos = context.playerShip.getPosition();
     const pos = entity.getPosition();
-    const dist = pl_pos.clone().subtract(pos).length();
+    const dist = plPos.clone().subtract(pos).length();
 
     if (dist > context.AI_RADIUS_FIRE) {
         return Node.RES_SUCCESS;
@@ -156,7 +157,7 @@ function N3_is_too_far(entity, context) {
 }
 
 function N3_do_approach(entity, context) {
-    const dt = context.AI_dt;
+    const dt = context.AI_DT;
     entity.turnToPlayerShip(dt);
     entity.moveForward(dt);
 
@@ -164,19 +165,19 @@ function N3_do_approach(entity, context) {
 }
 
 function N3_is_near(entity, context) {
-    const pl_pos = context.player_ship.getPosition();
+    const plPos = context.playerShip.getPosition();
     const pos = entity.getPosition();
-    const dist = pl_pos.clone().subtract(pos).length();
+    const dist = plPos.clone().subtract(pos).length();
 
     if (dist > context.AI_RADIUS_LEAVE && dist <= context.AI_RADIUS_FIRE) {
-        context.dist_to_target = dist;
+        context.distToTarget = dist;
         return Node.RES_SUCCESS;
     }
     return Node.RES_FAIL;
 }
 
 function N3_do_attack(entity, context) {
-    const dt = context.AI_dt;
+    const dt = context.AI_DT;
 
     // move with evasion
     entity.moveForward(dt);
@@ -184,20 +185,20 @@ function N3_do_attack(entity, context) {
     entity.moveSide(true, dt);
     entity.turnToPlayerShip(dt);
 
-    if (!context.last_fire_time || context.last_fire_time + context.AI_FIRE_INTERVAL < Date.now()) {
+    if (!context.lastFireTime || context.lastFireTime + context.AI_FIRE_INTERVAL < Date.now()) {
         const chance = Math.random();
         if (chance < context.AI_FIRE_CHANCE) {
-            entity.firePlasmaShot(context.dist_to_target);
-            context.last_fire_time = Date.now();
+            entity.firePlasmaShot(context.distToTarget);
+            context.lastFireTime = Date.now();
         }
     }
     return Node.RES_RUNNING;
 }
 
 function N3_is_too_close(entity, context) {
-    const pl_pos = context.player_ship.getPosition();
+    const plPos = context.playerShip.getPosition();
     const pos = entity.getPosition();
-    const dist = pl_pos.clone().subtract(pos).length();
+    const dist = plPos.clone().subtract(pos).length();
 
     if (dist <= context.AI_RADIUS_RETREAT) {
         return Node.RES_SUCCESS;
@@ -206,7 +207,7 @@ function N3_is_too_close(entity, context) {
 }
 
 function N3_do_retreat(entity, context) {
-    const dt = context.AI_dt;
+    const dt = context.AI_DT;
 
     // move with evasion
     entity.moveForward(dt);
@@ -216,4 +217,4 @@ function N3_do_retreat(entity, context) {
     return Node.RES_RUNNING;
 }
 
-export { enemy_bt };
+export { enemyBT };

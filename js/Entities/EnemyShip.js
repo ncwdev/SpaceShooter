@@ -7,7 +7,7 @@ import { Ship } from './Ship.js';
 
 const EFM_SIZES = [ 1.4, 1.5 ];
 
-import enemy_config from '../Config/EnemyShipCfg.js';
+import enemyConfig from '../Config/EnemyShipCfg.js';
 
 import CONST from '../const.js';
 
@@ -17,31 +17,31 @@ export class EnemyShip extends Ship {
     aiInterval = null; // interval to update behavior tree
 
     constructor(game, mesh) {
-        super(game, mesh, enemy_config);
+        super(game, mesh, enemyConfig);
 
         mesh.isPickable = true;
 
-        this.setArmor (this.config.armor);
+        this.setArmor(this.config.armor);
         this.setHealth(this.config.health);
 
         // Create a shape and the associated body. Size will be determined automatically.
         const body = new BABYLON.PhysicsBody(mesh, BABYLON.PhysicsMotionType.DYNAMIC, false, this.scene);
         body.setMassProperties({
-            mass: enemy_config.mass, // 100
+            mass: enemyConfig.mass,
             inertia: new BABYLON.Vector3(10, 10, 10),
             centerOfMass: new BABYLON.Vector3(0, 0, 0),
         });
-        body.setLinearDamping(enemy_config.linear_damping);
-        body.setAngularDamping(enemy_config.angular_damping);
+        body.setLinearDamping(enemyConfig.linearDamping);
+        body.setAngularDamping(enemyConfig.angularDamping);
         body.setCollisionCallbackEnabled(true);
         body.disablePreStep = false;
 
-        body.mfg = { name: 'EnemyShip', entity_class: CONST.ENTITY_CLASS_ENEMY_SHIP, entity: this };
+        body.mfg = { name: 'EnemyShip', entityClass: CONST.ENTITY_CLASS_ENEMY_SHIP, entity: this };
 
         const shape = new BABYLON.PhysicsShapeCapsule(
-            new BABYLON.Vector3(3, 0, 0),   // starting point of the cylinder segment
-            new BABYLON.Vector3(-11,0, 0),  // ending point of the cylinder segment
-            5.5,                            // radius of the cylinder
+            new BABYLON.Vector3(3, 0, 0), // starting point of the cylinder segment
+            new BABYLON.Vector3(-11,0, 0), // ending point of the cylinder segment
+            5.5, // radius of the cylinder
             this.scene
         );
         const material = {friction: 0.99, restitution: 0.99};
@@ -49,12 +49,12 @@ export class EnemyShip extends Ship {
         body.shape = shape;
         this.aggregate = {body: body, shape: shape};
 
-        this.left_flare_particles = this.createEngineFlares(mesh, enemy_config.left_flare_pos);
-        this.right_flare_particles= this.createEngineFlares(mesh, enemy_config.right_flare_pos);
+        this.leftFlareParticles = this.createEngineFlares(mesh, enemyConfig.leftFlarePos);
+        this.rightFlareParticles = this.createEngineFlares(mesh, enemyConfig.rightFlarePos);
 
         // debug
-        // const length_of_axes = 20;
-        // const axes = new BABYLON.AxesViewer(this.scene, length_of_axes);
+        // const lengthOfAxes = 20;
+        // const axes = new BABYLON.AxesViewer(this.scene, lengthOfAxes);
         // axes.xAxis.parent = mesh;
         // axes.yAxis.parent = mesh;
         // axes.zAxis.parent = mesh;
@@ -71,36 +71,36 @@ export class EnemyShip extends Ship {
     createHud() {
         const hud = this.game.getHud();
 
-        const WIDTH = this.config.health_bar_width;
-        const HEIGHT= this.config.health_bar_height;
-        const ALPHA = this.config.health_bar_alpha;
-        const health_bar = new ProgressBar3d(hud.parent, WIDTH, HEIGHT, ALPHA);
-        this.health_bar = health_bar;
+        const WIDTH = this.config.healthBarWidth;
+        const HEIGHT = this.config.healthBarHeight;
+        const ALPHA = this.config.healthBarAlpha;
+        const healthBar = new ProgressBar3d(hud.parent, WIDTH, HEIGHT, ALPHA);
+        this.healthBar = healthBar;
 
         const textBlock = new BABYLON.GUI.TextBlock();
         textBlock.text = '[357m]';
-        textBlock.color = this.config.hp_text_color;
+        textBlock.color = this.config.hpTextColor;
 
         const h = this.scene.getEngine().getRenderHeight();
-        const TEXT_HEIGHT = this.config.hp_text_font_size;
+        const TEXT_HEIGHT = this.config.hpTextFontSize;
         textBlock.fontSize = h * TEXT_HEIGHT + 'px';
         textBlock.horizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
         textBlock.verticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_CENTER;
         hud.parent.addControl(textBlock);
         this.radarIcon = textBlock;
 
-        textBlock.width_numeric = 0.04;
+        textBlock.widthNumeric = 0.04;
     }
 
     hideHud() {
-        this.health_bar.setVisible(false);
+        this.healthBar.setVisible(false);
         this.radarIcon.isVisible = false;
     }
 
     initAI(behaviorTree) {
         const context = {
             scene: this.scene,
-            player_ship: this.battleArea.getPlayerShip(),
+            playerShip: this.battleArea.getPlayerShip(),
         };
         Object.assign(context, this.config.ai);
 
@@ -126,20 +126,20 @@ export class EnemyShip extends Ship {
         const screenWidth = engine.getRenderWidth();
         const screenHeight = engine.getRenderHeight();
 
-        const screen_pos = BABYLON.Vector3.Project(
+        const screenPos = BABYLON.Vector3.Project(
             pos,
             BABYLON.Matrix.Identity(),
             this.scene.getTransformMatrix(),
             this.scene.activeCamera.viewport.toGlobal(screenWidth, screenHeight)
         );
-        if (this.health_bar) {
-            const is_visible = this.scene.activeCamera.isInFrustum(this.mesh);
-            if (is_visible) {
-                this.health_bar.setVisible(true);
-                this.health_bar.setTop(screen_pos.y - screenHeight * 0.5 - screenHeight * this.config.health_bar_offset);
-                this.health_bar.setLeft(screen_pos.x - screenWidth * 0.5);
+        if (this.healthBar) {
+            const isVisible = this.scene.activeCamera.isInFrustum(this.mesh);
+            if (isVisible) {
+                this.healthBar.setVisible(true);
+                this.healthBar.setTop(screenPos.y - screenHeight * 0.5 - screenHeight * this.config.healthBarOffset);
+                this.healthBar.setLeft(screenPos.x - screenWidth * 0.5);
             } else {
-                this.health_bar.setVisible(false);
+                this.healthBar.setVisible(false);
             }
         }
         if (this.radarIcon) {
@@ -158,7 +158,7 @@ export class EnemyShip extends Ship {
     }
 
     turnToPlayerShip(dt) {
-        //this.aggregate.body.disablePreStep = false;
+        // this.aggregate.body.disablePreStep = false;
 
         const playerShip = this.battleArea.getPlayerShip();
         const playerPos = playerShip.getPosition();
@@ -179,12 +179,12 @@ export class EnemyShip extends Ship {
     }
 
     moveForward(dt) {
-        const accel = this.config.accel_fwd;
-        let v = this.vel_fwd + accel * dt;
+        const accel = this.config.accelFwd;
+        let v = this.velFwd + accel * dt;
 
-        v = Math.min(v, this.config.vel_fwd_turbo);
-        v = Math.max(v, this.config.vel_fwd_min);
-        this.vel_fwd = v;
+        v = Math.min(v, this.config.velFwdTurbo);
+        v = Math.max(v, this.config.velFwdMin);
+        this.velFwd = v;
     }
 
     firePlasmaShot(distToTarget) {
@@ -197,17 +197,17 @@ export class EnemyShip extends Ship {
         const fwdDir = this.mesh.getDirection(BABYLON.Axis.X).clone().normalize();
         const scalar = utils.dotProduct3d(targetDir, fwdDir);
 
-        const MAX_DOT_PRODUCT = this.config.max_angle_to_fire;
+        const MAX_DOT_PRODUCT = this.config.maxAngleToFire;
         if (scalar < MAX_DOT_PRODUCT) {
             return;
         }
         this.mesh.computeWorldMatrix();
         const matrix = this.mesh.getWorldMatrix();
-        const leftPos = BABYLON.Vector3.TransformCoordinates(this.config.plasma_shot_left_pos,  matrix);
-        const rightPos = BABYLON.Vector3.TransformCoordinates(this.config.plasma_shot_right_pos, matrix);
+        const leftPos = BABYLON.Vector3.TransformCoordinates(this.config.plasmaShotLeftPos, matrix);
+        const rightPos = BABYLON.Vector3.TransformCoordinates(this.config.plasmaShotRightPos, matrix);
 
         let target = playerShip;
-        const TOO_CLOSE_DIST = this.config.stop_fire_distance;
+        const TOO_CLOSE_DIST = this.config.stopFireDistance;
         if (distToTarget < TOO_CLOSE_DIST) {
             target = null;
         }
@@ -228,7 +228,7 @@ export class EnemyShip extends Ship {
     }
 
     getPlasmaShotDamage() {
-        return this.config.plasma_shot_damage;
+        return this.config.plasmaShotDamage;
     }
 
     clear() {

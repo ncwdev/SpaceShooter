@@ -1,11 +1,9 @@
 import * as utils from '../Utils/utils.js';
-
-// import { SoundEffect } from './Effects/SoundEffect.js';
-import { PlasmaShot }  from './PlasmaShot.js';
-
 import * as DamageEffect from '../Effects/DamageEffect.js';
 import * as EngineFlaresEffect from '../Effects/EngineFlaresEffect.js';
+
 import { Missile } from './Missile.js';
+import { PlasmaShot } from './PlasmaShot.js';
 
 export class Ship {
     game = null;
@@ -17,52 +15,51 @@ export class Ship {
 
     config = null;
 
-    vel_fwd = 0;        // velocity along the main axis, keys W and S
-    vel_side = 0;       // velocity perpendicular to the main axis, keys A and D
-    roll_speed = 0;     // keys Q and E
-    yaw_speed = 0;      // yaw and pitch changes with mouse
-    pitch_speed = 0;
+    velFwd = 0; // velocity along the main axis, keys W and S
+    velSide = 0; // velocity perpendicular to the main axis, keys A and D
+    rollSpeed = 0; // keys Q and E
+    yawSpeed = 0; // yaw and pitch changes with mouse
+    pitchSpeed = 0;
 
     sounds = {};
-    sounds_volume = 0.2;
 
-    left_flare_particles = null;
-    right_flare_particles= null;
+    leftFlareParticles = null;
+    rightFlareParticles = null;
 
-    plasma_shots = {};
-    plasma_shots_count = 0;
+    plasmaShots = {};
+    plasmaShotsCount = 0;
 
     health = 0;
-    health_bar = null;
+    healthBar = null;
 
-    armor = null;
-    armor_bar = null;
+    armor = 0;
+    armorBar = null;
 
-    missiles_num = 0;
+    missilesNum = 0;
 
     addMissile(num) {
-        this.missiles_num += num;
+        this.missilesNum += num;
     }
 
-    is_destroyed = false;
+    #isDestroyed = false;
 
-    setDesroyed(flag) {
-        this.is_destroyed = flag;
+    setDestroyed(flag) {
+        this.#isDestroyed = flag;
     }
 
     isDestroyed() {
-        return this.is_destroyed;
+        return this.#isDestroyed;
     }
 
     constructor(game, mesh, config) {
-        this.game  = game;
+        this.game = game;
         this.scene = game.getScene();
         this.battleArea = game.getBattleArea();
-        this.mesh  = mesh;
-        this.config= config;
+        this.mesh = mesh;
+        this.config = config;
 
         mesh.receiveShadows = true;
-        mesh.checkCollisions= true;
+        mesh.checkCollisions = true;
         mesh.setEnabled(true);
     }
 
@@ -104,7 +101,7 @@ export class Ship {
         }
         this.health = value;
 
-        if (this.health_bar) {
+        if (this.healthBar) {
             this.updateHealthBar();
         }
     }
@@ -115,7 +112,7 @@ export class Ship {
 
     updateHealthBar() {
         const progress = this.health / this.config.health;
-        this.health_bar.setProgress(progress);
+        this.healthBar.setProgress(progress);
     }
 
     setArmor(value) {
@@ -127,7 +124,7 @@ export class Ship {
         }
         this.armor = value;
 
-        if (this.armor_bar) {
+        if (this.armorBar) {
             this.updateArmorBar();
         }
     }
@@ -138,19 +135,19 @@ export class Ship {
 
     updateArmorBar() {
         const progress = this.armor / this.config.armor;
-        this.armor_bar.setProgress(progress);
+        this.armorBar.setProgress(progress);
     }
 
     getFwdVelocity() {
-        return this.vel_fwd;
+        return this.velFwd;
     }
 
     getMaxVelocity() {
-        return this.config.vel_fwd_turbo;
+        return this.config.velFwdTurbo;
     }
 
     getMinVelocity() {
-        return this.config.vel_fwd_min;
+        return this.config.velFwdMin;
     }
 
     createEngineFlares(mesh, position) {
@@ -158,26 +155,26 @@ export class Ship {
     }
 
     setEngineFlaresMode(sizes) {
-        this.left_flare_particles.minSize = sizes[0];
-        this.left_flare_particles.maxSize = sizes[1];
+        this.leftFlareParticles.minSize = sizes[0];
+        this.leftFlareParticles.maxSize = sizes[1];
 
-        this.right_flare_particles.minSize = sizes[0];
-        this.right_flare_particles.maxSize = sizes[1];
+        this.rightFlareParticles.minSize = sizes[0];
+        this.rightFlareParticles.maxSize = sizes[1];
     }
 
     createPlasmaShot(pos, quaternion, entityClass, target) {
-        const shot = new PlasmaShot(this.game, this.plasma_shots_count, this, target);
+        const shot = new PlasmaShot(this.game, this.plasmaShotsCount, this, target);
         shot.init(pos, quaternion, entityClass);
 
         const id = shot.getId();
-        this.plasma_shots[id] = shot;
-        this.plasma_shots_count++;
+        this.plasmaShots[id] = shot;
+        this.plasmaShotsCount++;
         return shot;
     }
 
     deletePlasmaShot(id) {
-        const shot = this.plasma_shots[id];
-        delete this.plasma_shots[id];
+        const shot = this.plasmaShots[id];
+        delete this.plasmaShots[id];
         shot.clear();
     }
 
@@ -200,122 +197,122 @@ export class Ship {
     }
 
     createMissile(pos, quaternion, entityClass, target) {
-        const shot = new Missile(this.game, this.plasma_shots_count, this, target);
+        const shot = new Missile(this.game, this.plasmaShotsCount, this, target);
         shot.init(pos, quaternion, entityClass);
         const id = shot.getId();
 
-        this.plasma_shots[id] = shot;
-        this.plasma_shots_count++;
+        this.plasmaShots[id] = shot;
+        this.plasmaShotsCount++;
         return shot;
     }
 
-    roll(is_left, dt) {
-        const side = is_left ? 1 : -1;
+    roll(isLeft, dt) {
+        const side = isLeft ? 1 : -1;
 
-        let v = this.roll_speed + side * this.config.roll_accel * dt;
-        v = utils.clamp(v, this.config.roll_speed_min, this.config.roll_speed_max);
-        this.roll_speed = v;
+        let v = this.rollSpeed + side * this.config.rollAccel * dt;
+        v = utils.clamp(v, this.config.rollSpeedMin, this.config.rollSpeedMax);
+        this.rollSpeed = v;
     }
 
     yawPitch(yaw, pitch, dt) {
         // linear dependency
-        let yaw2 = yaw * this.config.yaw_mult;
-        yaw2 = Math.min(yaw2, this.config.yaw_speed_max);
-        yaw2 = Math.max(yaw2,-this.config.yaw_speed_max);
+        let yaw2 = yaw * this.config.yawMult;
+        yaw2 = Math.min(yaw2, this.config.yawSpeedMax);
+        yaw2 = Math.max(yaw2, -this.config.yawSpeedMax);
 
         const TINY = 0.01;
-        const delta_yaw = yaw2 - this.yaw_speed;
-        if (Math.abs(delta_yaw) > TINY) {
-            if (delta_yaw > 0) {
-                this.yaw_speed += this.config.yaw_accel * dt;
+        const deltaYaw = yaw2 - this.yawSpeed;
+        if (Math.abs(deltaYaw) > TINY) {
+            if (deltaYaw > 0) {
+                this.yawSpeed += this.config.yawAccel * dt;
             } else {
-                this.yaw_speed -= this.config.yaw_accel * dt;
+                this.yawSpeed -= this.config.yawAccel * dt;
             }
         } else {
-            this.yaw_speed = yaw2;
+            this.yawSpeed = yaw2;
         }
-        let pitch2 = pitch * this.config.pitch_mult;
-        pitch2 = Math.min(pitch2, this.config.pitch_speed_max);
-        pitch2 = Math.max(pitch2,-this.config.pitch_speed_max);
+        let pitch2 = pitch * this.config.pitchMult;
+        pitch2 = Math.min(pitch2, this.config.pitchSpeedMax);
+        pitch2 = Math.max(pitch2, -this.config.pitchSpeedMax);
 
-        const delta_pitch = pitch2 - this.pitch_speed;
-        if (Math.abs(delta_pitch) > TINY) {
-            if (delta_pitch > 0) {
-                this.pitch_speed += this.config.pitch_accel * dt;
+        const deltaPitch = pitch2 - this.pitchSpeed;
+        if (Math.abs(deltaPitch) > TINY) {
+            if (deltaPitch > 0) {
+                this.pitchSpeed += this.config.pitchAccel * dt;
             } else {
-                this.pitch_speed -= this.config.pitch_accel * dt;
+                this.pitchSpeed -= this.config.pitchAccel * dt;
             }
         } else {
-            this.pitch_speed = pitch2;
+            this.pitchSpeed = pitch2;
         }
     }
 
     stopYawAndPitch(dt) {
         const TINY = 0.001;
-        const rot_decreasing = this.config.rot_decreasing;
-        const change_speed = rot_decreasing * dt;
+        const rotDecreasing = this.config.rotDecreasing;
+        const changeSpeed = rotDecreasing * dt;
 
-        this.yaw_speed  = utils.decreaseValueToZero(this.yaw_speed,  TINY, change_speed);
-        this.pitch_speed= utils.decreaseValueToZero(this.pitch_speed,TINY, change_speed);
+        this.yawSpeed = utils.decreaseValueToZero(this.yawSpeed, TINY, changeSpeed);
+        this.pitchSpeed = utils.decreaseValueToZero(this.pitchSpeed, TINY, changeSpeed);
     }
 
-    moveSide(is_left, dt) {
-        const side = is_left ? 1 : -1;
+    moveSide(isLeft, dt) {
+        const side = isLeft ? 1 : -1;
 
-        let v = this.vel_side + side * this.config.accel_side * dt;
-        v = Math.min(v, this.config.vel_side_max);
-        v = Math.max(v, this.config.vel_side_min);
-        this.vel_side = v;
+        let v = this.velSide + side * this.config.accelSide * dt;
+        v = Math.min(v, this.config.velSideMax);
+        v = Math.max(v, -this.config.velSideMax);
+        this.velSide = v;
     }
 
     update(dt) {
-        for (const id in this.plasma_shots) {
-            const shot = this.plasma_shots[id];
+        for (const id in this.plasmaShots) {
+            const shot = this.plasmaShots[id];
             const isAlive = shot.update(dt);
             if (!isAlive) {
-                delete this.plasma_shots[id];
+                delete this.plasmaShots[id];
                 shot.clear();
             }
         }
-        if (this.isDestroyed()) {
+        if (this.#isDestroyed) {
             return;
         }
         // moving
-        let impulse_dir = BABYLON.Vector3.Zero();
+        let impulseDir = BABYLON.Vector3.Zero();
 
         const dir = this.mesh.getDirection(BABYLON.Axis.X).clone();
-        impulse_dir = impulse_dir.add(dir.scale(this.vel_fwd));
+        impulseDir = impulseDir.add(dir.scale(this.velFwd));
 
         // get ship's right vector and multiply by side velocity
-        const side_dir = this.mesh.getDirection(BABYLON.Axis.Z).clone();
-        impulse_dir = impulse_dir.add(side_dir.scale(this.vel_side));
+        const sideDir = this.mesh.getDirection(BABYLON.Axis.Z).clone();
+        impulseDir = impulseDir.add(sideDir.scale(this.velSide));
 
-        this.aggregate.body.setLinearVelocity(impulse_dir);
+        this.aggregate.body.setLinearVelocity(impulseDir);
 
         // rotations
-        let rot_vel = this.mesh.getDirection(BABYLON.Axis.X).clone();
-        rot_vel = rot_vel.scale(this.roll_speed);
+        let rotVel = this.mesh.getDirection(BABYLON.Axis.X).clone();
+        rotVel = rotVel.scale(this.rollSpeed);
 
-        let yaw_vel = this.mesh.getDirection(BABYLON.Axis.Y).clone();
-        yaw_vel = yaw_vel.scale(this.yaw_speed);
-        rot_vel = rot_vel.add(yaw_vel);
+        let yawVel = this.mesh.getDirection(BABYLON.Axis.Y).clone();
+        yawVel = yawVel.scale(this.yawSpeed);
+        rotVel = rotVel.add(yawVel);
 
-        let pitch_vel = this.mesh.getDirection(BABYLON.Axis.Z).clone();
-        pitch_vel = pitch_vel.scale(this.pitch_speed);
-        rot_vel = rot_vel.add(pitch_vel);
+        let pitchVel = this.mesh.getDirection(BABYLON.Axis.Z).clone();
+        pitchVel = pitchVel.scale(this.pitchSpeed);
+        rotVel = rotVel.add(pitchVel);
 
-        this.aggregate.body.setAngularVelocity(rot_vel);
+        this.aggregate.body.setAngularVelocity(rotVel);
     }
 
     decreaseVelocities(dt) {
-        const DECREASING_K = this.config.dec_vel_k;
+        const DECREASING_K = this.config.decVelK;
         const TINY_SIDE = 0.05;
 
-        this.vel_fwd = utils.decreaseValueToZero(this.vel_fwd, TINY_SIDE, this.config.accel_fwd * DECREASING_K * dt);
-        this.vel_side= utils.decreaseValueToZero(this.vel_side,TINY_SIDE, this.config.accel_side* DECREASING_K * dt);
+        this.velFwd = utils.decreaseValueToZero(this.velFwd, TINY_SIDE, this.config.accelFwd * DECREASING_K * dt);
+        this.velSide = utils.decreaseValueToZero(this.velSide, TINY_SIDE, this.config.accelSide * DECREASING_K * dt);
 
         const TINY = 0.001;
-        this.roll_speed = utils.decreaseValueToZero(this.roll_speed, TINY, this.config.roll_accel * DECREASING_K * dt);
+        this.rollSpeed = utils.decreaseValueToZero(this.rollSpeed, TINY, this.config.rollAccel * DECREASING_K * dt);
     }
 
     destroy() {
@@ -343,24 +340,24 @@ export class Ship {
             const sound = this.sounds[id];
             sound.dispose();
         }
-        this.left_flare_particles.stop();
-        this.left_flare_particles.dispose(true);
+        this.leftFlareParticles.stop();
+        this.leftFlareParticles.dispose(true);
 
-        this.right_flare_particles.stop();
-        this.right_flare_particles.dispose(true);
+        this.rightFlareParticles.stop();
+        this.rightFlareParticles.dispose(true);
 
-        for (const id in this.plasma_shots) {
-            const shot = this.plasma_shots[id];
+        for (const id in this.plasmaShots) {
+            const shot = this.plasmaShots[id];
             shot.clear();
         }
-        this.plasma_shots = {};
+        this.plasmaShots = {};
 
-        this.game  = null;
+        this.game = null;
         this.scene = null;
 
-        if (this.health_bar) {
-            this.health_bar.clear();
-            this.health_bar = null;
+        if (this.healthBar) {
+            this.healthBar.clear();
+            this.healthBar = null;
         }
         if (this.aggregate.shape) {
             this.aggregate.shape.dispose();
@@ -370,7 +367,7 @@ export class Ship {
         }
         this.aggregate = null;
 
-        this.mesh.dispose(false, true);  // with textures and materials
+        this.mesh.dispose(false, true); // with textures and materials
         this.mesh = null;
     }
 }

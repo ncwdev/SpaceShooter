@@ -1,4 +1,4 @@
-import {Node} from './Node.js';
+import { Node } from './Node.js';
 
 export class IfThenElse extends Node {
     constructor(id) {
@@ -12,12 +12,12 @@ export class IfThenElse extends Node {
         const result = condition.process(entity, context);
 
         if (result === Node.RES_SUCCESS) {
-            const then_node = this.nodes[1];
-            return then_node.process(entity, context);
+            const thenNode = this.nodes[1];
+            return thenNode.process(entity, context);
         }
-        const else_node = this.nodes[2];
-        if (else_node) {
-            return else_node.process(entity, context);
+        const elseNode = this.nodes[2];
+        if (elseNode) {
+            return elseNode.process(entity, context);
         }
         return Node.RES_SUCCESS;
     }

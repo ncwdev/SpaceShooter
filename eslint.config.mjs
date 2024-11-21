@@ -18,6 +18,11 @@ export default [
             'indent': ['error', 4, {'SwitchCase': 1}],
             'no-trailing-spaces': 'error',
             'padded-blocks': ['error', { 'classes': 'never' }],
+            'no-multi-spaces': ['error', { exceptions: { 'Property': false } }],
+            'key-spacing': ['error'],
+            'spaced-comment': ['error', 'always', { 'exceptions': ['-', '+'] }],
+            camelcase: 'error',
+            'space-infix-ops': 'error',
         }
     },
     {

@@ -1,4 +1,4 @@
-import {Node} from './Node.js';
+import { Node } from './Node.js';
 
 export class Selector extends Node {
     constructor(id) {
@@ -8,9 +8,9 @@ export class Selector extends Node {
     }
 
     process(entity, context) {
-        for (let node of this.nodes) {
+        for (const node of this.nodes) {
             const result = node.process(entity, context);
-            
+
             if (result === Node.RES_SUCCESS || result === Node.RES_RUNNING) {
                 return result;
             }

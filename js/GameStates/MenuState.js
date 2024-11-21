@@ -7,7 +7,7 @@ export class MenuState extends BaseState {
     hideMenuTime = FADE_IN_TIME;
 
     enter() {
-        MainMenu.setMaxEnemiesNumber(this.game.config.max_enemies_num);
+        MainMenu.setMaxEnemiesNumber(this.game.config.maxEnemiesNum);
         MainMenu.enablePlayButton();
     }
 

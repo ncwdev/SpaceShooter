@@ -161,7 +161,7 @@ export class Octree {
 
     clear() {
         this.objects = [];
-        this.children= [];
+        this.children = [];
     }
 
     addMesh(mesh) {
@@ -169,10 +169,10 @@ export class Octree {
         const radius = info.boundingSphere.radius * 2;
 
         const pos = mesh.position;
-        const oct_object = {
-            min: { x: pos.x-radius, y: pos.y-radius, z: pos.z-radius },
-            max: { x: pos.x+radius, y: pos.y+radius, z: pos.z+radius },
+        const obj = {
+            min: { x: pos.x - radius, y: pos.y - radius, z: pos.z - radius },
+            max: { x: pos.x + radius, y: pos.y + radius, z: pos.z + radius },
         };
-        this.insert(oct_object);
+        this.insert(obj);
     }
 }

@@ -3,10 +3,10 @@ import CONST from '../const.js';
 
 const ROT_SPEED_MIN = 10;
 const ROT_SPEED_MAX = 40;
-const ROT_SPEED_K   = 120;
+const ROT_SPEED_K = 120;
 
 export class Asteroid {
-    scene= null;
+    scene = null;
     mesh = null;
     body = null;
 
@@ -23,7 +23,7 @@ export class Asteroid {
         mesh.rotate(dir, 0, BABYLON.Space.WORLD);
 
         mesh.receiveShadows = true;
-        mesh.checkCollisions= true;
+        mesh.checkCollisions = true;
         mesh.isPickable = true; // enemy AI uses it to avoid collisions
         mesh.isVisible = true;
         mesh.setEnabled(true);
@@ -31,14 +31,14 @@ export class Asteroid {
         mesh.material.freeze();
         // mesh.freezeWorldMatrix();
 
-        mesh.mfg = { entity_class: CONST.ENTITY_CLASS_ASTEROID, entity: this };
+        mesh.mfg = { entityClass: CONST.ENTITY_CLASS_ASTEROID, entity: this };
 
         this.mesh = mesh;
 
-        let rot_speed = utils.randomInt(ROT_SPEED_MIN, ROT_SPEED_MAX);
-        rot_speed /= ROT_SPEED_K;
-        this.rot_speed = rot_speed;
-        this.rotationAxis = dir.clone().scale(rot_speed);
+        let rotSpeed = utils.randomInt(ROT_SPEED_MIN, ROT_SPEED_MAX);
+        rotSpeed /= ROT_SPEED_K;
+        this.rotSpeed = rotSpeed;
+        this.rotationAxis = dir.clone().scale(rotSpeed);
 
         // Create a shape and the static body. Size will be determined automatically.
         const body = new BABYLON.PhysicsBody(mesh, BABYLON.PhysicsMotionType.STATIC, false, this.scene);
@@ -52,7 +52,7 @@ export class Asteroid {
         body.setCollisionCallbackEnabled(true);
         body.disablePreStep = false; // to rotate with mesh.rotate()
 
-        body.mfg = { name: 'Asteroid', entity_class: CONST.ENTITY_CLASS_ASTEROID };
+        body.mfg = { name: 'Asteroid', entityClass: CONST.ENTITY_CLASS_ASTEROID };
 
         const shape = new BABYLON.PhysicsShapeConvexHull(mesh, scene);
         const material = {friction: 0.2, restitution: 0.3};
@@ -61,13 +61,14 @@ export class Asteroid {
 
         this.body = body;
     }
+
     update(dt) {
         // if (this.body && this.rotationAxis) {
         //     this.body.setAngularVelocity(this.rotationAxis);
         // }
 
         if (this.mesh && this.rotationAxis) {
-            const angle = this.rot_speed * dt;
+            const angle = this.rotSpeed * dt;
             this.mesh.rotate(this.rotationAxis, angle, BABYLON.Space.WORLD);
         }
     }

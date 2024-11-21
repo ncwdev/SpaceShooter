@@ -43,7 +43,7 @@ export class PlasmaShot {
         this.target = target;
     }
 
-    init(pos, quaternion, entity_class) {
+    init(pos, quaternion, entityClass) {
         const mesh = PlasmaShot.parentMesh.createInstance(this.id);
         mesh.position = pos;
 
@@ -70,13 +70,13 @@ export class PlasmaShot {
         body.setCollisionCallbackEnabled(true);
         this.body = body;
 
-        body.mfg = { name: 'PlasmaShot', id: this.id, entity_class: entity_class, entity: this };
+        body.mfg = { name: 'PlasmaShot', id: this.id, entityClass: entityClass, entity: this };
 
         body.shape = PlasmaShot.parentShape;
 
         if (this.target) {
             // will rotate shot with quaternion
-            //body.disablePreStep = false;
+            // body.disablePreStep = false;
         }
         this.createTime = Date.now();
 
@@ -117,7 +117,7 @@ export class PlasmaShot {
         return Date.now() - this.createTime;
     }
 
-    update(dt) {
+    update() {
         // check distance to the center, actually it's a length of a vector that is a position of mesh
         const pos = this.mesh.position;
         if (this.battleArea.isPlasmaShotTooFar(pos) || this.getLifeTime() > LIFE_TIME) {

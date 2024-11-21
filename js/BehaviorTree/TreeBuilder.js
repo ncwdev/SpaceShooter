@@ -9,14 +9,13 @@ export class TreeBuilder {
     static NT_SEQUENCE = 2;
     static NT_IF_THEN_ELSE = 3;
 
-    // this method has camel case style because was created with help of ChatGPT
-    static createTree(tree_declaration) {
+    static createTree(treeDeclaration) {
         // Create a map to store the node instances
         const nodeMap = {};
 
         // Create the appropriate node for each node declaration
-        Object.keys(tree_declaration).forEach( nodeId => {
-            const nodeDecl = tree_declaration[nodeId];
+        Object.keys(treeDeclaration).forEach(nodeId => {
+            const nodeDecl = treeDeclaration[nodeId];
             let node;
 
             switch (nodeDecl.type) {
@@ -40,12 +39,12 @@ export class TreeBuilder {
         });
 
         // Recursively build the tree by creating the children nodes
-        Object.keys(tree_declaration).forEach( nodeId => {
-            const nodeDecl = tree_declaration[nodeId];
+        Object.keys(treeDeclaration).forEach(nodeId => {
+            const nodeDecl = treeDeclaration[nodeId];
             const node = nodeMap[nodeId];
 
             if (nodeDecl.nodes) {
-                nodeDecl.nodes.forEach( childId => {
+                nodeDecl.nodes.forEach(childId => {
                     const childNode = nodeMap[childId];
                     if (!childNode) {
                         throw new Error(`Invalid child node ID: ${childId}`);

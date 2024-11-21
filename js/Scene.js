@@ -33,9 +33,9 @@ export class Scene extends BABYLON.Scene {
         // scene.fogColor = new BABYLON.Color3(0.1, 0.1, 0.1);
         // scene.fogDensity = 0.00006;
 
-        const glow_layer = new BABYLON.GlowLayer('PlasmaShotGlow', scene);
-        glow_layer.intensity = 0.95;
-        this.plasmaShotLayer = glow_layer;
+        const glowLayer = new BABYLON.GlowLayer('PlasmaShotGlow', scene);
+        glowLayer.intensity = 0.95;
+        this.plasmaShotLayer = glowLayer;
 
         const camera = new BABYLON.FreeCamera('MainCamera', BABYLON.Vector3.Zero(), scene);
         this.activeCamera = camera;
@@ -78,7 +78,7 @@ export class Scene extends BABYLON.Scene {
     createSkyBox(config) {
         const scene = this;
 
-        const dist = config.radius_max * 3;
+        const dist = config.radiusMax * 3;
         const skybox = BABYLON.MeshBuilder.CreateBox('skyBox', { size: dist }, scene);
 
         const skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene);

@@ -1,5 +1,5 @@
 // list of meshes
-const meshes_list = {
+const meshesList = {
     MyShip: { path: './assets/models/MyShip/', file: 'MyShip.babylon' },
     EnemyShip: { path: './assets/models/EnemyShip/', file: 'EnemyShip.babylon' },
 
@@ -8,7 +8,7 @@ const meshes_list = {
 
     Asteroids: [
         { path: './assets/models/Asteroid1/', file: 'Asteroid1.babylon' },
-        //{path: './assets/models/Asteroid2/', file: 'Asteroid2.babylon',},
+        // {path: './assets/models/Asteroid2/', file: 'Asteroid2.babylon',},
         { path: './assets/models/Asteroid3/', file: 'Asteroid3.babylon' },
         // {path: './assets/models/Asteroid4/', file: 'Asteroid4.babylon',},
         { path: './assets/models/Asteroid5/', file: 'Asteroid5.babylon' },

@@ -33,7 +33,7 @@ export class Missile extends PlasmaShot {
         this.id = 'Missile' + counter;
     }
 
-    init(pos, quaternion, entity_class) {
+    init(pos, quaternion, entityClass) {
         const parentMesh = this.battleArea.missileMesh;
         const mesh = parentMesh.createInstance(this.id);
         mesh.position = pos;
@@ -57,12 +57,12 @@ export class Missile extends PlasmaShot {
         body.setCollisionCallbackEnabled(true);
         this.body = body;
 
-        body.mfg = { name: 'Missile', id: this.id, entity_class: entity_class, entity: this, owner: this.owner };
+        body.mfg = { name: 'Missile', id: this.id, entityClass: entityClass, entity: this, owner: this.owner };
 
         const shape = new BABYLON.PhysicsShapeCapsule(
             new BABYLON.Vector3(0.5, 0, 0), // starting point of the cylinder segment
             new BABYLON.Vector3(-0.5,0, 0), // ending point of the cylinder segment
-            1.0,                            // radius of the cylinder
+            1.0, // radius of the cylinder
             this.scene,
         );
         const material = { friction: 0, restitution: 0 };
@@ -80,16 +80,16 @@ export class Missile extends PlasmaShot {
 
         this.moveEffect = new IdleMoveEffect(5.12, 25.5);
 
-        const eff_pos = new BABYLON.Vector3(0, -1.05, 0);
-        let effect = EngineFlaresEffect.create(this.scene, mesh, eff_pos);
+        const effPos = new BABYLON.Vector3(0, -1.05, 0);
+        let effect = EngineFlaresEffect.create(this.scene, mesh, effPos);
         effect.minSize = 0.65;
         effect.maxSize = 0.90;
-        effect.color1  = new BABYLON.Color4(1.0, 0.0, 0.0, 1.0);
-        effect.color2  = new BABYLON.Color4(1.0, 1.0, 1.0, 1.0);
+        effect.color1 = new BABYLON.Color4(1.0, 0.0, 0.0, 1.0);
+        effect.color2 = new BABYLON.Color4(1.0, 1.0, 1.0, 1.0);
         effect.colorDead = new BABYLON.Color4(1.0, 0, 0, 1.0);
         this.engineEffect = effect;
 
-        effect = TrailEffect.create(this.scene, mesh, eff_pos);
+        effect = TrailEffect.create(this.scene, mesh, effPos);
         this.trailEffect = effect;
     }
 

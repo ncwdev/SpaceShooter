@@ -9,22 +9,22 @@ export class GradientBoardText extends BaseGui {
 
     #isFinished = false;
 
-    constructor(game, parent, text, back_color) {
-        // back_color must be specified as text in format "#RRGGBB"
+    constructor(game, parent, text, backColor) {
+        // backColor must be specified as text in format "#RRGGBB"
         super(game);
 
         this.createPanel(parent, text);
-        this.setBackColor(back_color);
+        this.setBackColor(backColor);
     }
 
     createPanel(parent, text) {
-        const h = this.screen_height;
-        // const w = this.screen_width;
+        const h = this.screenHeight;
+        // const w = this.screenWidth;
 
         const panel = new BABYLON.GUI.Rectangle();
         panel.width = 1.00;
-        panel.height= 0.08;
-        panel.zIndex= 50;
+        panel.height = 0.08;
+        panel.zIndex = 50;
         parent.addControl(panel);
 
         this.panel = panel;
@@ -45,25 +45,25 @@ export class GradientBoardText extends BaseGui {
         this.textBlock.text = text;
     }
 
-    setBackColor(back_color) {
-        const h = this.screen_height;
-        const w = this.screen_width;
+    setBackColor(backColor) {
+        const h = this.screenHeight;
+        const w = this.screenWidth;
 
         const gradient = new BABYLON.GUI.LinearGradient(0, h/2, w, h/2);
-        gradient.addColorStop(0.0, back_color + '00');
-        gradient.addColorStop(0.5, back_color + 'ff');
-        gradient.addColorStop(1.0, back_color + '00');
+        gradient.addColorStop(0.0, backColor + '00');
+        gradient.addColorStop(0.5, backColor + 'ff');
+        gradient.addColorStop(1.0, backColor + '00');
         this.panel.backgroundGradient = gradient;
-        this.panel.color = back_color + '00';
+        this.panel.color = backColor + '00';
     }
 
-    show(show_time = 0.7, wait_time = 0.9, hide_time = 1.3) {
+    show(showTime = 0.7, waitTime = 0.9, hideTime = 1.3) {
         if (this.panel.isVisible) {
             return;
         }
         this.panel.isVisible = true;
 
-        this.alphaEffect = new InOutMoveEffect(0.0, 1.0, show_time, wait_time, hide_time);
+        this.alphaEffect = new InOutMoveEffect(0.0, 1.0, showTime, waitTime, hideTime);
         this.panel.alpha = 0;
 
         this.#isFinished = false;

@@ -14,7 +14,7 @@ export class ProgressBar3d {
 
         const underlay = new BABYLON.GUI.Rectangle();
         underlay.width = `${width * 100}%`;
-        underlay.height= `${height* 100}%`;
+        underlay.height = `${height * 100}%`;
         underlay.color = 'white';
         underlay.thickness = 1;
         underlay.background = 'black';
@@ -24,11 +24,11 @@ export class ProgressBar3d {
 
         const progress = new BABYLON.GUI.Rectangle();
         progress.width = '100%';
-        progress.height= '100%';
+        progress.height = '100%';
         progress.color = 'white';
         progress.background = 'red';
         progress.thickness = 0;
-        //progress.alpha = alpha;
+        // progress.alpha = alpha;
 
         progress.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
         progress.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;

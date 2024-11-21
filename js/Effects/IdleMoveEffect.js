@@ -25,7 +25,7 @@ export class IdleMoveEffect {
         const dx = x2 - this.point.x;
         const dy = y2 - this.point.y;
 
-        const dist = Math.sqrt(dx*dx + dy*dy);
+        const dist = Math.sqrt(dx * dx + dy * dy);
         this.moveTime = dist / this.moveSpeed;
 
         this.dir = new BABYLON.Vector2(dx, dy).normalize();

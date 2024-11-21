@@ -13,67 +13,67 @@ const EFM_AVG = 1;
 const EFM_MAX = 2;
 const EFM_SIZES = [ [0.1, 0.2], [0.3, 0.4], [0.5, 0.6] ];
 
-const ENERGY_GREEN   = 1;
+const ENERGY_GREEN = 1;
 const ENERGY_RED_DEC = 2; // consumption in red zone
 const ENERGY_RED_INC = 3; // restoring in red zone
 
-import player_config from '../Config/PlayerShipCfg.js';
+import playerConfig from '../Config/PlayerShipCfg.js';
 
 import CONST from '../const.js';
 
 export class PlayerShip extends Ship {
     camera = null;
-    cam_offset = null;
-    cam_effect = null;
+    camOffset = null;
+    camEffect = null;
 
     hud = null;
 
-    energy_value = 0;
-    energy_state = 0;
+    energyValue = 0;
+    energyState = 0;
 
     // camera rotation
-    cam_roll_mult = 0.25;
-    camera_yaw_mult = 0.60;
-    camera_pitch_mult = 0.10;
+    camRollMult = 0.25;
+    cameraYawMult = 0.60;
+    cameraPitchMult = 0.10;
 
-    white_noise_effect = null;
+    whiteNoiseEffect = null;
 
     setNoiseMaterial() {
-        this.white_noise_effect.start();
+        this.whiteNoiseEffect.start();
     }
 
     resetNoiseMaterial() {
-        this.white_noise_effect.stop();
+        this.whiteNoiseEffect.stop();
     }
 
     constructor(game, mesh) {
-        super(game, mesh, player_config);
+        super(game, mesh, playerConfig);
 
-        this.setArmor (this.config.armor);
+        this.setArmor(this.config.armor);
         this.setHealth(this.config.health);
 
-        this.energy_value = this.config.energy.volume;
-        this.energy_state = ENERGY_GREEN;
+        this.energyValue = this.config.energy.volume;
+        this.energyState = ENERGY_GREEN;
 
-        this.cam_offset = this.config.cam_offset.clone();
+        this.camOffset = this.config.camOffset.clone();
 
         // Create a shape and the associated body. Size will be determined automatically.
         const body = new BABYLON.PhysicsBody(mesh, BABYLON.PhysicsMotionType.DYNAMIC, false, this.scene);
         body.setMassProperties({
-            mass: player_config.mass, // 100
+            mass: playerConfig.mass,
             inertia: new BABYLON.Vector3(10, 10, 10),
             centerOfMass: new BABYLON.Vector3(0, 0, 0),
         });
-        body.setLinearDamping(player_config.linear_damping);    // 0.59
-        body.setAngularDamping(player_config.angular_damping);  // 0.59
+        body.setLinearDamping(playerConfig.linear_damping);
+        body.setAngularDamping(playerConfig.angular_damping);
         body.setCollisionCallbackEnabled(true);
 
-        body.mfg = { name: 'PlayerShip', entity_class: CONST.ENTITY_CLASS_MY_SHIP };
+        body.mfg = { name: 'PlayerShip', entityClass: CONST.ENTITY_CLASS_MY_SHIP };
 
         const shape = new BABYLON.PhysicsShapeCapsule(
             new BABYLON.Vector3(0.5, 0, 0), // starting point of the cylinder segment
             new BABYLON.Vector3(-0.5,0, 0), // ending point of the cylinder segment
-            4.0,                            // radius of the cylinder
+            4.0, // radius of the cylinder
             this.scene,
         );
         const material = { friction: 0.5, restitution: 0.9 };
@@ -94,12 +94,12 @@ export class PlayerShip extends Ship {
         this.sounds.engineMain.sound.attachToMesh(mesh);
 
         // engine flares
-        this.left_flare_particles = this.createEngineFlares(mesh, player_config.left_flare_pos);
-        this.right_flare_particles= this.createEngineFlares(mesh, player_config.right_flare_pos);
+        this.leftFlareParticles = this.createEngineFlares(mesh, playerConfig.leftFlarePos);
+        this.rightFlareParticles = this.createEngineFlares(mesh, playerConfig.rightFlarePos);
 
-        this.white_noise_effect = new WhiteNoiseEffect(this.scene, mesh, './assets/models/MyShip/skull_texture.jpg');
+        this.whiteNoiseEffect = new WhiteNoiseEffect(this.scene, mesh, './assets/models/MyShip/skull_texture.jpg');
 
-        this.cam_effect = new IdleMoveEffect(player_config.idle_move_radius, player_config.idle_move_speed); // 0.12, 0.05
+        this.camEffect = new IdleMoveEffect(playerConfig.idleMoveRadius, playerConfig.idleMoveSpeed);
         this.attachCamera();
 
         // debug
@@ -117,7 +117,7 @@ export class PlayerShip extends Ship {
     addMissile(num) {
         super.addMissile(num);
 
-        this.hud.setMisselesCount(this.missiles_num);
+        this.hud.setMisselesCount(this.missilesNum);
     }
 
     attachCamera() {
@@ -128,10 +128,10 @@ export class PlayerShip extends Ship {
 
         this.mesh.computeWorldMatrix();
 
-        const offset = this.cam_offset.clone();
-        offset.x -= this.config.camera_to_ship_initial_dist;
-        const global_cam_pos = BABYLON.Vector3.TransformCoordinates(offset, this.mesh.getWorldMatrix());
-        camera.position = global_cam_pos;
+        const offset = this.camOffset.clone();
+        offset.x -= this.config.cameraToShipInitialDist;
+        const globalCamPos = BABYLON.Vector3.TransformCoordinates(offset, this.mesh.getWorldMatrix());
+        camera.position = globalCamPos;
 
         this.updateCamera(0);
 
@@ -140,25 +140,25 @@ export class PlayerShip extends Ship {
 
     updateCamera(dt) {
         // softly rotate camera with full control of forward and up vectors
-        const targetDist = this.config.cam_target_dist; // distance to target in front of ship
+        const targetDist = this.config.camTargetDist; // distance to target in front of ship
 
-        const offset = this.cam_effect.update(dt);
-        this.cam_offset.z = this.config.cam_offset.z + offset.x;
-        this.cam_offset.y = this.config.cam_offset.y + offset.y;
+        const offset = this.camEffect.update(dt);
+        this.camOffset.z = this.config.camOffset.z + offset.x;
+        this.camOffset.y = this.config.camOffset.y + offset.y;
 
         this.mesh.computeWorldMatrix();
-        const globalCameraPos = BABYLON.Vector3.TransformCoordinates(this.cam_offset, this.mesh.getWorldMatrix());
+        const globalCameraPos = BABYLON.Vector3.TransformCoordinates(this.camOffset, this.mesh.getWorldMatrix());
 
-        const intFactor = 1 - Math.pow(2, -dt * this.config.cam_lerp_factor);
+        const intFactor = 1 - Math.pow(2, -dt * this.config.camLerpFactor);
         this.camera.position.x += (globalCameraPos.x - this.camera.position.x) * intFactor;
         this.camera.position.y += (globalCameraPos.y - this.camera.position.y) * intFactor;
         this.camera.position.z += (globalCameraPos.z - this.camera.position.z) * intFactor;
 
         // change target dist based on ship's pitch
-        const dx = this.pitch_speed * this.camera_pitch_mult;
+        const dx = this.pitchSpeed * this.cameraPitchMult;
         const targetPos = new BABYLON.Vector3(targetDist + dx, 0, 0); // in ship's local coordinates
 
-        const cameraRollAngle = this.yaw_speed * this.camera_yaw_mult - this.roll_speed * this.cam_roll_mult;
+        const cameraRollAngle = this.yawSpeed * this.cameraYawMult - this.rollSpeed * this.camRollMult;
         const z = Math.sin(cameraRollAngle);
 
         const globalTargetPos = BABYLON.Vector3.TransformCoordinates(targetPos, this.mesh.getWorldMatrix());
@@ -166,12 +166,12 @@ export class PlayerShip extends Ship {
         const right = BABYLON.Vector3.Zero();
         let up = BABYLON.Vector3.Zero();
 
-        const localForward = { x: targetPos.x - this.cam_offset.x, y: targetPos.y - this.cam_offset.y };
-        const localUp  = utils.rotateVector2d(localForward, -Math.PI / 2);
+        const localForward = { x: targetPos.x - this.camOffset.x, y: targetPos.y - this.camOffset.y };
+        const localUp = utils.rotateVector2d(localForward, -Math.PI / 2);
         const localUp3d = new BABYLON.Vector3(localUp.x, localUp.y, 0).normalize();
         localUp3d.z = z;
 
-        const upPos = this.cam_offset.add(localUp3d);
+        const upPos = this.camOffset.add(localUp3d);
         const globalUpPos = BABYLON.Vector3.TransformCoordinates(upPos, this.mesh.getWorldMatrix());
 
         up = globalUpPos.subtract(globalCameraPos);
@@ -186,7 +186,7 @@ export class PlayerShip extends Ship {
         BABYLON.Quaternion.FromRotationMatrixToRef(matrix.getRotationMatrix(), this.camera.rotationQuaternion);
     }
 
-    firePlasmaShot(pointerInfo) {
+    firePlasmaShot() {
         // if (!this.hud.isCursorInTargetField()) {
         //     return;
         // }
@@ -194,8 +194,8 @@ export class PlayerShip extends Ship {
 
         this.mesh.computeWorldMatrix();
         const matrix = this.mesh.getWorldMatrix();
-        const leftPos = BABYLON.Vector3.TransformCoordinates(this.config.plasma_shot_left_pos, matrix);
-        const rightPos = BABYLON.Vector3.TransformCoordinates(this.config.plasma_shot_right_pos, matrix);
+        const leftPos = BABYLON.Vector3.TransformCoordinates(this.config.plasmaShotLeftPos, matrix);
+        const rightPos = BABYLON.Vector3.TransformCoordinates(this.config.plasmaShotRightPos, matrix);
 
         const target = this.hud.getTargetObj();
 
@@ -203,7 +203,7 @@ export class PlayerShip extends Ship {
         const screenWidth = engine.getRenderWidth();
         const screenHeight = engine.getRenderHeight();
 
-        const targetPos = this.hud.target_pos;
+        const targetPos = this.hud.targetPos;
         const screenPosition = new BABYLON.Vector3(targetPos.x + screenWidth * 0.5, targetPos.y + screenHeight * 0.5, 0.99);
         const dstPosUnprojected = BABYLON.Vector3.Unproject(
             screenPosition,
@@ -217,7 +217,7 @@ export class PlayerShip extends Ship {
         let dstPos = this.mesh.position.add(dir.scale(200));
 
         const down = this.mesh.up.clone().negate();
-        dstPos = dstPos.add(down.scale(7.5));
+        dstPos = dstPos.add(down.scale(7.5)); // TODO: remove magic number
 
         const leftDir = dstPos.subtract(leftPos);
         const q1 = utils.quaternionShortestArc(fwd, leftDir);
@@ -230,9 +230,8 @@ export class PlayerShip extends Ship {
         SoundManager.playSound(SoundManager.SND_PLASMA, this.mesh);
     }
 
-    fireMissile(pointerInfo) {
-        if (this.missiles_num <= 0) {
-            // TODO: play sound and show warning message
+    fireMissile() {
+        if (this.missilesNum <= 0) {
             return;
         }
         this.addMissile(-1);
@@ -242,7 +241,7 @@ export class PlayerShip extends Ship {
         this.mesh.computeWorldMatrix();
         const matrix = this.mesh.getWorldMatrix();
 
-        const pos = BABYLON.Vector3.TransformCoordinates(this.config.missile_pos, matrix);
+        const pos = BABYLON.Vector3.TransformCoordinates(this.config.missilePos, matrix);
         const dir = this.mesh.getDirection(BABYLON.Axis.X).clone();
         const q = utils.quaternionShortestArc(fwd, dir);
         const target = this.hud.getTargetObj();
@@ -253,7 +252,7 @@ export class PlayerShip extends Ship {
     }
 
     moveForward(dt, isShiftPressed) {
-        const accel = this.config.accel_fwd;
+        const accel = this.config.accelFwd;
         this.accelerate(accel, dt, isShiftPressed);
 
         const sizes = EFM_SIZES[isShiftPressed ? EFM_MAX : EFM_AVG];
@@ -261,28 +260,28 @@ export class PlayerShip extends Ship {
     }
 
     moveBackward(dt, isShiftPressed) {
-        const accel = this.config.accel_back;
+        const accel = this.config.accelBack;
         this.accelerate(accel, dt, isShiftPressed);
     }
 
     accelerate(accel, dt, isShiftPressed) {
-        if (this.energy_value <= 0 || this.energy_state === ENERGY_RED_INC) {
+        if (this.energyValue <= 0 || this.energyState === ENERGY_RED_INC) {
             this.moveInertial(dt);
             return;
         }
-        let energy_consumption = this.config.energy.accel_consump;
+        let energyConsumption = this.config.energy.accelConsump;
         if (isShiftPressed) {
-            accel *= this.config.turbo_k;
-            energy_consumption = this.config.energy.turbo_consump;
+            accel *= this.config.turboK;
+            energyConsumption = this.config.energy.turboConsump;
         }
-        let v = this.vel_fwd + accel * dt;
-        v = Math.min(v, this.config.vel_fwd_turbo);
-        v = Math.max(v, this.config.vel_fwd_min);
-        this.vel_fwd = v;
+        let v = this.velFwd + accel * dt;
+        v = Math.min(v, this.config.velFwdTurbo);
+        v = Math.max(v, this.config.velFwdMin);
+        this.velFwd = v;
 
-        this.energy_value = this.energy_value - energy_consumption * dt;
-        if (this.energy_value <= this.config.energy.red_zone_value) {
-            this.energy_state = ENERGY_RED_DEC;
+        this.energyValue = this.energyValue - energyConsumption * dt;
+        if (this.energyValue <= this.config.energy.redZoneValue) {
+            this.energyState = ENERGY_RED_DEC;
         }
         this.playMainEngineSound();
     }
@@ -291,14 +290,14 @@ export class PlayerShip extends Ship {
         const sizes = EFM_SIZES[EFM_MIN];
         this.setEngineFlaresMode(sizes);
 
-        this.energy_value = this.energy_value + this.config.energy.restore_speed * dt;
-        if (this.energy_value > this.config.energy.volume) {
-            this.energy_value = this.config.energy.volume;
+        this.energyValue = this.energyValue + this.config.energy.restoreSpeed * dt;
+        if (this.energyValue > this.config.energy.volume) {
+            this.energyValue = this.config.energy.volume;
         }
-        if (this.energy_value >= this.config.energy.red_zone_value) {
-            this.energy_state = ENERGY_GREEN;
+        if (this.energyValue >= this.config.energy.redZoneValue) {
+            this.energyState = ENERGY_GREEN;
         } else {
-            this.energy_state = ENERGY_RED_INC;
+            this.energyState = ENERGY_RED_INC;
         }
         this.playIdleEngineSound();
     }
@@ -307,24 +306,24 @@ export class PlayerShip extends Ship {
         // armor could be restored only if it > 0
         let armor = this.getArmor();
         if (armor > 0) {
-            armor += this.config.armor_restore * dt;
+            armor += this.config.armorRestore * dt;
             this.setArmor(armor);
         }
     }
 
     getPlasmaShotDamage() {
-        return this.config.plasma_shot_damage;
+        return this.config.plasmaShotDamage;
     }
 
     init() {
         this.createHud();
-        this.addMissile(this.config.missiles_num);
+        this.addMissile(this.config.missilesNum);
     }
 
     createHud() {
         this.hud = new PlayerShipGui(this.game, this);
-        this.armor_bar = this.hud.getArmorBar();
-        this.health_bar= this.hud.getHealthBar();
+        this.armorBar = this.hud.getArmorBar();
+        this.healthBar = this.hud.getHealthBar();
         this.hud.setInfoPanelVisible(true);
     }
 
@@ -333,11 +332,11 @@ export class PlayerShip extends Ship {
     }
 
     getEnergyRedZone() {
-        return this.config.energy.red_zone_value / this.config.energy.volume;
+        return this.config.energy.redZoneValue / this.config.energy.volume;
     }
 
     getCurEnergy() {
-        return this.energy_value;
+        return this.energyValue;
     }
 
     getMaxEnergy() {
@@ -345,7 +344,7 @@ export class PlayerShip extends Ship {
     }
 
     isEnergyInRedZone() {
-        return this.energy_state != ENERGY_GREEN;
+        return this.energyState != ENERGY_GREEN;
     }
 
     update(dt) {
@@ -372,36 +371,36 @@ export class PlayerShip extends Ship {
 
     playIdleEngineSound() {
         const engineIdle = this.sounds.engineIdle;
-        if (engineIdle && !engineIdle.is_playing) {
+        if (engineIdle && !engineIdle.isPlaying) {
             engineIdle.play(0, 0.25, 2000);
-            engineIdle.is_playing = true;
+            engineIdle.isPlaying = true;
         }
         const engineMain = this.sounds.engineMain;
-        if (engineMain && engineMain.is_playing) {
+        if (engineMain && engineMain.isPlaying) {
             engineMain.stop(0.1, 0, 1000);
-            engineMain.is_playing = false;
+            engineMain.isPlaying = false;
         }
     }
 
     playMainEngineSound() {
         const engineIdle = this.sounds.engineIdle;
-        if (engineIdle && engineIdle.is_playing) {
+        if (engineIdle && engineIdle.isPlaying) {
             engineIdle.stop(0, 0.25, 1000);
-            engineIdle.is_playing = false;
+            engineIdle.isPlaying = false;
         }
         const engineMain = this.sounds.engineMain;
-        if (engineMain && !engineMain.is_playing) {
+        if (engineMain && !engineMain.isPlaying) {
             engineMain.play(0.1, 0, 2000);
-            engineMain.is_playing = true;
+            engineMain.isPlaying = true;
         }
     }
 
     clear() {
         this.camera.parent = null;
 
-        this.white_noise_effect.stop();
-        this.white_noise_effect.clear();
-        this.white_noise_effect = null;
+        this.whiteNoiseEffect.stop();
+        this.whiteNoiseEffect.clear();
+        this.whiteNoiseEffect = null;
 
         this.hud.clear();
 

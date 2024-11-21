@@ -1,6 +1,6 @@
 let engine = null;
 let canvas = null;
-let scene  = null;
+let scene = null;
 
 let havokInstance = null;
 

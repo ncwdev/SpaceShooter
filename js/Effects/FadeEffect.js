@@ -16,16 +16,16 @@ export function fadeSceneIn(scene, time, callback) {
         effect.setFloat('fadeLevel', postProcess.fadeLevel);
     };
 
-    const frame_rate = 60;
-    const animation = new BABYLON.Animation('fadeAnimIn', 'fadeLevel', frame_rate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    const frameRate = 60;
+    const animation = new BABYLON.Animation('fadeAnimIn', 'fadeLevel', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     const keys = [
         { frame: 0, value: 1 },
-        { frame: frame_rate * time, value: 0 }
+        { frame: frameRate * time, value: 0 }
     ];
     animation.setKeys(keys);
     postProcess.animations.push(animation);
 
-    scene.beginAnimation(postProcess, 0, frame_rate * time, false, undefined, ()=>{
+    scene.beginAnimation(postProcess, 0, frameRate * time, false, undefined, ()=>{
         postProcess.dispose();
 
         if (callback) {
@@ -41,16 +41,16 @@ export function fadeSceneOut(scene, time, callback) {
         effect.setFloat('fadeLevel', postProcess.fadeLevel);
     };
 
-    const frame_rate = 60;
-    const animation = new BABYLON.Animation('fadeAnimOut', 'fadeLevel', frame_rate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+    const frameRate = 60;
+    const animation = new BABYLON.Animation('fadeAnimOut', 'fadeLevel', frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
     const keys = [
         { frame: 0, value: 0 },
-        { frame: frame_rate * time, value: 1 }
+        { frame: frameRate * time, value: 1 }
     ];
     animation.setKeys(keys);
     postProcess.animations.push(animation);
 
-    scene.beginAnimation(postProcess, 0, frame_rate * time, false, undefined, ()=>{
+    scene.beginAnimation(postProcess, 0, frameRate * time, false, undefined, () => {
         postProcess.dispose();
 
         if (callback) {

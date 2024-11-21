@@ -1,7 +1,7 @@
 export class Node {
     id = null;
     nodes = null;
-    func  = null;
+    func = null;
 
     static RES_FAIL = 0;
     static RES_SUCCESS = 1;
@@ -14,7 +14,7 @@ export class Node {
     addChild(node) {
         this.nodes.push(node);
     }
-  
+
     process(entity, context) {
     }
 }

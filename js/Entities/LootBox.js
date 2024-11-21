@@ -17,15 +17,15 @@ export class LootBox {
         return this.id;
     }
 
-    constructor(game, parent_mesh, pos) {
+    constructor(game, parentMesh, pos) {
         this.game = game;
         this.scene = game.getScene();
 
         this.id = 'LootBox' + LootBox.counter;
         LootBox.counter++;
 
-        //const mesh = parent_mesh.createInstance(this.id);
-        const mesh = parent_mesh.clone(this.id);
+        // const mesh = parentMesh.createInstance(this.id);
+        const mesh = parentMesh.clone(this.id);
         mesh.position = pos;
         mesh.setEnabled(true);
         this.mesh = mesh;
@@ -45,11 +45,11 @@ export class LootBox {
         body.setCollisionCallbackEnabled(true);
         this.body = body;
 
-        body.mfg = { name: 'LootBox', id: this.id, entity_class: CONST.ENTITY_CLASS_LOOTBOX, entity: this };
+        body.mfg = { name: 'LootBox', id: this.id, entityClass: CONST.ENTITY_CLASS_LOOTBOX, entity: this };
 
         const shape = new BABYLON.PhysicsShapeCylinder(
             new BABYLON.Vector3(0, -2.5, 0),
-            new BABYLON.Vector3(0,  2.5, 0),
+            new BABYLON.Vector3(0, 2.5, 0),
             3,
             this.scene
         );

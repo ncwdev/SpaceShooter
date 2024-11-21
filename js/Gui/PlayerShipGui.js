@@ -18,23 +18,19 @@ export class PlayerShipGui extends BaseGui {
 
     ship = null;
     target = null; // gui control as a fake mouse pointer
-    target_pos = null;
-    target_obj = null;
+    targetPos = null;
+    targetObj = null;
 
     getTargetObj() {
-        return this.target_obj;
+        return this.targetObj;
     }
 
-    target_field = null;
-    reticle_center_x = 0.5;
-    reticle_center_y = 0.5;
-
-    speed_bar_pos = null;
-    speed_bar_neg = null;
-    energy_bar    = null;
-
-    health_bar= null;
-    armor_bar = null;
+    targetField = null;
+    speedBarPos = null;
+    speedBarNeg = null;
+    energyBar = null;
+    healthBar = null;
+    armorBar = null;
 
     infoPanel = null;
     misselsCounter = null;
@@ -47,19 +43,19 @@ export class PlayerShipGui extends BaseGui {
 
         const parent = game.getHud().parent;
 
-        const target_field = this.createTargetField();
-        parent.addControl(target_field);
-        this.target_field = target_field;
+        const targetField = this.createTargetField();
+        parent.addControl(targetField);
+        this.targetField = targetField;
 
         const center = new BABYLON.GUI.Image('center', 'assets/images/center.png');
         center.width = 0.03;
         center.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
         center.zIndex = 10;
-        target_field.addControl(center);
+        targetField.addControl(center);
 
         const target = new BABYLON.GUI.Rectangle('target');
-        target.width = (this.screen_width * 0.012) + 'px';
-        target.height= target.width;
+        target.width = (this.screenWidth * 0.012) + 'px';
+        target.height = target.width;
         target.zIndex = 10;
         target.color = '#3071a9';
         target.thickness = 2;
@@ -67,9 +63,9 @@ export class PlayerShipGui extends BaseGui {
         parent.addControl(target);
         this.target = target;
 
-        this.target.left= '0px';
+        this.target.left = '0px';
         this.target.top = '0px';
-        this.target_pos = { x: 0, y: 0 };
+        this.targetPos = { x: 0, y: 0 };
 
         this.infoPanel = document.getElementById('InfoPanel');
         this.enemiesCounter = document.getElementById('EnemiesCount');
@@ -83,11 +79,11 @@ export class PlayerShipGui extends BaseGui {
     }
 
     getArmorBar() {
-        return this.armor_bar;
+        return this.armorBar;
     }
 
     getHealthBar() {
-        return this.health_bar;
+        return this.healthBar;
     }
 
     onPointerHandler(e) {
@@ -109,17 +105,17 @@ export class PlayerShipGui extends BaseGui {
         const tw = w * 0.5 - w * MARGIN;
         const th = h * 0.5 - h * MARGIN;
 
-        let { x, y } = this.target_pos;
+        let { x, y } = this.targetPos;
         x = utils.clamp(x + dx, -tw, tw);
         y = utils.clamp(y + dy, -th, th);
-        this.target_pos = { x, y };
+        this.targetPos = { x, y };
 
-        this.target.left= `${x}px`;
+        this.target.left = `${x}px`;
         this.target.top = `${y}px`;
     }
 
     getCursorCenterDeflection() {
-        const cursorPos = this.target_pos;
+        const cursorPos = this.targetPos;
 
         const engine = this.scene.getEngine();
         const w = engine.getRenderWidth();
@@ -131,7 +127,7 @@ export class PlayerShipGui extends BaseGui {
     }
 
     getCursorPosition() {
-        const cursorPos = this.target_pos;
+        const cursorPos = this.targetPos;
         const w = this.scene.getEngine().getRenderWidth();
         const h = this.scene.getEngine().getRenderHeight();
         return { x: cursorPos.x + w * 0.5, y: cursorPos.y + h * 0.5};
@@ -148,7 +144,7 @@ export class PlayerShipGui extends BaseGui {
     isCursorInBufferZone() {
         const [dx, dy] = this.getCursorCenterDeflection();
         const MIN_TARGET_RADIUS = 0.001;
-        const radius = dx*dx + dy*dy;
+        const radius = dx * dx + dy * dy;
         return radius < MIN_TARGET_RADIUS;
     }
 
@@ -161,136 +157,137 @@ export class PlayerShipGui extends BaseGui {
     }
 
     createTargetField() {
-        const target_field_clr = 'white';
-        const target_field_line_width = 1;
+        const targetFieldClr = 'white';
+        const targetFieldLineWidth = 1;
 
         const w = this.scene.getEngine().getRenderWidth();
         const h = this.scene.getEngine().getRenderHeight();
 
-        const target_field = new BABYLON.GUI.Rectangle();
-        target_field.width = 1.0;
-        target_field.height= 1.0;
-        target_field.cornerRadius = 0;
-        target_field.thickness = 0;
+        const targetField = new BABYLON.GUI.Rectangle();
+        targetField.width = 1.0;
+        targetField.height = 1.0;
+        targetField.cornerRadius = 0;
+        targetField.thickness = 0;
 
-        const origin_point = { x: 0.0, y: 0.0 };
-        const reticle_left = new BABYLON.GUI.MultiLine();
+        const originPoint = { x: 0.0, y: 0.0 };
+        const reticleLeft = new BABYLON.GUI.MultiLine();
         let coordinates = [
             { x: RT_LEFT + 0.01, y: RT_TOP },
             { x: RT_LEFT, y: RT_TOP },
             { x: RT_LEFT, y: RT_TOP + RT_HEIGHT },
             { x: RT_LEFT + 0.01, y: RT_TOP + RT_HEIGHT },
         ];
-        utils.addMultipleCoordinates(reticle_left, coordinates, origin_point);
-        reticle_left.lineWidth = target_field_line_width;
-        reticle_left.color = target_field_clr;
-        target_field.addControl(reticle_left);
+        utils.addMultipleCoordinates(reticleLeft, coordinates, originPoint);
+        reticleLeft.lineWidth = targetFieldLineWidth;
+        reticleLeft.color = targetFieldClr;
+        targetField.addControl(reticleLeft);
 
-        const reticle_right = new BABYLON.GUI.MultiLine();
+        const reticleRight = new BABYLON.GUI.MultiLine();
         coordinates = [
             { x: RT_LEFT + RT_WIDTH - 0.01, y: RT_TOP },
             { x: RT_LEFT + RT_WIDTH, y: RT_TOP },
             { x: RT_LEFT + RT_WIDTH, y: RT_TOP + RT_HEIGHT },
             { x: RT_LEFT + RT_WIDTH - 0.01, y: RT_TOP + RT_HEIGHT },
         ];
-        utils.addMultipleCoordinates(reticle_right, coordinates, origin_point);
-        reticle_right.lineWidth = target_field_line_width;
-        reticle_right.color = target_field_clr;
-        target_field.addControl(reticle_right);
+        utils.addMultipleCoordinates(reticleRight, coordinates, originPoint);
+        reticleRight.lineWidth = targetFieldLineWidth;
+        reticleRight.color = targetFieldClr;
+        targetField.addControl(reticleRight);
 
         // progress for forward speed
         const BAR_WIDTH = 3;
         const MARGIN_H = 0.01;
         const MARGIN_W = 0.003;
 
-        const bar_offset_x = w * (RT_LEFT + MARGIN_W);
+        const barOffsetX = w * (RT_LEFT + MARGIN_W);
 
         const WHOLE_HEIGHT = RT_HEIGHT - 2 * MARGIN_H;
-        const WHOLE_SPEED  = this.ship.getMaxVelocity() + Math.abs(this.ship.getMinVelocity());
+        const WHOLE_SPEED = this.ship.getMaxVelocity() + Math.abs(this.ship.getMinVelocity());
 
         const NEG_VEL_PERCENT = Math.abs(this.ship.getMinVelocity()) / WHOLE_SPEED;
         const POS_VEL_PERCENT = 1 - NEG_VEL_PERCENT;
 
-        const pos_bar_start_h = h * (RT_TOP + MARGIN_H + WHOLE_HEIGHT * POS_VEL_PERCENT);
-        const pos_bar_end_h = h * (RT_TOP + MARGIN_H);
+        const posBarStartH = h * (RT_TOP + MARGIN_H + WHOLE_HEIGHT * POS_VEL_PERCENT);
+        const posBarEndH = h * (RT_TOP + MARGIN_H);
 
-        const line1 = new ProgressBar(target_field);
-        line1.setStartPoint(bar_offset_x, pos_bar_start_h);
-        line1.setEndPoint  (bar_offset_x, pos_bar_end_h);
+        const line1 = new ProgressBar(targetField);
+        line1.setStartPoint(barOffsetX, posBarStartH);
+        line1.setEndPoint(barOffsetX, posBarEndH);
         line1.setWidth(BAR_WIDTH);
         line1.setColor('green');
-        this.speed_bar_pos = line1;
+        this.speedBarPos = line1;
 
         // progress for back speed
-        const line2 = new ProgressBar(target_field);
-        line2.setStartPoint(bar_offset_x, pos_bar_start_h);
-        line2.setEndPoint  (bar_offset_x, h * (RT_TOP + RT_HEIGHT - MARGIN_H));
+        const line2 = new ProgressBar(targetField);
+        line2.setStartPoint(barOffsetX, posBarStartH);
+        line2.setEndPoint(barOffsetX, h * (RT_TOP + RT_HEIGHT - MARGIN_H));
         line2.setWidth(BAR_WIDTH);
         line2.setColor('red');
-        this.speed_bar_neg = line2;
+        this.speedBarNeg = line2;
 
         // small line between bars
         const line = new BABYLON.GUI.Line();
-        target_field.addControl(line);
+        targetField.addControl(line);
         line.x1 = w * RT_LEFT;
-        line.y1 = pos_bar_start_h;
+        line.y1 = posBarStartH;
         line.x2 = w * (RT_LEFT + 0.004);
-        line.y2 = pos_bar_start_h;
+        line.y2 = posBarStartH;
         line.lineWidth = 2;
         line.color = 'white';
 
         // energy
         const MARGIN_SECOND_W = 0.006;
-        const energy_x = w * (RT_LEFT + MARGIN_SECOND_W);
-        const bar_start = h * (RT_TOP + RT_HEIGHT - MARGIN_H);
-        const bar_end = h * (RT_TOP + MARGIN_H);
+        const energyX = w * (RT_LEFT + MARGIN_SECOND_W);
+        const barStart = h * (RT_TOP + RT_HEIGHT - MARGIN_H);
+        const barEnd = h * (RT_TOP + MARGIN_H);
 
-        const line3 = new ProgressBar(target_field);
-        line3.setStartPoint(energy_x, bar_start);
-        line3.setEndPoint  (energy_x, bar_end);
+        const line3 = new ProgressBar(targetField);
+        line3.setStartPoint(energyX, barStart);
+        line3.setEndPoint(energyX, barEnd);
         line3.setWidth(BAR_WIDTH);
         line3.setColor('white');
-        this.energy_bar = line3;
+        this.energyBar = line3;
 
         // armor
-        const armor_x = w * (RT_LEFT + RT_WIDTH - MARGIN_SECOND_W);
-        const line4 = new ProgressBar(target_field);
-        line4.setStartPoint(armor_x, bar_start);
-        line4.setEndPoint  (armor_x, bar_end);
+        const armorX = w * (RT_LEFT + RT_WIDTH - MARGIN_SECOND_W);
+        const line4 = new ProgressBar(targetField);
+        line4.setStartPoint(armorX, barStart);
+        line4.setEndPoint(armorX, barEnd);
         line4.setWidth(BAR_WIDTH);
         line4.setColor('#85B2F5');
-        this.armor_bar = line4;
+        this.armorBar = line4;
 
         // health
-        const health_x = w * (RT_LEFT + RT_WIDTH - MARGIN_W);
-        const line5 = new ProgressBar(target_field);
-        line5.setStartPoint(health_x, bar_start);
-        line5.setEndPoint  (health_x, bar_end);
+        const healthX = w * (RT_LEFT + RT_WIDTH - MARGIN_W);
+        const line5 = new ProgressBar(targetField);
+        line5.setStartPoint(healthX, barStart);
+        line5.setEndPoint(healthX, barEnd);
         line5.setWidth(BAR_WIDTH);
         line5.setColor('orange');
-        this.health_bar = line5;
+        this.healthBar = line5;
 
-        return target_field;
+        return targetField;
     }
 
-    targetEnemy(target_obj) {
+    targetEnemy(targetObj) {
         // target is needed for missiles
-        this.target_obj = target_obj;
+        this.targetObj = targetObj;
 
-        const mesh = target_obj.getMesh();
+        const mesh = targetObj.getMesh();
         mesh.renderOutline = true;
         mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
         mesh.outlineWidth = 0.1;
 
         this.target.color = '#FF462D';
     }
+
     resetTarget() {
-        if (this.target_obj) {
-            const mesh = this.target_obj.getMesh();
+        if (this.targetObj) {
+            const mesh = this.targetObj.getMesh();
             if (mesh) {
                 mesh.renderOutline = false;
             }
-            this.target_obj = null;
+            this.targetObj = null;
 
             this.target.color = '#3071a9';
         }
@@ -318,10 +315,10 @@ export class PlayerShipGui extends BaseGui {
 
             if (pick.hit && pick.pickedMesh && this.isCursorInTargetField()) {
                 const mesh = pick.pickedMesh;
-                if (mesh.mfg && (mesh.mfg.entity_class === CONST.ENTITY_CLASS_ENEMY_SHIP)) {
-                    const enemy_ship = mesh.mfg.entity;
-                    if (!enemy_ship.isDestroyed()) {
-                        this.targetEnemy(enemy_ship);
+                if (mesh.mfg && (mesh.mfg.entityClass === CONST.ENTITY_CLASS_ENEMY_SHIP)) {
+                    const enemyShip = mesh.mfg.entity;
+                    if (!enemyShip.isDestroyed()) {
+                        this.targetEnemy(enemyShip);
                         return true;
                     }
                 }
@@ -332,13 +329,13 @@ export class PlayerShipGui extends BaseGui {
 
     updateTarget(dt) {
         // shift target pos to center (0, 0)
-        let { x, y } = this.target_pos;
+        let { x, y } = this.targetPos;
         if (!this.isCursorInBufferZone() && (x !== 0 || y !== 0)) {
             const TINY = 1;
             const change = 30 * dt;
             x = utils.decreaseValueToZero(x, TINY, change);
             y = utils.decreaseValueToZero(y, TINY, change);
-            this.target_pos = { x, y };
+            this.targetPos = { x, y };
 
             this.target.left = `${x}px`;
             this.target.top = `${y}px`;
@@ -353,51 +350,51 @@ export class PlayerShipGui extends BaseGui {
     update(dt) {
         this.updateTarget(dt);
 
-        const pl_ship = this.ship;
+        const playerShip = this.ship;
 
-        const fwd_vel = pl_ship.getFwdVelocity();
-        dbg.setShipVelocity(fwd_vel);
+        const fwdVel = playerShip.getFwdVelocity();
+        dbg.setShipVelocity(fwdVel);
 
-        const speed_percent = fwd_vel / pl_ship.getMaxVelocity();
-        if (speed_percent >= 0) {
-            this.speed_bar_pos.setProgress(speed_percent);
+        const speedPercent = fwdVel / playerShip.getMaxVelocity();
+        if (speedPercent >= 0) {
+            this.speedBarPos.setProgress(speedPercent);
 
-            this.speed_bar_pos.setVisible(true);
-            this.speed_bar_neg.setVisible(false);
+            this.speedBarPos.setVisible(true);
+            this.speedBarNeg.setVisible(false);
         } else {
-            const percent = Math.abs(fwd_vel / pl_ship.getMinVelocity());
-            this.speed_bar_neg.setProgress(percent);
+            const percent = Math.abs(fwdVel / playerShip.getMinVelocity());
+            this.speedBarNeg.setProgress(percent);
 
-            this.speed_bar_pos.setVisible(false);
-            this.speed_bar_neg.setVisible(true);
+            this.speedBarPos.setVisible(false);
+            this.speedBarNeg.setVisible(true);
         }
-        const energy_percent = pl_ship.getCurEnergy() / pl_ship.getMaxEnergy();
-        this.energy_bar.setProgress(energy_percent);
+        const energyPercent = playerShip.getCurEnergy() / playerShip.getMaxEnergy();
+        this.energyBar.setProgress(energyPercent);
 
-        if (pl_ship.isEnergyInRedZone()) {
-            this.energy_bar.setColor('red');
+        if (playerShip.isEnergyInRedZone()) {
+            this.energyBar.setColor('red');
         } else {
-            this.energy_bar.setColor('white');
+            this.energyBar.setColor('white');
         }
 
         // draw icons of enemies
-        const inv_matrix = pl_ship.getMesh().computeWorldMatrix(true).clone().invert();
+        const invMatrix = playerShip.getMesh().computeWorldMatrix(true).clone().invert();
 
         const enemies = this.game.getBattleArea().getEnemies();
         enemies.forEach(enemy => {
             if (!enemy.isDestroyed()) {
-                this.drawEnemyIcon(enemy, inv_matrix);
+                this.drawEnemyIcon(enemy, invMatrix);
             }
         });
         this.setEnemiesCount(this.game.getBattleArea().getEnemiesCount());
     }
 
-    drawEnemyIcon(enemy, inv_matrix) {
+    drawEnemyIcon(enemy, invMatrix) {
         const mesh = enemy.getMesh();
         const icon = enemy.getRadarIcon();
 
-        let screen_width = this.screen_width;
-        let screen_height = this.screen_height;
+        let screenWidth = this.screenWidth;
+        let screenHeight = this.screenHeight;
 
         // Convert the world position to screen coordinates
         const pos = mesh.getAbsolutePosition();
@@ -405,40 +402,40 @@ export class PlayerShipGui extends BaseGui {
             pos,
             BABYLON.Matrix.Identity(),
             this.scene.getTransformMatrix(),
-            this.scene.activeCamera.viewport.toGlobal(screen_width, screen_height)
+            this.scene.activeCamera.viewport.toGlobal(screenWidth, screenHeight)
         );
 
         const isVisible = this.scene.activeCamera.isInFrustum(mesh);
         if (isVisible) {
-            const HEIGHT_OFFSET = enemy.getConfig().hp_text_offset;
-            icon.top = screenPos.y - screen_height * 0.5 - HEIGHT_OFFSET * screen_height;
-            icon.left = screenPos.x - screen_width * 0.5;
+            const HEIGHT_OFFSET = enemy.getConfig().hpTextOffset;
+            icon.top = screenPos.y - screenHeight * 0.5 - HEIGHT_OFFSET * screenHeight;
+            icon.left = screenPos.x - screenWidth * 0.5;
         } else {
-            screen_width -= icon.width_numeric * screen_width;
-            screen_height-= icon.width_numeric * screen_height;
+            screenWidth -= icon.widthNumeric * screenWidth;
+            screenHeight -= icon.widthNumeric * screenHeight;
 
             // convert global enemy pos to local system of coordinates of the player ship
-            const local_pos = BABYLON.Vector3.TransformCoordinates(pos, inv_matrix);
+            const localPos = BABYLON.Vector3.TransformCoordinates(pos, invMatrix);
 
             // create a 2d vector projected to local YOZ plane, because OX is the forward direction of our ship
-            const local_pos_2d = new BABYLON.Vector2(-local_pos.z, -local_pos.y);
+            const localPos2d = new BABYLON.Vector2(-localPos.z, -localPos.y);
 
             // get intersection point between 2d vector and rectangle
-            const point = utils.getVectorRectangleIntersection(local_pos_2d.x, local_pos_2d.y, screen_width, screen_height);
+            const point = utils.getVectorRectangleIntersection(localPos2d.x, localPos2d.y, screenWidth, screenHeight);
             icon.top = point.y + 'px';
-            icon.left= point.x + 'px';
+            icon.left = point.x + 'px';
         }
     }
 
     hide() {
-        this.target_field.isVisible = false;
+        this.targetField.isVisible = false;
         this.target.isVisible = false;
 
-        this.health_bar.setVisible(false);
-        this.armor_bar.setVisible(false);
-        this.energy_bar.setVisible(false);
-        this.speed_bar_pos.setVisible(false);
-        this.speed_bar_neg.setVisible(false);
+        this.healthBar.setVisible(false);
+        this.armorBar.setVisible(false);
+        this.energyBar.setVisible(false);
+        this.speedBarPos.setVisible(false);
+        this.speedBarNeg.setVisible(false);
 
         this.setInfoPanelVisible(false);
     }
@@ -446,30 +443,30 @@ export class PlayerShipGui extends BaseGui {
     clear() {
         this.scene.onPointerObservable.remove(this.pointerObserver);
 
-        this.game  = null;
+        this.game = null;
         this.scene = null;
-        this.ship  = null;
+        this.ship = null;
 
-        this.target_field.dispose();
-        this.target_field = null;
+        this.targetField.dispose();
+        this.targetField = null;
 
         this.target.dispose();
-        this.target= null;
-        this.target_obj = null;
+        this.target = null;
+        this.targetObj = null;
 
-        this.speed_bar_pos.clear();
-        this.speed_bar_pos = null;
+        this.speedBarPos.clear();
+        this.speedBarPos = null;
 
-        this.speed_bar_neg.clear();
-        this.speed_bar_neg = null;
+        this.speedBarNeg.clear();
+        this.speedBarNeg = null;
 
-        this.energy_bar.clear();
-        this.energy_bar = null;
+        this.energyBar.clear();
+        this.energyBar = null;
 
-        this.health_bar.clear();
-        this.health_bar = null;
+        this.healthBar.clear();
+        this.healthBar = null;
 
-        this.armor_bar.clear();
-        this.armor_bar = null;
+        this.armorBar.clear();
+        this.armorBar = null;
     }
 }

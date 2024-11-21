@@ -1,4 +1,4 @@
-import {Node} from './Node.js';
+import { Node } from './Node.js';
 
 export class Leaf extends Node {
     constructor(id, func) {

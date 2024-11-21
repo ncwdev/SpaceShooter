@@ -11,7 +11,7 @@ export function create(scene, mesh, position) {
     ps.emitRate = 100;
     ps.minEmitPower = 0;
     ps.maxEmitPower = 0;
-    ps.updateSpeed  = 1/60;
+    ps.updateSpeed = 1 / 60;
 
     ps.addSizeGradient(0, 0.5, 0.8);
     ps.addSizeGradient(0.3, 0.8, 1.2);

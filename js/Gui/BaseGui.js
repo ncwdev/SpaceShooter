@@ -6,23 +6,23 @@ export class BaseGui {
     game = null;
     scene = null;
 
-    screen_width = 0;
-    screen_height = 0;
+    screenWidth = 0;
+    screenHeight = 0;
 
-    font_size = null;
-    padding_left = 0;
+    fontSize = null;
+    paddingLeft = 0;
 
     constructor(game) {
         this.game = game;
         this.scene = game.getScene();
 
         const engine = this.scene.getEngine();
-        this.screen_width = engine.getRenderWidth();
-        this.screen_height = engine.getRenderHeight();
+        this.screenWidth = engine.getRenderWidth();
+        this.screenHeight = engine.getRenderHeight();
 
-        this.font_size = (this.screen_height + this.screen_width) * 0.5 * GUI_FONT_SIZE;
+        this.fontSize = (this.screenHeight + this.screenWidth) * 0.5 * GUI_FONT_SIZE;
 
-        this.padding_left = this.screen_width * 0.005;
+        this.paddingLeft = this.screenWidth * 0.005;
     }
 
     createTextBlock(parent) {
@@ -30,10 +30,10 @@ export class BaseGui {
         txt.color = '#FFEBCD';
         txt.outlineColor = 'black';
         txt.outlineWidth = 1;
-        txt.fontSize = this.font_size;
+        txt.fontSize = this.fontSize;
         txt.resizeToFit = true;
         txt.horizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
-        txt.paddingLeft = this.padding_left;
+        txt.paddingLeft = this.paddingLeft;
         parent.addControl(txt);
 
         const ref = new WeakRef(txt);

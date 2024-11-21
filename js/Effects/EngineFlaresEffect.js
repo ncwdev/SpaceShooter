@@ -31,7 +31,7 @@ export function create(scene, mesh, position) {
     ps.emitRate = 25;
     ps.minEmitPower = 0;
     ps.maxEmitPower = 0;
-    ps.updateSpeed  = 1 / 60;
+    ps.updateSpeed = 1 / 60;
 
     ps.isLocal = true;
 
