@@ -11,6 +11,7 @@ export class LoadingLevelState extends BaseState {
 
         const hud = this.game.getHud();
         hud.setLoadingTextVisible(true);
+        hud.setLoadingProgress(0);
 
         // init battle area
         const battleArea = this.game.getBattleArea();

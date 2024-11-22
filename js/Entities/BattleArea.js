@@ -26,33 +26,12 @@ export class BattleArea {
     game = null;
     config = null;
 
-    getScene() {
-        return this.scene;
-    }
-
     spaceRadiusMin = 100;
     spaceRadiusMax = 500;
-
-    isMaxRadiusExit(pos) {
-        const distanceToCenter = pos.length();
-
-        dbg.setDistanceToCenter(distanceToCenter);
-
-        return distanceToCenter > this.spaceRadiusMax;
-    }
-
-    isPlasmaShotTooFar(pos) {
-        const distanceToCenter = pos.length();
-        return distanceToCenter > this.spaceRadiusMax * 2;
-    }
 
     octree = null;
 
     playerShip = null;
-
-    getPlayerShip() {
-        return this.playerShip;
-    }
 
     parentMeshes = []; // parents for all mesh instances and clones (enemy, asteroids, plasma shots, missiles)
 
@@ -88,12 +67,33 @@ export class BattleArea {
         this.octree = new Octree(min, max);
     }
 
+    getScene() {
+        return this.scene;
+    }
+
+    getPlayerShip() {
+        return this.playerShip;
+    }
+
     getEnemies() {
         return this.enemies;
     }
 
     getEnemiesCount() {
         return this.enemiesNumber;
+    }
+
+    isMaxRadiusExit(pos) {
+        const distanceToCenter = pos.length();
+
+        dbg.setDistanceToCenter(distanceToCenter);
+
+        return distanceToCenter > this.spaceRadiusMax;
+    }
+
+    isPlasmaShotTooFar(pos) {
+        const distanceToCenter = pos.length();
+        return distanceToCenter > this.spaceRadiusMax * 2;
     }
 
     async initPhysics() {
@@ -125,23 +125,32 @@ export class BattleArea {
         let result = await BABYLON.SceneLoader.ImportMeshAsync('', meshData.path, meshData.file, this.scene);
         this.instancePlayerShip(result);
 
+        this.game.getHud().setLoadingProgress(10);
+
         meshData = meshesList.EnemyShip;
         result = await BABYLON.SceneLoader.ImportMeshAsync('', meshData.path, meshData.file, this.scene);
         this.instanceEnemyShips(result, this.enemiesNumber);
+
+        this.game.getHud().setLoadingProgress(20);
 
         // create a bunch of asteroids - use all 6 models
         const asteroids = meshesList.Asteroids;
         asteroids.forEach(data => {
             BABYLON.SceneLoader.ImportMesh('', data.path, data.file, this.scene, this.instanceAsteroids.bind(this));
         });
+        this.game.getHud().setLoadingProgress(80);
 
         meshData = meshesList.LootBox;
         result = await BABYLON.SceneLoader.ImportMeshAsync('', meshData.path, meshData.file, this.scene);
         this.instanceLootBox(result);
 
+        this.game.getHud().setLoadingProgress(90);
+
         meshData = meshesList.Missile;
         result = await BABYLON.SceneLoader.ImportMeshAsync('', meshData.path, meshData.file, this.scene);
         this.instanceMissile(result);
+
+        this.game.getHud().setLoadingProgress(100);
 
         const parents = PlasmaShot.getParentMeshAndShape(this.scene);
         this.parentMeshes.push(...parents);

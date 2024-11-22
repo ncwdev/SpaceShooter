@@ -52,6 +52,10 @@ export class GameGui extends BaseGui {
         this.loadingText.style.display = flag ? 'grid' : 'none';
     }
 
+    setLoadingProgress(progress) {
+        this.loadingText.innerText = getLocText('TXT_LOADING') + ' ' + progress + '%';
+    }
+
     showTutor() {
         if (this.tutorPanel.isVisible) {
             return;
