@@ -71,13 +71,13 @@ html, body {
 #MenuPanel {
     position: fixed;
     top: 25vh;
-    left:30vw;
+    left: 30vw;
     width: 40vw;
     height: 45vh;
     display: grid;
     justify-items: center;
     align-items: center;
-    background-color: #8F644944;
+    background-color: #8F644988;
     border-radius: 2%;
     border: 2px solid blanchedalmond;
     text-shadow: 1px 1px 0 rgb(0, 0, 0), -1px -1px 0 rgb(0, 0, 0), 1px -1px 0 rgb(0, 0, 0), -1px 1px 0 rgb(0, 0, 0);
