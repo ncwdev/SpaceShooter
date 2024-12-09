@@ -41,7 +41,7 @@ const ru = Object.freeze({
 // too lazy to make selector...
 const curLanguage = en;
 
-function getLocText(id) {
+export function getLocText(id) {
     return curLanguage[id];
 }
 

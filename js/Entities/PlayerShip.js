@@ -81,13 +81,13 @@ export class PlayerShip extends Ship {
         body.shape = shape;
         this.aggregate = { body: body, shape: shape };
 
-        this.sounds.engineIdle = new SoundEffect('engineIdle', './assets/sounds/engineIdle.ogg', this.scene, {
+        this.sounds.engineIdle = new SoundEffect('engineIdle', '/sounds/engineIdle.ogg', this.scene, {
             loop: true,
             autoplay: false,
         });
         this.sounds.engineIdle.sound.attachToMesh(mesh);
 
-        this.sounds.engineMain = new SoundEffect('engineMain', './assets/sounds/engineMain.ogg', this.scene, {
+        this.sounds.engineMain = new SoundEffect('engineMain', '/sounds/engineMain.ogg', this.scene, {
             loop: true,
             autoplay: false,
         });
@@ -97,7 +97,7 @@ export class PlayerShip extends Ship {
         this.leftFlareParticles = this.createEngineFlares(mesh, playerConfig.leftFlarePos);
         this.rightFlareParticles = this.createEngineFlares(mesh, playerConfig.rightFlarePos);
 
-        this.whiteNoiseEffect = new WhiteNoiseEffect(this.scene, mesh, './assets/models/MyShip/skull_texture.jpg');
+        this.whiteNoiseEffect = new WhiteNoiseEffect(this.scene, mesh, '/models/MyShip/skull_texture.jpg');
 
         this.camEffect = new IdleMoveEffect(playerConfig.idleMoveRadius, playerConfig.idleMoveSpeed);
         this.attachCamera();

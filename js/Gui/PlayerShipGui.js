@@ -1,6 +1,7 @@
 // contains target field of player's ship and icons of enemies
 import { BaseGui } from './BaseGui.js';
 import { ProgressBar } from './ProgressBar.js';
+import { getLocText } from '../Utils/lang.js';
 import * as utils from '../Utils/utils.js';
 import * as dbg from '../Utils/DebugPanel.js';
 import CONST from '../const.js';
@@ -47,7 +48,7 @@ export class PlayerShipGui extends BaseGui {
         parent.addControl(targetField);
         this.targetField = targetField;
 
-        const center = new BABYLON.GUI.Image('center', 'assets/images/center.png');
+        const center = new BABYLON.GUI.Image('center', '/images/center.png');
         center.width = 0.03;
         center.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
         center.zIndex = 10;

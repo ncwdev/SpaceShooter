@@ -10,4 +10,6 @@ To increase FPS in Chrome, open Settings -> System and enable "Use graphics acce
 
 To gain even more performance, ensure that Chrome uses the discrete GPU. Press Win + I, go to System -> Display -> Graphics Settings, add chrome.exe, and select the GPU for high performance.
 
-The method should work for all other browsers too.
+To run project locally:
+npm install
+npm run dev

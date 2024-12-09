@@ -2,7 +2,7 @@ export function create(scene, mesh, position) {
     const capacity = 2000;
     const ps = new BABYLON.ParticleSystem('EngineFlares', capacity, scene);
 
-    ps.particleTexture = new BABYLON.Texture('./assets/images/flare.png');
+    ps.particleTexture = new BABYLON.Texture('/images/flare.png');
     ps.gravity = new BABYLON.Vector3(0, 0, 0);
 
     const customEmitter = new BABYLON.CustomParticleEmitter();

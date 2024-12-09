@@ -5,7 +5,7 @@ export class SpaceDustEffect {
         const capacity = 2000;
         const ps = new BABYLON.ParticleSystem('SpaceDust', capacity, scene);
 
-        ps.particleTexture = new BABYLON.Texture('./assets/images/dust.png');
+        ps.particleTexture = new BABYLON.Texture('/images/dust.png');
         ps.gravity = new BABYLON.Vector3(0, 0, 0);
 
         ps.minSize = 0.1;

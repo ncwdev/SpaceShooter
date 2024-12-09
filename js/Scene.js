@@ -1,7 +1,7 @@
 export class Scene extends BABYLON.Scene {
     plasmaShotLayer = null;
 
-    constructor(engine) {
+    constructor(engine, config) {
         // scene contains skybox, light, camera and some effects (glow, fog, ...)
         super(engine);
 
@@ -23,15 +23,26 @@ export class Scene extends BABYLON.Scene {
         const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0));
         light.intensity = 1.0;
         light.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
+        // light.intensity = 0.5;
+        // light.diffuse = new BABYLON.Color3(1.0, 0.8, 0.51);
 
         const light2 = new BABYLON.DirectionalLight('dirLight', new BABYLON.Vector3(0, 2, 1), scene);
         light2.position = new BABYLON.Vector3(0, 0, 0);
         light2.intensity = 1.0;
         light2.diffuse = new BABYLON.Color3(0.1, 0.1, 0.1);
 
-        // scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-        // scene.fogColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-        // scene.fogDensity = 0.00006;
+        // const lightDir = new BABYLON.Vector3(-1, 0, 0);
+        // const dirLight = new BABYLON.DirectionalLight('dirLight', lightDir, scene);
+        // dirLight.autoUpdateExtends = false;
+        // dirLight.position = new BABYLON.Vector3(config.radiusMax * 2, 0, 0);
+
+        // dirLight.intensity = 7.5;
+        // dirLight.range = 5000.0;
+        // dirLight.diffuse = new BABYLON.Color3(1.0, 0.8, 0.51);
+        // dirLight.specular = new BABYLON.Color3(1.0, 0.8, 0.51); // BABYLON.Color3.Black();
+
+        // this.setupShadows(dirLight);
+        // this.setupCascadeShadows(dirLight);
 
         const glowLayer = new BABYLON.GlowLayer('PlasmaShotGlow', scene);
         glowLayer.intensity = 0.95;
@@ -53,10 +64,56 @@ export class Scene extends BABYLON.Scene {
         postprocess.toneMappingType = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES;
 
         // const postProcessFXAA = new BABYLON.FxaaPostProcess('fxaa', 1.0, camera);
+
+        // const options = {
+        //     height: 100,
+        //     width: 10,
+        //     depth: 100,
+        //     updatable: true,
+        //     // sideOrientation: BABYLON.Mesh.FRONTSIDE,
+        // };
+        // const box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
+        // const lengthOfAxes = 100;
+        // const axes = new BABYLON.AxesViewer(this.scene, lengthOfAxes);
+        // axes.xAxis.parent = box;
+        // axes.yAxis.parent = box;
+        // axes.zAxis.parent = box;
+
+        // this.addShadows(box);
     }
 
     getPlasmaShotLayer() {
         return this.plasmaShotLayer;
+    }
+
+    setupShadows(light) {
+        const usefullFloatFirst = true;
+        const shadowGenerator = new BABYLON.ShadowGenerator(2048, light, usefullFloatFirst);
+        shadowGenerator.bias = 0.01;
+        shadowGenerator.normalBias = 0.01;
+
+        shadowGenerator.useContactHardeningShadow = true;
+        shadowGenerator.contactHardeningLightSizeUVRatio = 0.05;
+        shadowGenerator.setDarkness(99.99);
+
+        this.shadowGenerator = shadowGenerator;
+    }
+
+    setupCascadeShadows(light) {
+        const shadowGenerator = new BABYLON.CascadedShadowGenerator(2048, light);
+        shadowGenerator.bias = 0.001;
+
+        // shadowGenerator.useContactHardeningShadow = true;
+        // shadowGenerator.contactHardeningLightSizeUVRatio = 0.05;
+        // shadowGenerator.setDarkness(0.5);
+        // shadowGenerator.useVarianceShadowMap = true;
+
+        this.shadowGenerator = shadowGenerator;
+    }
+
+    addShadows(mesh) {
+        // this.shadowGenerator.getShadowMap().renderList.push(mesh);
+        // mesh.receiveShadows = true;
     }
 
     randomPoints(ctx, count, size) {
@@ -78,7 +135,7 @@ export class Scene extends BABYLON.Scene {
     createSkyBox(config) {
         const scene = this;
 
-        const dist = config.radiusMax * 3;
+        const dist = config.radiusMax * 4;
         const skybox = BABYLON.MeshBuilder.CreateBox('skyBox', { size: dist }, scene);
 
         const skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene);
@@ -98,7 +155,7 @@ export class Scene extends BABYLON.Scene {
             arr.push(dynamicTexture);
         }
         const img = new Image();
-        img.src = 'assets/images/cloud.png';
+        img.src = '/images/cloud.png';
         img.onload = async function() {
             for (let i = 0; i < 6; i++) {
                 const dynamicTexture = arr[i];
@@ -127,9 +184,26 @@ export class Scene extends BABYLON.Scene {
             skyboxMaterial.freeze();
         };
 
+        // this.createSun(scene, skybox, config);
+
         // skybox.isPickable = false;
         // skybox.renderingGroupId = 0; // behind any other objects
     }
+
+    createSun(scene, skybox, config) {
+        const diameter = 50;
+        const sunMesh = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: diameter, segments: 32 });
+        sunMesh.position.x = config.radiusMax * 2 - diameter;
+        sunMesh.position.y = 0;
+        sunMesh.position.z = 0;
+        sunMesh.material = new BABYLON.StandardMaterial('sun material');
+        sunMesh.material.emissiveColor = new BABYLON.Color3(1.0, 0.8, 0.51); // BABYLON.Color3.Yellow();
+        sunMesh.parent = skybox;
+
+        // bad fps drops on integrated video card from 80 to 30
+        // const godrays = new BABYLON.VolumetricLightScatteringPostProcess('godrays', 1, scene.activeCamera, sunMesh, 100, BABYLON.Texture.BILINEAR_SAMPLINGMODE);
+        // godrays.exposure = 0.2;
+    };
 
     applyOptimizations() {
         this.pointerMoveTrianglePredicate = () => false;

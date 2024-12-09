@@ -1,5 +1,6 @@
 import * as utils from '../Utils/utils.js';
 import * as dbg from '../Utils/DebugPanel.js';
+import meshesList from '../Config/meshesList.js';
 
 import { Octree } from '../Utils/Octree.js';
 
@@ -97,8 +98,7 @@ export class BattleArea {
     }
 
     async initPhysics() {
-        // const havokInstance = await HavokPhysics();
-        this.havokPlugin = new BABYLON.HavokPlugin(true, havokInstance);
+        this.havokPlugin = new BABYLON.HavokPlugin(true, this.game.havokInstance);
 
         const gravity = new BABYLON.Vector3(0, 0, 0);
         const result = this.scene.enablePhysics(gravity, this.havokPlugin);
@@ -161,11 +161,16 @@ export class BattleArea {
     instancePlayerShip(data) {
         // place ship in 80% distance from center to min radius
         const mesh = data.meshes[0];
+        mesh.material.roughness = 0.95;
+        mesh.material.metallic = 0.0;
+
         this.warpShipToRadius(mesh, this.config.plShipSpawnRadius);
 
         this.octree.addMesh(mesh);
 
         this.playerShip = new PlayerShip(this.game, mesh);
+
+        this.scene.addShadows(mesh);
     }
 
     instanceLootBox(data) {
@@ -177,6 +182,8 @@ export class BattleArea {
 
         this.lootBoxMesh = mesh;
         this.parentMeshes.push(mesh);
+
+        this.scene.addShadows(mesh);
     }
 
     instanceMissile(data) {
@@ -207,6 +214,8 @@ export class BattleArea {
                     mesh.isVisible = true;
                     mesh.position = new BABYLON.Vector3(pos.x, pos.y, pos.z);
 
+                    this.scene.addShadows(mesh);
+
                     const ship = new EnemyShip(this.game, mesh);
                     mesh.mfg = {entityClass: CONST.ENTITY_CLASS_ENEMY_SHIP, entity: ship};
                     this.enemies.push(ship);
@@ -222,7 +231,8 @@ export class BattleArea {
         const parentMesh = newMeshes[0];
         parentMesh.receiveShadows = true;
         parentMesh.checkCollisions = true;
-        parentMesh.material.roughness = 0.5;
+        parentMesh.material.roughness = 0.95;
+        parentMesh.material.metallic = 0.0;
         parentMesh.material.freeze();
         parentMesh.isVisible = false;
         this.parentMeshes.push(parentMesh);
@@ -240,6 +250,8 @@ export class BattleArea {
                 if (!this.octree.findClosestObject(pos, astMinDist)) {
                     const mesh = parentMesh.createInstance(parentMesh.name + i);
                     mesh.position = new BABYLON.Vector3(pos.x, pos.y, pos.z);
+
+                    this.scene.addShadows(mesh);
 
                     const ast = new Asteroid(this.scene, mesh);
                     this.asteroids.push(ast);

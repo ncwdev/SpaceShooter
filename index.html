@@ -3,12 +3,13 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>SpaceShooter</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/range.css">
     <link rel="stylesheet" href="./css/checkbox.css">
-    <script src="js/Lib/babylon.js" defer></script>
-    <script src="js/Lib/babylon.gui.min.js" defer></script>
-    <script src="js/Lib/HavokPhysics_umd.js" defer></script>
+    <script type="module" src="js/Lib/babylon.js"></script>
+    <script type="module" src="js/Lib/babylon.gui.min.js"></script>
+    <script type="module" src="js/app.js"></script>
 </head>
 <body>
     <div id="gameContainer">
@@ -19,7 +20,7 @@
                     <div id="HelpText1">Actual localized texts</div>
                     <div id="HelpText2">you can find in</div>
                     <div id="HelpText3">js/Utils/lang.js</div>
-                    <div id="HelpText4">js/Utils/lang.js</div>
+                    <div id="HelpText4"></div>
                 </div>
                 <div id="TutorPanel">TXT_MISSILE_INFO</div>
                 <div id="InfoPanel">
@@ -54,8 +55,5 @@
             <div id="PlayTxt" class="ncw_btn" style="top: 46vh; left: 46vw;font-size: 2.5vh;z-index: 9;width: 5vw; pointer-events: none;" onmousedown="startGame()">Play</div>
         </div>
     </div>
-    <script src="js/Config/meshesList.js" defer></script>
-    <script src="js/Utils/lang.js" defer></script>
-    <script src="js/app.js" defer></script>
 </body>
 </html>

@@ -2,7 +2,7 @@ export function create(scene, mesh) {
     const capacity = 2000;
     const ps = new BABYLON.ParticleSystem('DamageEffect', capacity, scene);
 
-    ps.particleTexture = new BABYLON.Texture('./assets/images/lightning.png');
+    ps.particleTexture = new BABYLON.Texture('/images/lightning.png');
     ps.gravity = new BABYLON.Vector3(0, 0, 0);
 
     const emmiter = new BABYLON.MeshParticleEmitter(mesh);

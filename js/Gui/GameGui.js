@@ -1,6 +1,7 @@
 import { BaseGui } from './BaseGui.js';
 import { InOutMoveEffect } from '../Effects/InOutMoveEffect.js';
 import { GradientBoardText } from './GradientBoardText.js';
+import { getLocText } from '../Utils/lang.js';
 
 export class GameGui extends BaseGui {
     parent = null;
@@ -26,7 +27,7 @@ export class GameGui extends BaseGui {
             'UI', true, this.scene, BABYLON.Texture.BILINEAR_SAMPLINGMODE, adaptiveScaling);
         this.parent = parent;
 
-        const back = new BABYLON.GUI.Image('back', 'assets/images/black_pixel.png');
+        const back = new BABYLON.GUI.Image('back', '/images/black_pixel.png');
         parent.addControl(back);
         this.blackScreen = back;
         this.blackScreen.isVisible = false;

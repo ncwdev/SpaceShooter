@@ -1,17 +1,17 @@
 // list of meshes
-const meshesList = {
-    MyShip: { path: './assets/models/MyShip/', file: 'MyShip.babylon' },
-    EnemyShip: { path: './assets/models/EnemyShip/', file: 'EnemyShip.babylon' },
+export default Object.freeze({
+    MyShip: { path: '/models/MyShip/', file: 'MyShip.babylon' },
+    EnemyShip: { path: '/models/EnemyShip/', file: 'EnemyShip.babylon' },
 
-    Missile: { path: './assets/models/Missile/', file: 'missile.babylon' },
-    LootBox: { path: './assets/models/LootBox/', file: 'LootBox.babylon' },
+    Missile: { path: '/models/Missile/', file: 'missile.babylon' },
+    LootBox: { path: '/models/LootBox/', file: 'LootBox.babylon' },
 
     Asteroids: [
-        { path: './assets/models/Asteroid1/', file: 'Asteroid1.babylon' },
-        // {path: './assets/models/Asteroid2/', file: 'Asteroid2.babylon',},
-        { path: './assets/models/Asteroid3/', file: 'Asteroid3.babylon' },
-        // {path: './assets/models/Asteroid4/', file: 'Asteroid4.babylon',},
-        { path: './assets/models/Asteroid5/', file: 'Asteroid5.babylon' },
-        // {path: './assets/models/Asteroid6/', file: 'Asteroid6.babylon',},
+        { path: '/models/Asteroid1/', file: 'Asteroid1.babylon' },
+        // {path: '/models/Asteroid2/', file: 'Asteroid2.babylon',},
+        { path: '/models/Asteroid3/', file: 'Asteroid3.babylon' },
+        // {path: '/models/Asteroid4/', file: 'Asteroid4.babylon',},
+        { path: '/models/Asteroid5/', file: 'Asteroid5.babylon' },
+        // {path: '/models/Asteroid6/', file: 'Asteroid6.babylon',},
     ],
-};
+});

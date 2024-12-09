@@ -2,7 +2,7 @@ export function create(scene, mesh, position) {
     const capacity = 2000;
     const ps = new BABYLON.ParticleSystem('MissileTrail', capacity, scene);
 
-    ps.particleTexture = new BABYLON.Texture('./assets/images/smoke_particle.png');
+    ps.particleTexture = new BABYLON.Texture('/images/smoke_particle.png');
     ps.gravity = new BABYLON.Vector3(0, 0, 0);
 
     ps.minLifeTime = 1.0;

@@ -37,7 +37,7 @@ class SoundManagerSingleton {
     getSound(soundId) {
         let sound = this.sounds[soundId];
         if (!sound) {
-            sound = new BABYLON.Sound(soundId, `./assets/sounds/${soundId}`, this.scene, () => console.log(`${soundId} loaded`), {
+            sound = new BABYLON.Sound(soundId, `/sounds/${soundId}`, this.scene, () => console.log(`${soundId} loaded`), {
                 loop: false,
                 autoplay: true,
                 volume: 0.25,
@@ -98,7 +98,7 @@ class SoundManagerSingleton {
 
     playMenuMusic() {
         if (!this.menuMusic) {
-            this.menuMusic = new SoundEffect('menuMusic', './assets/sounds/menuMusic.ogg', this.scene, {
+            this.menuMusic = new SoundEffect('menuMusic', '/sounds/menuMusic.ogg', this.scene, {
                 loop: true,
                 autoplay: false,
                 // preload: 'true',
@@ -119,7 +119,7 @@ class SoundManagerSingleton {
 
     playGameMusic() {
         if (!this.gameMusic) {
-            this.gameMusic = new SoundEffect('gameMusic', './assets/sounds/gameMusic.ogg', this.scene, {
+            this.gameMusic = new SoundEffect('gameMusic', '/sounds/gameMusic.ogg', this.scene, {
                 loop: true,
                 autoplay: false,
                 // preload: 'true',
@@ -151,8 +151,8 @@ class SoundManagerSingleton {
                 sound.dispose();
             }
         }
-        this.sounds= null;
+        this.sounds = null;
         this.scene = null;
     }
 }
-export const SoundManager = new SoundManagerSingleton(scene);
+export const SoundManager = new SoundManagerSingleton(window.scene);

@@ -15,12 +15,14 @@ import { ShowResultState } from './GameStates/ShowResultState.js';
 import { ShowMenuState } from './GameStates/ShowMenuState.js';
 
 import { SoundManager } from './Utils/SoundManager.js';
+import { getLocText } from './Utils/lang.js';
 
 // manages transition from menu to game and back
 export class MyGame {
     engine = null;
     config = null;
     scene = null;
+    havokInstance = null;
 
     prerenderObserver = null;
     keyboardManager = null;
@@ -33,11 +35,12 @@ export class MyGame {
     battleArea = null;
     hud = null;
 
-    constructor(engine, config) {
+    constructor(engine, havokInstance, config) {
         this.engine = engine;
         this.config = config;
+        this.havokInstance = havokInstance;
 
-        this.scene = new Scene(engine);
+        this.scene = new Scene(engine, config);
         this.scene.createSkyBox(config);
         this.scene.applyOptimizations();
 

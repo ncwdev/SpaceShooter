@@ -1,13 +1,14 @@
+import HavokPhysics from './Lib/HavokPhysics_es.js';
+import { getLocText } from './Utils/lang.js';
+import gameConfig from './Config/GameCfg.js';
+
 let engine = null;
 let canvas = null;
 let scene = null;
-
-let havokInstance = null;
+let game = null;
 
 const MAX_WIDHT = 1920;
 const MAX_HEIGHT = 1080;
-
-let game = null;
 
 async function createEngine() {
     const options = { preserveDrawingBuffer: false, stencil: true, disableWebGL2Support: false };
@@ -32,19 +33,20 @@ const init = async function() {
     if (!engine) {
         throw 'init(): engine should not be null';
     }
-    havokInstance = await HavokPhysics();
+    const havokInstance = await HavokPhysics();
 
-    const { default: gameConfig } = await import('./Config/GameCfg.js');
     const { MyGame } = await import('./Game.js');
-    game = new MyGame(engine, gameConfig);
+    game = new MyGame(engine, havokInstance, gameConfig);
 
     scene = game.getScene();
     if (!scene) {
         throw 'initFunction(): cannot get MyGame scene';
     }
+    window.scene = scene;
+
     runRenderLoop();
 
-    const tempStartSound = new BABYLON.Sound('welcome', './assets/sounds/welcome.wav', scene, null, {
+    const tempStartSound = new BABYLON.Sound('welcome', '/sounds/welcome.wav', scene, null, {
         loop: false,
         autoplay: true,
     });
@@ -73,6 +75,9 @@ function startGame() {
 
     game.hideMenu();
 }
+
+// Make startGame function globally accessible
+window.startGame = startGame;
 
 function pauseGame() {
     engine.stopRenderLoop();
@@ -134,6 +139,7 @@ async function setSoundsOnOff() {
         BABYLON.Engine.audioEngine.lock();
     }
 }
+window.setSoundsOnOff = setSoundsOnOff;
 
 // Entry point
 init();

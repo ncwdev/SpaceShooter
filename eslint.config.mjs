@@ -30,8 +30,6 @@ export default [
             globals: {
                 ...globals.browser,
                 BABYLON: 'readonly',
-                HavokPhysics: 'readonly',
-                getLocText: 'readonly',
             }
         }
     },
