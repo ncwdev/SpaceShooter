@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vite --config vite/config.dev.mjs",
     "build": "vite build --config vite/config.prod.mjs",
+    "host": "vite build --config vite/config.host.mjs",
     "deploy": "gh-pages -d dist"
   },
   "author": "ncwdev",
